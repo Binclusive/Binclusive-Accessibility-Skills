@@ -1,0 +1,20 @@
+{
+  "name": "binclusive-accessibility-skills",
+  "version": "0.1.0",
+  "description": "Binclusive accessibility mapping, audit, and remediation skills for React and Next.js projects.",
+  "skills": [
+    {
+      "path": "../../skills/map-project/SKILL.md"
+    },
+    {
+      "path": "../../skills/audit-accessibility/SKILL.md"
+    },
+    {
+      "path": "../../skills/fix-accessibility/SKILL.md"
+    }
+  ],
+  "interface": {
+    "displayName": "Binclusive Accessibility Skills",
+    "description": "Map React/Next.js projects, audit accessibility issues, and fix selected audit tasks with controlled verification."
+  }
+}

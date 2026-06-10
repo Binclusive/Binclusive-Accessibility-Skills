@@ -1,0 +1,7 @@
+interface:
+  display_name: "Fix Accessibility"
+  short_description: "Duzelt: selected a11y TODOs"
+  default_prompt: "Use $fix-accessibility to fix selected TASK IDs from accessibility-todo.md; Turkce: erisilebilirlik sorunlarini duzelt."
+
+policy:
+  allow_implicit_invocation: true
