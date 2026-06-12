@@ -14,7 +14,7 @@ First, run the read-only project inspector if available:
 node map-project/scripts/inspect-project.mjs /path/to/project
 ```
 
-The inspector returns platform and manifest signals as JSON. Treat it as a fast discovery layer, not as a substitute for reading the actual files. If it detects Swift/iOS or Android/Kotlin, record those signals honestly and state that detailed mobile mapping references are future work unless such references have been added.
+The inspector returns platform and manifest signals as JSON. Treat it as a fast discovery layer, not as a substitute for reading the actual files. If it detects Swift/iOS, use `references/mapper-ios-swift.md` for iOS mapping when it is in scope. If it detects Android/Kotlin, record those signals honestly and state that detailed Android mapping references are future work unless such references have been added.
 
 Determine these facts from the repository before asking the user:
 
@@ -117,3 +117,4 @@ Required sections:
 - Do not invent paths, package names, components, line numbers, or routes.
 - Mark uncertainty as `needs runtime verification` or `not statically verified`.
 - Keep customer-provided examples out of the skill package unless they have been anonymized into generic patterns.
+

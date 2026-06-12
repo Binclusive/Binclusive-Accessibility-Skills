@@ -402,7 +402,7 @@ if (files.length >= MAX_FILES) notes.push(`File scan capped at ${MAX_FILES} file
 if (pkg === null && hasFile("package.json")) notes.push("package.json exists but could not be parsed as JSON.");
 if (detectedPlatforms.length === 0) notes.push("No supported platform signals detected.");
 if (detectedPlatforms.some((platform) => platform.startsWith("ios") || platform.startsWith("android"))) {
-  notes.push("Mobile platform support is signal-only in this inspector; detailed mapping references should be added separately.");
+  notes.push("iOS mapping is supported through mapper-ios-swift.md when SwiftUI/UIKit is in scope; Android remains signal-only until detailed references are added.");
 }
 
 const result = {
@@ -418,3 +418,4 @@ const result = {
 };
 
 process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+

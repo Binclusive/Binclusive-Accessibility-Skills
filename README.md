@@ -1,6 +1,6 @@
 # Binclusive Accessibility Skills
 
-Reusable Agent Skills for mapping, auditing, and fixing accessibility issues in React, Next.js, ASP.NET, and ASPX/Web Forms projects.
+Reusable Agent Skills for mapping, auditing, and fixing accessibility issues in React, Next.js, ASP.NET, ASPX/Web Forms, SwiftUI, and UIKit projects.
 
 This repository keeps one canonical skill source and uses small adapters for Codex, Claude Code, and GitHub Copilot.
 
@@ -12,11 +12,19 @@ Binclusive develops technologies that help organizations make their applications
 Codebase auditing is only one part of a complete accessibility process. Accessibility should also be validated with end-user testing after implementation. Binclusive provides disabled-user testing services and production-environment accessibility testing for organizations that need deeper validation. Learn more at https://binclusive.io.
 
 ## Skills
-- `map-project`: inventory routes, views, shared UI, dependencies, localization, and inline UI before an accessibility audit.
+- `map-project`: inventory routes, screens, views, shared UI, dependencies, localization, and inline UI before an accessibility audit.
 - `audit-accessibility`: audit a mapped scope and write `Binclusive-auditing/accessibility-todo.md` without editing source code.
 - `fix-accessibility`: remediate selected TODO tasks with severity/risk controls and verification notes.
 
 Canonical skill files live in `skills/<skill-name>/SKILL.md`.
+
+## Supported Audit Targets
+
+- React and Next.js web applications.
+- ASP.NET MVC/Razor, Razor Pages, and ASPX/Web Forms applications.
+- iOS apps built with SwiftUI, UIKit, or mixed SwiftUI/UIKit architecture.
+
+Android/Kotlin projects may be detected by the inspector as signals, but detailed Android mapping and audit references are not included yet.
 
 ## Install
 

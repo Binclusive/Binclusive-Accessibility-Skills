@@ -7,7 +7,7 @@ The active audit output is `Binclusive-auditing/accessibility-todo.md`.
 - Title and date
 - Auditor skill name
 - App/project name
-- Framework and language
+- Framework/platform and language
 - Map file used
 - Scope audited
 - Static-only vs runtime-assisted note
@@ -22,7 +22,7 @@ The active audit output is `Binclusive-auditing/accessibility-todo.md`.
 
 ## Summary Table
 
-`| # | Title | Component / Page | File | Severity | Fix Type | Status |`
+`| # | Title | Component / Page / Screen | File | Severity | Fix Type | Status |`
 
 ## Findings
 
@@ -30,22 +30,22 @@ Group findings by severity: Critical, Serious, Moderate, Minor.
 
 Each finding:
 
-```md
+````md
 ### - [ ] [TASK-001] Short, specific title
-- **Component / Page:**
+- **Component / Page / Screen:**
 - **File path:**
-- **Used in pages:**
+- **Used in pages/screens:**
 - **Severity:** Critical | Serious | Moderate | Minor
 - **Code block in question:**
 ```jsx
-// exact verified snippet
+// exact verified snippet, or use swift/xml/html/etc. as appropriate
 ```
 - **Problem (detailed):**
 - **Correct solution:**
 - **Fix Type:** SAFE | VISUAL-IMPACT | FUNCTIONAL-RISK | RUNTIME-CHECK
 - **Verification:**
 - **Status:** TODO
-```
+````
 
 ## Footer
 

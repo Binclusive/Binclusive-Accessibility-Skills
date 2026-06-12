@@ -1,13 +1,21 @@
----
-applyTo: "**/*.{js,jsx,ts,tsx,md,mdx,css,scss,html}"
----
+# Binclusive Accessibility Workflow
 
-# Binclusive Accessibility Skills
+Use the canonical Agent Skills in this repository as the source of truth:
 
-When working on accessibility mapping, auditing, or remediation, use the workflow documented in this repo's canonical skills:
+- `skills/map-project/SKILL.md` inventories React/Next.js, ASP.NET/ASPX, or iOS SwiftUI/UIKit routes, screens, views, pages, controls, dependencies, localization, and inline UI for accessibility review.
+- `skills/audit-accessibility/SKILL.md` audits only the mapped scope and writes actionable accessibility TODOs.
+- `skills/fix-accessibility/SKILL.md` fixes selected TODO tasks with severity/risk controls and verification notes.
 
-- `skills/map-project/SKILL.md`
-- `skills/audit-accessibility/SKILL.md`
-- `skills/fix-accessibility/SKILL.md`
+Follow the workflow in order unless the user explicitly narrows the task:
 
-Run the workflow as map -> audit -> fix. Fix only selected audit tasks, preserve existing UI contracts, prefer native HTML semantics, and record verification plus residual risk after changes.
+1. Map first: create or reuse `Binclusive-auditing/*_project-map.md`.
+2. Audit second: create `Binclusive-auditing/accessibility-todo.md` from the selected map.
+3. Fix last: remediate only user-selected task IDs, SAFE tasks, severities, components, pages, screens, controls, or paths.
+
+Respect the fix policy from `skills/fix-accessibility/SKILL.md`:
+
+- `SAFE` tasks may be applied after summarizing the intended change.
+- `VISUAL-IMPACT` and `FUNCTIONAL-RISK` tasks require explicit user approval before editing.
+- `RUNTIME-CHECK` tasks need runtime verification steps and must not be marked solved by static code alone.
+
+Prefer semantic HTML before ARIA for web, and native SwiftUI/UIKit controls and platform accessibility APIs for iOS. Preserve existing styling/API/navigation contracts unless approved, and never claim full compliance. Report verified findings, changed files, checks run, and residual risk.
