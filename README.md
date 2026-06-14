@@ -37,6 +37,7 @@ scripts/install.ps1 -Target all
 ### macOS/Linux
 
 ```bash
+chmod +x scripts/install.sh
 scripts/install.sh --target all
 ```
 
