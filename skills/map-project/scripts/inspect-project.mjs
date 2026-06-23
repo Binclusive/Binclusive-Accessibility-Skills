@@ -351,6 +351,24 @@ function detectIos(files) {
     .filter(({ text }) => /import\s+UIKit|UIViewController|UIView\b/.test(text))
     .slice(0, 50)
     .map(({ file }) => rel(file));
+
+  const interfaceBuilderFiles = files.filter((file) => /\.(storyboard|xib)$/.test(file));
+  const interfaceBuilder = interfaceBuilderFiles.slice(0, 200).map((file) => {
+    const text = safeRead(file, 200000) ?? "";
+    return {
+      file: rel(file),
+      kind: file.endsWith(".storyboard") ? "storyboard" : "xib",
+      // Cheap static coverage signal: does any element declare an <accessibility> config at all?
+      hasAccessibilityConfig: /<accessibility\b/.test(text),
+      // Interactive/visual elements whose accessibility commonly needs review when no config is present.
+      hasButtons: /<button\b/.test(text),
+      hasImageViews: /<imageView\b/.test(text),
+      hasTextInputs: /<textField\b|<textView\b|<searchBar\b/.test(text),
+      // userLabel is the IB design-time name, useful for grounding findings to a scene element.
+      hasUserLabels: /\buserLabel="/.test(text),
+    };
+  });
+
   return {
     xcodeProjects: files.filter((file) => file.endsWith(".xcodeproj") || file.endsWith(".xcworkspace")).map(rel),
     swiftPackages: files.filter((file) => path.basename(file) === "Package.swift").map(rel),
@@ -358,6 +376,12 @@ function detectIos(files) {
     swiftuiSignals,
     swiftAccessibilitySignals,
     uikitSignals,
+    interfaceBuilder,
+    interfaceBuilderFileCount: interfaceBuilderFiles.length,
+    storyboardLocalizationSignals: files
+      .filter((file) => /(^|\/)Base\.lproj\//.test(rel(file)) || /[/\\][a-zA-Z-]+\.lproj[/\\].+\.strings$/.test(file))
+      .slice(0, 100)
+      .map(rel),
     localizationSignals: files
       .filter((file) => /\.(strings|stringsdict|xcstrings)$/.test(file))
       .slice(0, 100)
@@ -508,7 +532,12 @@ if (aspNet.framework !== null) {
       : "web-aspnet",
   );
 }
-if (ios.swiftFileCount > 0 || ios.xcodeProjects.length > 0 || ios.swiftPackages.length > 0) {
+if (
+  ios.swiftFileCount > 0 ||
+  ios.xcodeProjects.length > 0 ||
+  ios.swiftPackages.length > 0 ||
+  ios.interfaceBuilderFileCount > 0
+) {
   detectedPlatforms.push(ios.swiftuiSignals.length > 0 ? "ios-swiftui" : "ios-swift");
 }
 if (android.gradleFiles.length > 0 || android.kotlinFileCount > 0 || android.javaFileCount > 0) {
@@ -521,6 +550,12 @@ if (pkg === null && hasFile("package.json")) notes.push("package.json exists but
 if (detectedPlatforms.length === 0) notes.push("No supported platform signals detected.");
 if (detectedPlatforms.some((platform) => platform.startsWith("ios") || platform === "mobile-react-native" || platform.startsWith("android"))) {
   notes.push("React Native mapping is supported through mapper-react-native.md; iOS mapping is supported through mapper-ios-swift.md when SwiftUI/UIKit is in scope; native Android remains signal-only until detailed references are added.");
+}
+if (ios.interfaceBuilderFileCount > 0) {
+  const withoutConfig = ios.interfaceBuilder.filter((ib) => !ib.hasAccessibilityConfig).length;
+  notes.push(
+    `${ios.interfaceBuilderFileCount} Interface Builder file(s) found (.storyboard/.xib); ${withoutConfig} declare no <accessibility> config. Audit storyboard/XIB markup as XML and check paired .lproj/*.strings for localized accessibility labels.`,
+  );
 }
 
 const result = {

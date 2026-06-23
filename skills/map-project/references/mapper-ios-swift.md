@@ -14,7 +14,7 @@ First, run the read-only project inspector if available:
 node map-project/scripts/inspect-project.mjs /path/to/project
 ```
 
-The inspector returns Swift, SwiftUI, UIKit, Xcode, Swift Package Manager, and localization signals. Treat the JSON as discovery input, not as proof. Verify signals by reading the actual project files.
+The inspector returns Swift, SwiftUI, UIKit, Xcode, Swift Package Manager, and localization signals. It also returns Interface Builder signals under `ios.interfaceBuilder`: each `.storyboard`/`.xib` file with `hasAccessibilityConfig`, `hasButtons`, `hasImageViews`, `hasTextInputs`, and `hasUserLabels` flags, plus `ios.storyboardLocalizationSignals` (`Base.lproj` and per-locale `.strings`). Treat the JSON as discovery input, not as proof. Verify signals by reading the actual storyboard XML and `.strings` files.
 
 Determine these facts before asking the user:
 

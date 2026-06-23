@@ -98,3 +98,70 @@ This catalog contains anonymized, reusable accessibility patterns only. Do not a
 - Correct fix: Add text, icon shape, pattern, state, or accessible value that communicates the same information without relying on color alone.
 - Verification: Inspect visually with Differentiate Without Color/Increase Contrast where applicable and verify VoiceOver announces the state.
 - False positives / exceptions: Color can remain as redundant reinforcement when text, icon shape, or accessible state already communicates the meaning.
+
+## Interface Builder (Storyboard / XIB) Patterns
+
+Storyboards and XIBs are XML. Audit the markup directly (read the `.storyboard`/`.xib` file), and treat the paired `Base.lproj` file plus per-locale `<lang>.lproj/<Name>.strings` as the localization source — IB accessibility strings are keyed by the element's object ID (for example `<objectID>.accessibilityLabel = "..."`). Each element's accessibility config lives in a child element of this shape:
+
+```xml
+<button id="aB3-cd-9Xy" userLabel="Submit">
+    <accessibility key="accessibilityConfiguration" label="Submit order">
+        <accessibilityTraits key="traits" button="YES"/>
+        <bool key="isElement" value="YES"/>
+    </accessibility>
+</button>
+```
+
+Ground every storyboard finding in a real element. Quote its `id` and, when present, its `userLabel` so a fix can target the exact object and its `.strings` key. Mark rendered reading order, Auto Layout results, and reused prototype-cell output as `RUNTIME-CHECK`.
+
+### PATTERN-IOS-007: Storyboard control missing accessible name
+- Platform: iOS
+- Framework: UIKit (Interface Builder)
+- Component type: button / barButtonItem / segmentedControl / imageView used as control / custom view class
+- WCAG / Platform: WCAG 4.1.2 Name/Role/Value, VoiceOver, Voice Control
+- Severity default: Serious
+- Fix type default: SAFE when adding a localized label to an existing element; FUNCTIONAL-RISK when changing element type or structure.
+- Bad shape: An interactive element has no visible title and no `<accessibility ... label="...">`, or its only title is an image/SF Symbol. Icon-only `<button>`/`<barButtonItem>` is the common case.
+- Detection hints: `<button>`/`<barButtonItem>` with `image=` and no `title`/`<string key="title">`; element with no child `<accessibility>` element or an `<accessibility>` element with no `label` attribute and no localized `<objectID>.accessibilityLabel` in any `.lproj/*.strings`.
+- Correct fix: Add `<accessibility key="accessibilityConfiguration" label="...">` with an action/content-oriented name, and add the matching `<objectID>.accessibilityLabel` entry to each locale's `.strings` so the label is localized. Add `<accessibilityTraits key="traits" button="YES"/>` when the role is not already a native control.
+- Verification: VoiceOver announces the intended name and role; Voice Control can target it by that name.
+- False positives / exceptions: Do not add a label that duplicates a visible localized title; prefer the visible title. A native `<button>` with a localized `title` already has a name.
+
+### PATTERN-IOS-008: Informative image not exposed / decorative image not hidden
+- Platform: iOS
+- Framework: UIKit (Interface Builder)
+- Component type: imageView
+- WCAG / Platform: WCAG 1.1.1 Non-text Content, VoiceOver
+- Severity default: Serious
+- Fix type default: SAFE
+- Bad shape: An informative `<imageView>` has no accessible label, or a purely decorative `<imageView>` is exposed to VoiceOver instead of being hidden.
+- Detection hints: `<imageView>` carrying meaning with no `<accessibility>` label; or decorative `<imageView>` with `<accessibility>` `<bool key="isElement" value="YES"/>` (or default-exposed) when it conveys nothing.
+- Correct fix: For informative images add a localized `label` (+ `.strings` entry). For decorative images set `<bool key="isElement" value="NO"/>` inside the `<accessibility>` element so VoiceOver skips them.
+- Verification: VoiceOver describes informative images and skips decorative ones.
+- False positives / exceptions: Do not hide an image that is the only carrier of information; do not label background decoration.
+
+### PATTERN-IOS-009: Storyboard input field has no persistent label
+- Platform: iOS
+- Framework: UIKit (Interface Builder)
+- Component type: textField / textView / searchBar
+- WCAG / Platform: WCAG 1.3.1, WCAG 3.3.2, VoiceOver forms
+- Severity default: Serious
+- Fix type default: SAFE
+- Bad shape: A `<textField>`/`<searchBar>` relies on `placeholder` as its only name, with no adjacent `<label>` wired as its accessible context and no `<accessibility>` label.
+- Detection hints: `<textField ... placeholder="...">` with no nearby `<label>` describing it and no `<accessibility>` label/`.strings` entry; localized placeholder used as the sole field name.
+- Correct fix: Provide a persistent visible `<label>` or an `<accessibility>` `label` tied to the field's purpose, localized via `.strings`. Keep placeholder as a hint, not the name.
+- Verification: VoiceOver announces the field name, role, and value before and after entry.
+- False positives / exceptions: A compact search field can be acceptable when a clear localized programmatic label remains.
+
+### PATTERN-IOS-010: Hardcoded storyboard accessibility/visible text (not localized)
+- Platform: iOS
+- Framework: UIKit (Interface Builder)
+- Component type: any labeled element
+- WCAG / Platform: Localization, WCAG 3.1.x context
+- Severity default: Moderate
+- Fix type default: SAFE
+- Bad shape: An `<accessibility label="...">` or visible `title`/`text` is a literal string in the storyboard with no corresponding entry in the locale `.strings` files, so it never translates.
+- Detection hints: literal `label=`/`title=`/`text=` in a project that otherwise localizes via `Base.lproj` + `<lang>.lproj/*.strings`, with no matching `<objectID>.<attribute>` key in those `.strings` files.
+- Correct fix: Move the string into each locale's `.strings` keyed by object ID (`<objectID>.text`, `<objectID>.accessibilityLabel`), keeping Base Internationalization consistent.
+- Verification: Switch locale at runtime and confirm the visible and accessible text both change.
+- False positives / exceptions: Single-locale apps with no localization setup — record as a localization-readiness note instead of a defect. Do not flag IB-internal `userLabel` (design-time only, never shown to users).
