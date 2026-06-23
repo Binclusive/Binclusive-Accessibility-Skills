@@ -251,5 +251,6 @@ Write `Binclusive-auditing/accessibility-todo.md` and a dated archive copy. Use
 `accessibility-todo-format.md` for the exact structure. In the platform impact field
 or problem text, connect findings to the relevant WCAG principle (for web/docs
 surfaces) or to the OS accessibility API / general terminal-accessibility
-expectation (for GUI/CLI surfaces), and name the assistive technology used to verify
-(NVDA, JAWS, VoiceOver, Orca, or the terminal screen reader).
+expectation (for GUI/CLI surfaces). Name the assistive technology only when
+runtime verification was actually performed; otherwise mark the item as
+`RUNTIME-CHECK` and provide manual verification steps.
