@@ -98,3 +98,42 @@ This catalog contains anonymized, reusable accessibility patterns only. Do not a
 - Correct fix: Add text, icon shape, pattern, state, or accessible value that communicates the same information without relying on color alone.
 - Verification: Inspect visually with relevant contrast/color settings where applicable and verify VoiceOver/TalkBack announces the state.
 - False positives / exceptions: Color can remain as redundant reinforcement when text, icon shape, or accessible state already communicates the meaning.
+
+### PATTERN-RN-007: Custom wrapper component lacks semantics
+- Platform: React Native
+- Framework: React Native | Expo
+- Component type: Custom wrapper / Design-system control (IconButton, PrimaryButton, Card action)
+- WCAG / Platform: WCAG 4.1.2 Name/Role/Value, WCAG 1.3.1 Info and Relationships, VoiceOver/TalkBack
+- Severity default: Serious; Critical when the wrapper is icon-only
+- Fix type default: SAFE when adding name/role at the definition; FUNCTIONAL-RISK when changing structure or adding handlers.
+- Bad shape: A project-owned interactive wrapper around `Pressable`/`Touchable*` is used without an accessible name, role, or state. Because the omission lives in the wrapper definition, it repeats at every call site and is invisible to tag-name detection.
+- Detection hints: custom components with `onPress` that wrap `Pressable`/`Touchable*`; missing `accessibilityRole`/`accessibilityLabel` in the component definition; `{...props}` forwarding; one wrapper with many call sites.
+- Correct fix: Add the name/role/state at the component definition so one change repairs all usages. Where the wrapper forwards props, leave compliant call sites and flag only the usages that omit the name.
+- Verification: VoiceOver/TalkBack announces name/role/state at representative call sites; confirm forwarded props still reach the underlying primitive.
+- False positives / exceptions: Do not flag a passive wrapper when an inner accessible control is the real target and the wrapper handler is redundant or delegated.
+
+### PATTERN-RN-008: Content hidden from assistive technology incorrectly
+- Platform: React Native
+- Framework: React Native | Expo
+- Component type: Decorative node / Container / Overlay
+- WCAG / Platform: WCAG 1.1.1 Non-text Content, WCAG 1.3.1, 4.1.2, VoiceOver/TalkBack
+- Severity default: Moderate when decorative content is exposed; Serious when a real control is hidden
+- Fix type default: SAFE when hiding a genuinely decorative leaf; FUNCTIONAL-RISK when a hiding prop or over-broad grouping removes a real control.
+- Bad shape: Decorative content is exposed to assistive technology, or a hiding prop / over-broad `accessible={true}` grouping removes a real control or its semantics. `accessible={true}` groups children into one element; the wrong platform prop hides too much or too little.
+- Detection hints: decorative `View`/vector icon/illustration/duplicated-text without hiding; `accessible={true}` on a region containing multiple controls; `accessibilityElementsHidden` or `importantForAccessibility="no-hide-descendants"` wrapping interactive content; only one of the iOS/Android hiding props present for cross-platform decoration.
+- Correct fix: Hide genuinely decorative content with the correct platform props (iOS `accessibilityElementsHidden`, Android `importantForAccessibility="no-hide-descendants"`), usually both for cross-platform. Reserve `accessible={true}` grouping for a single atomic, non-interactive unit; never leave a real control inside a hidden subtree.
+- Verification: VoiceOver and TalkBack skip the decorative node and still reach every real control with its own name, role, and state.
+- False positives / exceptions: Grouping is correct when the children form a single non-interactive unit (for example a label-and-value pair with no inner action).
+
+### PATTERN-RN-009: Tabs, adjustable controls, or headings missing widget semantics
+- Platform: React Native
+- Framework: React Native | Expo
+- Component type: Tabs / Slider / Stepper / Section header
+- WCAG / Platform: WCAG 4.1.2 Name/Role/Value, WCAG 1.3.1, VoiceOver/TalkBack heading navigation and adjustable actions
+- Severity default: Serious
+- Fix type default: SAFE to annotate role/state/value; FUNCTIONAL-RISK when wiring adjustable increment/decrement actions.
+- Bad shape: A tab bar, adjustable control, or section title does not expose its widget semantics — tabs lack `accessibilityRole="tab"` and a selected state, sliders/steppers lack `accessibilityRole="adjustable"` and `accessibilityValue`, or a visual title lacks `accessibilityRole="header"`.
+- Detection hints: tab bars without per-tab `accessibilityRole="tab"` or `accessibilityState={{ selected }}`; sliders/steppers without `accessibilityRole="adjustable"`/`accessibilityValue`; visually styled titles (`Text`) without `accessibilityRole="header"`.
+- Correct fix: Annotate each tab with the tab role and a live selected state (container `tablist`), adjustable controls with the adjustable role plus `accessibilityValue` (`{ min, max, now, text }`) and `accessibilityActions`/`onAccessibilityAction`, and section titles with the header role.
+- Verification: VoiceOver/TalkBack announces the tab role and the selected tab, the adjustable value and its increment/decrement, and reaches titles via heading navigation.
+- False positives / exceptions: Do not add a header role to non-title text, and do not duplicate a role a native control already provides.

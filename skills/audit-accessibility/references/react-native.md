@@ -31,6 +31,29 @@ Audit only the mapped React Native screens, flows, components, native wrappers, 
 - Row/card controls that combine multiple visual labels, values, and actions without a coherent accessibility summary or separate actionable children where needed.
 - Swipe, long-press, drag/drop, context menu, or hidden row actions without an accessible alternative such as `accessibilityActions` and `onAccessibilityAction` where supported.
 
+### Custom and Wrapper Components
+
+- A project-owned interactive wrapper (`IconButton`, `PrimaryButton`, `Card` with an `onPress`, or any component wrapping `Pressable`/`Touchable*`) used without an accessible name, role, or state. The omission usually lives in the wrapper definition, not the call site, so it repeats at every usage.
+- Report the finding at the component **definition** (its file and line) rather than at each call site; one fix there repairs every usage. Quote the definition.
+- When the wrapper forwards props (`{...props}`) and a call site supplies the name/role itself, that call site is fine — flag only the usages that omit it.
+- A wrapper that hardcodes a press handler but never exposes `accessibilityRole`/`accessibilityLabel` is the same prop-add, applied once at the definition.
+
+### Hiding Content from Assistive Technology
+
+React Native has several distinct hiding mechanisms with different platform behavior; name the right one for the platform and the intent.
+
+- `accessible={true}` on a container **groups its children into a single element**, so the children are no longer individually focusable. This is correct for one atomic, non-interactive unit, but applying it to a region that contains multiple controls hides each control's own name, role, and state. Flag over-grouping that swallows real controls.
+- `importantForAccessibility="no"` (Android/TalkBack) hides the element but **not** its descendants; `"no-hide-descendants"` hides the element and its whole subtree.
+- `accessibilityElementsHidden={true}` (iOS/VoiceOver) hides the element and its descendants from VoiceOver.
+- Genuinely decorative content (a decorative `View`, vector icon, illustration, or duplicated-text node) usually needs **both** the iOS and Android props to be hidden cross-platform; do not assume one prop hides it on every platform.
+- Inverse failure: a hiding prop (`accessibilityElementsHidden`, `importantForAccessibility="no-hide-descendants"`, or an over-broad `accessible={true}`) placed on a node that **wraps a real control** silently removes that control from assistive technology. Flag it and classify as `FUNCTIONAL-RISK`; do not blind-fix, because the correct boundary depends on intent.
+
+### Composite Widgets and Headings
+
+- A `Text` that is visually a screen or section title should carry `accessibilityRole="header"` so VoiceOver/TalkBack heading and rotor navigation can reach it; visual weight alone does not expose a heading.
+- Each tab in a tab bar should expose `accessibilityRole="tab"` with `accessibilityState={{ selected: <live value> }}`, and the container may use `accessibilityRole="tablist"`. Verify the selected state tracks the actual active tab, not a hardcoded value.
+- Adjustable controls (sliders, steppers) should use `accessibilityRole="adjustable"` with `accessibilityValue` (`{ min, max, now, text }`) and handle increment/decrement through `accessibilityActions`/`onAccessibilityAction`. Annotating the value is low risk; wiring the actions changes behavior.
+
 ### Names, Hints, Values, and Localization
 
 - `TextInput`, picker/select, search, secure input, checkbox/radio/switch, slider, or custom field without a persistent visible/programmatic label.
@@ -45,7 +68,8 @@ Audit only the mapped React Native screens, flows, components, native wrappers, 
 - Screen lacks a clear title, route title, or first meaningful heading/summary.
 - Custom back/close/header controls lack accessible names or expected activation behavior.
 - Modal, bottom sheet, alert, drawer, popover, or custom overlay lacks modal semantics/focus strategy, dismissal announcement, or background hiding strategy where supported.
-- Async loading, success, failure, validation, or toast/banner updates lack an announcement/live-region strategy.
+- Async loading, success, failure, validation, or toast/banner updates lack an announcement/live-region strategy. Concretely: an update appears without `accessibilityLiveRegion="polite"` (Android) or an `AccessibilityInfo.announceForAccessibility(...)` call (cross-platform), so it is silent for screen-reader users. Whether the announcement actually fires is runtime-only.
+- Custom modal/overlay (not a native `Modal`, or a `Modal` with a custom backdrop) omits `accessibilityViewIsModal={true}` (iOS) or a background-hiding strategy (Android), letting focus escape behind the dialog. On open, focus should move in via `AccessibilityInfo.setAccessibilityFocus(reactTag)` and return to the trigger on close; that the focus lands correctly is runtime-only.
 - Programmatic navigation or content replacement leaves screen reader focus in stale or confusing context.
 - Third-party navigation, bottom sheet, picker, calendar, chart, map, and webview components require runtime verification for final focus order and announcements.
 
