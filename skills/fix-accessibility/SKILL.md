@@ -51,8 +51,9 @@ Use `references/after-test-format.md`. For each task include:
 
 - Never fix tasks not selected by the user.
 - Never write placeholder accessible names like `button`, `image`, `icon`, or `link`.
-- Prefer native semantics before overrides: semantic HTML before ARIA on web; native SwiftUI/UIKit controls and platform accessibility APIs before custom accessibility props on iOS.
+- Prefer native semantics before overrides: semantic HTML before ARIA on web; native SwiftUI/UIKit controls and platform accessibility APIs before custom accessibility props on iOS; native Compose/Material semantics and Android View accessibility APIs before custom `AccessibilityDelegate` workarounds on native Android.
 - For iOS storyboard/XIB tasks, edit the Interface Builder XML directly per `references/fix-workflow.md` and localize the string via the paired `.lproj/*.strings` keyed by object ID.
+- For native Android tasks, prefer `contentDescription`, `Modifier.semantics`/`Role`, `android:labelFor`, `android:importantForAccessibility`, and `android:accessibilityHeading` over custom delegates; localize every accessible name through `res/values*/strings.xml` (`@string/...` / `stringResource(...)`) rather than hardcoded literals.
 - Preserve existing styling and API contracts unless the user approves risk.
 - Do not edit the audit TODO as proof of completion; write status in `after-test.md`.
 - If a task cannot be grounded in real code, stop and report it as needing human review.

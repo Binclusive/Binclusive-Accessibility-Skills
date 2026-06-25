@@ -1,6 +1,6 @@
 # Binclusive Accessibility Skills
 
-Reusable Agent Skills for mapping, auditing, and fixing accessibility issues in React, Next.js, React Native, Expo, ASP.NET, ASPX/Web Forms, Shopify themes, SwiftUI, and UIKit projects.
+Reusable Agent Skills for mapping, auditing, and fixing accessibility issues in React, Next.js, React Native, Expo, ASP.NET, ASPX/Web Forms, Shopify themes, SwiftUI, UIKit, and native Android (Kotlin/Java, Jetpack Compose, Android Views/XML) projects.
 
 This repository keeps one canonical skill source and uses small adapters for Codex, Claude Code, and GitHub Copilot.
 
@@ -26,8 +26,9 @@ Canonical skill files live in `skills/<skill-name>/SKILL.md`.
 - React Native and Expo mobile applications.
 - ASP.NET MVC/Razor, Razor Pages, and ASPX/Web Forms applications.
 - iOS apps built with SwiftUI, UIKit, or mixed SwiftUI/UIKit architecture.
+- Native Android apps (Kotlin/Java) built with Jetpack Compose, the Android View system (XML layouts), or a mixed Compose/View architecture.
 
-Native Android/Kotlin projects may be detected by the inspector as signals, but detailed native Android mapping and audit references are not included yet. React Native Android behavior is covered by the React Native/Expo references.
+React Native Android behavior is covered by the React Native/Expo references; the native Android references are for Kotlin/Java + Compose/View apps. For a project that ships both, map by the primary UI stack and keep platform sections separate.
 
 ## Install
 

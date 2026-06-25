@@ -1,11 +1,11 @@
 ---
 name: audit-accessibility
-description: Audit React, Next.js, React Native, Expo, ASP.NET, ASPX/Web Forms, SwiftUI, UIKit, or Python accessibility from a prior Binclusive project map. Use when the user says /auditaccessibility, audit accessibility, run accessibility audit, accessibility test, iOS accessibility audit, SwiftUI accessibility audit, UIKit accessibility audit, React Native accessibility audit, Expo accessibility audit, Python accessibility audit, Django accessibility audit, "binclusive projemi test et", "erisilebilirlik testi yap", "erisilebilirlik todo cikar", "accessibility todo cikar", or wants an accessibility TODO report from mapped routes, views, screens, components, controls, or paths. Also use to audit a single target only, e.g. "/auditaccessibility LoginButton", "audit only the X component", "sadece X componentini test et", or when a component/screen/folder name is passed as an argument - narrow the audit to that target from the existing map.
+description: Audit React, Next.js, React Native, Expo, ASP.NET, ASPX/Web Forms, SwiftUI, UIKit, native Android (Kotlin/Java, Jetpack Compose, Android Views/XML), or Python accessibility from a prior Binclusive project map. Use when the user says /auditaccessibility, audit accessibility, run accessibility audit, accessibility test, iOS accessibility audit, SwiftUI accessibility audit, UIKit accessibility audit, React Native accessibility audit, Expo accessibility audit, Android accessibility audit, Jetpack Compose accessibility audit, Kotlin accessibility audit, Python accessibility audit, Django accessibility audit, "binclusive projemi test et", "erisilebilirlik testi yap", "erisilebilirlik todo cikar", "accessibility todo cikar", or wants an accessibility TODO report from mapped routes, views, screens, components, controls, or paths. Also use to audit a single target only, e.g. "/auditaccessibility LoginButton", "audit only the X component", "sadece X componentini test et", or when a component/screen/folder name is passed as an argument - narrow the audit to that target from the existing map.
 ---
 
 # Audit Accessibility
 
-Audit a previously mapped React/Next.js web, React Native/Expo, ASP.NET/ASPX, iOS SwiftUI/UIKit, or Python (desktop GUI, CLI/TUI, web backend, or docs) scope and write an actionable accessibility TODO report. This skill observes and documents only. It never edits source code.
+Audit a previously mapped React/Next.js web, React Native/Expo, ASP.NET/ASPX, iOS SwiftUI/UIKit, native Android (Jetpack Compose / Android Views/XML), or Python (desktop GUI, CLI/TUI, web backend, or docs) scope and write an actionable accessibility TODO report. This skill observes and documents only. It never edits source code.
 
 ## Start Here
 
@@ -28,6 +28,9 @@ Audit a previously mapped React/Next.js web, React Native/Expo, ASP.NET/ASPX, iO
    - For iOS SwiftUI/UIKit, read:
      - `references/ios-swift.md`
      - `references/patterns/ios-swift-patterns.md` when available
+   - For native Android (Jetpack Compose / Android Views/XML), read:
+     - `references/android.md`
+     - `references/patterns/android-patterns.md` when available
    - For Python, read:
      - `references/python.md` (classify the surface first: desktop GUI, CLI/TUI, web backend, generated docs, or pure library)
      - `references/auditor-web-a11y.md` as well when the Python app renders HTML (Django/Flask/Jinja templates)
@@ -99,12 +102,20 @@ For iOS SwiftUI/UIKit scopes:
 4. Screen-level patterns: navigation titles, headings, focus/reading order, modal presentation/dismissal, errors, status updates, localization, Dynamic Type, Reduce Motion, RTL, contrast, touch targets.
 5. Platform assistive technology behavior: VoiceOver, Switch Control, Voice Control, Full Keyboard Access, Dynamic Type, Button Shapes, Differentiate Without Color, Increase Contrast.
 
+For native Android (Jetpack Compose / Android Views/XML) scopes:
+
+1. Inline interactive UI in mapped composables, Activities/Fragments, custom views, `RecyclerView` rows, and XML layouts.
+2. Shared interactive controls: Button, IconButton, clickable text/Link, TextField/`EditText`, Checkbox, RadioButton, Switch, Slider/`SeekBar`, Stepper, Dialog/`BottomSheet`, Menu, Tab, Chip, custom gesture targets, custom `View`s.
+3. Shared display components: Image, Icon/vector drawable, Avatar, List/`LazyColumn`/`RecyclerView`, Grid, Chart, Map, Skeleton, Loading/Progress, Badge, Snackbar/Toast.
+4. Screen-level patterns: app bar/toolbar titles, headings, focus/reading order, dialog/sheet presentation/dismissal, errors, status updates, localization, font scaling, animations, RTL, contrast, touch targets (48dp).
+5. Platform assistive technology behavior: TalkBack, Switch Access, Voice Access, Select to Speak, keyboard/D-pad focus, font scale, high-contrast/bold text, Color correction/inversion, Remove animations.
+
 ## Rules
 
 - User-provided audit documents may be read as inspiration only; do not copy customer data into skill resources.
 - Do not modify source code.
 - Do not include accessible elements as findings.
 - Do not guess contrast, screen-reader/VoiceOver/TalkBack output, focus trap/focus order behavior, touch target size, Dynamic Type/font-scale layout, or runtime state. Mark these `RUNTIME-CHECK`.
-- Prefer native HTML fixes for web, React Native primitives/accessibility props for React Native, and native SwiftUI/UIKit controls/APIs for iOS.
+- Prefer native HTML fixes for web, React Native primitives/accessibility props for React Native, native SwiftUI/UIKit controls/APIs for iOS, and native Compose/Material semantics or Android View accessibility APIs (`contentDescription`, `Modifier.semantics`, `labelFor`, `AccessibilityDelegate`) for native Android.
 - Do not claim compliance; report verified findings and residual risk only.
 - If the map has blind spots, carry them into the audit summary.

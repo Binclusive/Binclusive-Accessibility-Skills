@@ -1,11 +1,11 @@
 ---
 name: map-project
-description: Map a React, Next.js, React Native, Expo, ASP.NET, ASPX/Web Forms, SwiftUI, or UIKit codebase for accessibility auditing. Use when the user says /mapaccessibility, map accessibility, project map, component/view map, iOS accessibility map, SwiftUI accessibility map, UIKit accessibility map, React Native accessibility map, Expo accessibility map, "binclusive projemi haritala", "projeyi erişilebilirlik için haritala", "accessibility için map çıkar", "proje haritası çıkar", or wants to inventory routes, screens, views, shared components, controls, dependencies, localization, and inline UI before an audit/test.
+description: Map a React, Next.js, React Native, Expo, ASP.NET, ASPX/Web Forms, SwiftUI, UIKit, or native Android (Kotlin/Java, Jetpack Compose, Android Views/XML) codebase for accessibility auditing. Use when the user says /mapaccessibility, map accessibility, project map, component/view map, iOS accessibility map, SwiftUI accessibility map, UIKit accessibility map, React Native accessibility map, Expo accessibility map, Android accessibility map, Jetpack Compose accessibility map, Kotlin accessibility map, "binclusive projemi haritala", "projeyi erişilebilirlik için haritala", "accessibility için map çıkar", "proje haritası çıkar", or wants to inventory routes, screens, views, shared components, controls, dependencies, localization, and inline UI before an audit/test.
 ---
 
 # Map Project
 
-Create an evidence-based project map for a React/Next.js web, React Native/Expo, ASP.NET/ASPX, or iOS SwiftUI/UIKit app. This skill observes and documents only. It never edits source code.
+Create an evidence-based project map for a React/Next.js web, React Native/Expo, ASP.NET/ASPX, iOS SwiftUI/UIKit, or native Android (Jetpack Compose / Android Views/XML) app. This skill observes and documents only. It never edits source code.
 
 ## Start Here
 
@@ -17,7 +17,7 @@ Create an evidence-based project map for a React/Next.js web, React Native/Expo,
 4. Ask scope questions before scanning unless the user already gave exact scope:
    - Whole project/app, selected routes/screens, selected components/controls, a folder path, or free-form target list?
    - Should localization/hardcoded strings be included? Default: yes.
-   - Is this React/Next.js web, React Native/Expo, ASP.NET MVC/Razor, ASPX/Web Forms, SwiftUI, UIKit, or mixed mobile/web? If not, state which references are available and continue only if the user wants a best-effort map.
+   - Is this React/Next.js web, React Native/Expo, ASP.NET MVC/Razor, ASPX/Web Forms, SwiftUI, UIKit, native Android (Jetpack Compose / Android Views/XML), or mixed mobile/web? If not, state which references are available and continue only if the user wants a best-effort map.
 5. Create `Binclusive-auditing/` in the project root if missing.
 6. Write one map file named `<project-name>_<YYYY-MM-DD>_project-map.md` inside `Binclusive-auditing/`.
 
@@ -40,10 +40,11 @@ Read the platform-specific mapping reference after scope is clear:
 - React Native/Expo: `references/mapper-react-native.md`
 - ASP.NET MVC/Razor or ASPX/Web Forms: `references/mapper-aspnet.md`
 - iOS SwiftUI/UIKit: `references/mapper-ios-swift.md`
+- Native Android (Jetpack Compose / Android Views/XML): `references/mapper-android.md`
 
 Keep these references out of context until after the user confirms mapping scope. For mixed projects, read every reference that matches the selected scope and keep platform sections separate in the map.
 
-For Android/Kotlin native projects, the inspector can identify platform signals, but this skill only has detailed web, React Native, and iOS mapping rules. Report native Android/Kotlin detections as signal-only unless an Android mapping reference has been added.
+Native Android (Kotlin/Java) projects are mapped with `references/mapper-android.md`. React Native/Expo apps that happen to ship an `android/` folder are mapped with `references/mapper-react-native.md`, not the native Android reference — pick the reference by the primary UI stack (Compose/Views vs React Native), and for genuinely mixed native+RN apps read both and keep the sections separate.
 
 ## Required Output
 

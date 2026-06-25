@@ -393,17 +393,33 @@ function detectAndroid(files) {
   const kotlinFiles = files.filter((file) => file.endsWith(".kt"));
   const javaFiles = files.filter((file) => file.endsWith(".java"));
   const kotlinSample = kotlinFiles.slice(0, 250).map((file) => ({ file, text: safeRead(file, 8000) ?? "" }));
+  const codeSample = [...kotlinSample, ...javaFiles.slice(0, 100).map((file) => ({ file, text: safeRead(file, 8000) ?? "" }))];
+  const xmlLayoutFiles = files.filter((file) => /[/\\]res[/\\]layout[^/\\]*[/\\].+\.xml$/.test(file));
   return {
     gradleFiles: files
       .filter((file) => /(^|[/\\])(settings\.gradle|settings\.gradle\.kts|build\.gradle|build\.gradle\.kts)$/.test(file))
       .map(rel),
+    versionCatalogs: files.filter((file) => /[/\\]gradle[/\\]libs\.versions\.toml$/.test(file)).map(rel),
+    manifestFiles: files.filter((file) => /(^|[/\\])AndroidManifest\.xml$/.test(file)).slice(0, 50).map(rel),
     kotlinFileCount: kotlinFiles.length,
     javaFileCount: javaFiles.length,
     composeSignals: kotlinSample
       .filter(({ text }) => /androidx\.compose|@Composable|Modifier\.semantics|contentDescription/.test(text))
       .slice(0, 50)
       .map(({ file }) => rel(file)),
-    xmlLayoutSignals: files.filter((file) => /[/\\]res[/\\]layout[^/\\]*[/\\].+\.xml$/.test(file)).slice(0, 100).map(rel),
+    composeAccessibilitySignals: codeSample
+      .filter(({ text }) => /Modifier\.semantics|clearAndSetSemantics|contentDescription|stateDescription|Role\.|mergeDescendants|liveRegion|minimumInteractiveComponentSize|onClickLabel|heading\(\)/.test(text))
+      .slice(0, 50)
+      .map(({ file }) => rel(file)),
+    xmlLayoutSignals: xmlLayoutFiles.slice(0, 100).map(rel),
+    xmlAccessibilitySignals: xmlLayoutFiles
+      .slice(0, 300)
+      .map((file) => ({ file, text: safeRead(file, 60000) ?? "" }))
+      .filter(({ text }) => /android:contentDescription|android:importantForAccessibility|android:labelFor|android:accessibilityHeading|android:accessibilityLiveRegion|android:screenReaderFocusable/.test(text))
+      .slice(0, 100)
+      .map(({ file }) => rel(file)),
+    navigationResources: files.filter((file) => /[/\\]res[/\\]navigation[^/\\]*[/\\].+\.xml$/.test(file)).slice(0, 50).map(rel),
+    menuResources: files.filter((file) => /[/\\]res[/\\]menu[^/\\]*[/\\].+\.xml$/.test(file)).slice(0, 50).map(rel),
     localizationSignals: files.filter((file) => /[/\\]res[/\\]values[^/\\]*[/\\]strings\.xml$/.test(file)).slice(0, 100).map(rel),
   };
 }
@@ -549,7 +565,10 @@ if (files.length >= MAX_FILES) notes.push(`File scan capped at ${MAX_FILES} file
 if (pkg === null && hasFile("package.json")) notes.push("package.json exists but could not be parsed as JSON.");
 if (detectedPlatforms.length === 0) notes.push("No supported platform signals detected.");
 if (detectedPlatforms.some((platform) => platform.startsWith("ios") || platform === "mobile-react-native" || platform.startsWith("android"))) {
-  notes.push("React Native mapping is supported through mapper-react-native.md; iOS mapping is supported through mapper-ios-swift.md when SwiftUI/UIKit is in scope; native Android remains signal-only until detailed references are added.");
+  notes.push("React Native mapping is supported through mapper-react-native.md; iOS mapping is supported through mapper-ios-swift.md when SwiftUI/UIKit is in scope; native Android mapping is supported through mapper-android.md for Jetpack Compose and Android Views/XML.");
+}
+if (detectedPlatforms.some((platform) => platform.startsWith("android")) && reactNative.framework !== null) {
+  notes.push("Both native-Android and React Native signals were found. If this is a React Native/Expo app with a generated android/ folder, map it with mapper-react-native.md; use mapper-android.md only for genuinely native Compose/View UI.");
 }
 if (ios.interfaceBuilderFileCount > 0) {
   const withoutConfig = ios.interfaceBuilder.filter((ib) => !ib.hasAccessibilityConfig).length;
