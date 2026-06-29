@@ -50,6 +50,35 @@ Rules:
 - **Keep it valid XML.** Match the file's existing indentation; ensure the edit is well-formed and the element still opens cleanly. A later re-save in Xcode may reorder attributes — that is expected and harmless.
 - **Re-check** by re-reading the edited element and confirming the matching `.strings` keys exist for each locale. Rendered VoiceOver order, Auto Layout at large Dynamic Type, and reused prototype-cell output stay `RUNTIME-CHECK` — record them as manual steps, do not mark them statically solved.
 
+## Editing Angular Templates and Components
+
+Most Angular accessibility findings live in `*.component.html` (or an inline `template`). Edit the template markup with minimal, well-formed insertions; do not reformat the whole template or change unrelated bindings. A few findings live in the component `.ts` (host bindings, `@HostListener`, injected `LiveAnnouncer`) or in `index.html`/`app.config.ts` (lang, `TitleStrategy`).
+
+The single most common Angular-specific mistake is binding ARIA as a DOM **property** instead of an **attribute** — bind it with `attr.`:
+
+```html
+<!-- correct: attribute binding lands on the element -->
+<button [attr.aria-label]="closeLabel" (click)="close()">
+  <mat-icon aria-hidden="true">close</mat-icon>
+</button>
+
+<!-- wrong: [aria-label] binds a non-existent DOM property and silently sets nothing -->
+<button [aria-label]="closeLabel">…</button>
+```
+
+Rules:
+
+- **Locate the element by the finding's template path + line and its binding/selector.** Never invent a `formControlName`/`id`/selector that is not in the code.
+- **Add a name:** for icon-only/image controls add a localized `[attr.aria-label]` (dynamic) or static `aria-label` (single-locale); for inputs pair `<label for="id">` with the control `id`, use `<mat-label>` inside `mat-form-field`, or `[attr.aria-labelledby]`. Prefer a visible localized label when one exists. Hide decorative icons/SVG with `aria-hidden="true"`.
+- **Use the `attr.` form for all ARIA/role bindings** (`[attr.aria-expanded]`, `[attr.aria-controls]`, `[attr.role]`, `[attr.aria-describedby]`); `[alt]`, `[id]`, `[hidden]`, and `[tabindex]` are real DOM properties and bind without `attr.`. Make conditional ARIA track real state (`[attr.aria-expanded]="isOpen"`).
+- **Focus management:** prefer `MatDialog`/CDK `Dialog`/`Overlay` (focus trap + restore built in). For a custom overlay, wrap the panel with `cdkTrapFocus`, mark the first focusable element `cdkFocusInitial`, restore focus to the trigger on close, and import `A11yModule` (or the standalone CDK a11y directives) in the component/`NgModule`.
+- **Announcements:** inject `LiveAnnouncer` for transient messages, or mark an in-place status region with `cdkAriaLive="polite"` (or `aria-live="polite"`). Verify the region/message is meaningful.
+- **Routing:** set a per-route `title` or a `TitleStrategy`, and move focus to the new view's heading/`<main tabindex="-1">` (or announce it) on `NavigationEnd`; add a skip link and a stable `<main>` landmark in the app shell.
+- **Localize the string.** A literal in a template/`aria-label` is not translated. Use `@angular/localize` (`i18n`/`i18n-aria-label`/`$localize`) or the project's translation pipe (`{{ 'key' | translate }}` / `[attr.aria-label]="'key' | translate"` / `*transloco`). Use ICU/`i18nPlural` for counts. If the project has no i18n setup, set the string inline and note localization readiness in `after-test.md`.
+- **Prefer CDK/Material over reimplementation.** When a finding is a hand-rolled tabs/menu/listbox/combobox, prefer `MatTabGroup`/`MatMenu`/`mat-select` or `@angular/cdk` (`cdkMenu`, `cdkListbox`) — this is `FUNCTIONAL-RISK`; get approval and keep the change minimal.
+- **Keep it valid.** Match the template's existing indentation and binding style; ensure the element still opens cleanly and existing bindings are untouched.
+- **Re-check** by re-reading the edited template/component and confirming any translation keys exist. Router focus timing, CDK focus trap/restore, screen-reader announcement order, `@defer`/SSR-hydration behavior, and third-party UI-kit internals stay `RUNTIME-CHECK` — record them as manual steps, do not mark them statically solved.
+
 ## Editing Android XML Layouts and Resources
 
 Android `res/layout/*.xml`, `res/menu/*.xml`, and `res/values/strings.xml` are XML. Edit the markup directly with minimal, well-formed insertions; do not reformat the whole file or change unrelated attributes.

@@ -1,11 +1,11 @@
 ---
 name: audit-accessibility
-description: Audit React, Next.js, React Native, Expo, ASP.NET, ASPX/Web Forms, SwiftUI, UIKit, native Android (Kotlin/Java, Jetpack Compose, Android Views/XML), Flutter (Dart, Material/Cupertino), or Python accessibility from a prior Binclusive project map. Use when the user says /auditaccessibility, audit accessibility, run accessibility audit, accessibility test, iOS accessibility audit, SwiftUI accessibility audit, UIKit accessibility audit, React Native accessibility audit, Expo accessibility audit, Android accessibility audit, Jetpack Compose accessibility audit, Kotlin accessibility audit, Flutter accessibility audit, Dart accessibility audit, Python accessibility audit, Django accessibility audit, "binclusive projemi test et", "erisilebilirlik testi yap", "erisilebilirlik todo cikar", "accessibility todo cikar", or wants an accessibility TODO report from mapped routes, views, screens, components, controls, or paths. Also use to audit a single target only, e.g. "/auditaccessibility LoginButton", "audit only the X component", "sadece X componentini test et", or when a component/screen/folder name is passed as an argument - narrow the audit to that target from the existing map.
+description: Audit React, Next.js, Angular, React Native, Expo, ASP.NET, ASPX/Web Forms, SwiftUI, UIKit, native Android (Kotlin/Java, Jetpack Compose, Android Views/XML), Flutter (Dart, Material/Cupertino), or Python accessibility from a prior Binclusive project map. Use when the user says /auditaccessibility, audit accessibility, run accessibility audit, accessibility test, iOS accessibility audit, SwiftUI accessibility audit, UIKit accessibility audit, React Native accessibility audit, Expo accessibility audit, Angular accessibility audit, Angular CDK accessibility audit, Android accessibility audit, Jetpack Compose accessibility audit, Kotlin accessibility audit, Flutter accessibility audit, Dart accessibility audit, Python accessibility audit, Django accessibility audit, "binclusive projemi test et", "erisilebilirlik testi yap", "erisilebilirlik todo cikar", "accessibility todo cikar", or wants an accessibility TODO report from mapped routes, views, screens, components, controls, or paths. Also use to audit a single target only, e.g. "/auditaccessibility LoginButton", "audit only the X component", "sadece X componentini test et", or when a component/screen/folder name is passed as an argument - narrow the audit to that target from the existing map.
 ---
 
 # Audit Accessibility
 
-Audit a previously mapped React/Next.js web, React Native/Expo, ASP.NET/ASPX, iOS SwiftUI/UIKit, native Android (Jetpack Compose / Android Views/XML), Flutter (Dart, Material/Cupertino), or Python (desktop GUI, CLI/TUI, web backend, or docs) scope and write an actionable accessibility TODO report. This skill observes and documents only. It never edits source code.
+Audit a previously mapped React/Next.js web, Angular web, React Native/Expo, ASP.NET/ASPX, iOS SwiftUI/UIKit, native Android (Jetpack Compose / Android Views/XML), Flutter (Dart, Material/Cupertino), or Python (desktop GUI, CLI/TUI, web backend, or docs) scope and write an actionable accessibility TODO report. This skill observes and documents only. It never edits source code.
 
 ## Start Here
 
@@ -18,6 +18,10 @@ Audit a previously mapped React/Next.js web, React Native/Expo, ASP.NET/ASPX, iO
      - `references/auditor-web-a11y.md`
      - `references/react-nextjs.md`
      - `references/patterns/react-nextjs-patterns.md` when available
+   - For Angular web, read:
+     - `references/auditor-web-a11y.md`
+     - `references/angular.md`
+     - `references/patterns/angular-patterns.md` when available
    - For React Native/Expo, read:
      - `references/react-native.md`
      - `references/patterns/react-native-patterns.md` when available
@@ -89,6 +93,15 @@ For web scopes:
 3. Shared display components: Image, Icon, Avatar, Table, Chart, Skeleton, Loading, Badge.
 4. Page-level patterns: landmarks, headings, skip link, route focus, page title, language/locale, reduced motion, zoom/reflow.
 
+For Angular web scopes (the shared web rules apply; these are the Angular-specific layers):
+
+1. Inline interactive UI in templates (`.component.html` / inline `template`): `(click)`/keyboard handlers on non-semantic elements, attribute bindings, and host bindings.
+2. Attribute-binding correctness: `[attr.aria-*]`/`[attr.role]` vs bare `[aria-*]`/`[role]` property bindings that never reach the DOM; conditional ARIA state that must track real open/selected/checked state.
+3. Shared interactive components: Button, Link (`routerLink`/`<a href>`), Input/`FormControl`, Select/Autocomplete, Checkbox, Radio, Switch/Toggle, Slider, Dialog/`MatDialog`/CDK overlay, Drawer, Menu, Tabs, Accordion/Expansion, Stepper, Carousel, Tooltip, custom directive-driven control.
+4. Shared display components: Image (`<img alt>`/`[alt]`), Icon (`mat-icon`/SVG), Avatar, Table/`mat-table`/`cdk-table`, Chart, `cdk-virtual-scroll` list, Skeleton, Loading, Badge, Snackbar/Toast.
+5. Angular CDK a11y and focus management: `cdkTrapFocus`/`cdkFocusInitial`/focus restore in dialogs and overlays, `cdkAriaLive`/`LiveAnnouncer` for status, `FocusMonitor` for visible keyboard focus, and that `A11yModule`/CDK a11y directives are actually imported where used.
+6. Structural directives and routing: `*ngIf`/`@if`, `*ngFor`/`@for`, `*ngSwitch`/`@switch`, `[hidden]`, `@defer`, and router behavior — per-route page `title`/`TitleStrategy`, route-change focus reset/announcement, skip link, `<main>` landmark, `<html lang>`/`dir`.
+
 For React Native scopes:
 
 1. Inline interactive UI in screens, route files, custom headers, list items, forms, modals, and native-wrapper components.
@@ -127,6 +140,6 @@ For Flutter (Dart, Material/Cupertino/Widgets) scopes:
 - Do not modify source code.
 - Do not include accessible elements as findings.
 - Do not guess contrast, screen-reader/VoiceOver/TalkBack output, focus trap/focus order behavior, touch target size, Dynamic Type/font-scale layout, or runtime state. Mark these `RUNTIME-CHECK`.
-- Prefer native HTML fixes for web, React Native primitives/accessibility props for React Native, native SwiftUI/UIKit controls/APIs for iOS, native Compose/Material semantics or Android View accessibility APIs (`contentDescription`, `Modifier.semantics`, `labelFor`, `AccessibilityDelegate`) for native Android, and native Material/Cupertino widgets or Flutter semantics (`Semantics`, `semanticLabel`, `MergeSemantics`/`ExcludeSemantics`, `tooltip`) for Flutter.
+- Prefer native HTML fixes for web (including Angular: native elements and `[attr.aria-*]` bindings, with Angular CDK a11y primitives — `cdkTrapFocus`, `cdkAriaLive`, `LiveAnnouncer` — and Angular Material before hand-rolled widgets), React Native primitives/accessibility props for React Native, native SwiftUI/UIKit controls/APIs for iOS, native Compose/Material semantics or Android View accessibility APIs (`contentDescription`, `Modifier.semantics`, `labelFor`, `AccessibilityDelegate`) for native Android, and native Material/Cupertino widgets or Flutter semantics (`Semantics`, `semanticLabel`, `MergeSemantics`/`ExcludeSemantics`, `tooltip`) for Flutter.
 - Do not claim compliance; report verified findings and residual risk only.
 - If the map has blind spots, carry them into the audit summary.
