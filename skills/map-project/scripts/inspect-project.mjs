@@ -236,6 +236,119 @@ function detectWeb(files, pkg) {
   };
 }
 
+function detectAngular(files, pkg) {
+  const deps = depsOf(pkg);
+  const fileSet = new Set(files.map((file) => rel(file)));
+  const angularCore = deps["@angular/core"] ?? null;
+  const angularJsonFiles = [...fileSet].filter((name) => /(^|\/)angular\.json$/.test(name));
+  // AngularJS (1.x) is the legacy `angular` package; modern Angular is `@angular/*`.
+  const angularLikely = angularCore !== null || angularJsonFiles.length > 0;
+
+  const tsFiles = files.filter((file) => /\.ts$/.test(file) && !/\.spec\.ts$/.test(file));
+  const componentFiles = files.filter((file) => /\.component\.ts$/.test(file));
+  const templateFiles = files.filter((file) => /\.component\.html$/.test(file));
+  const tsSample = tsFiles.slice(0, 350).map((file) => ({ file, text: stripLineComments(safeRead(file, 10000) ?? "") }));
+  const templateSample = templateFiles.slice(0, 350).map((file) => ({ file, text: safeRead(file, 10000) ?? "" }));
+
+  const standaloneSignals = tsSample
+    .filter(({ text }) => /standalone\s*:\s*true|bootstrapApplication\s*\(|provideRouter\s*\(/.test(text))
+    .slice(0, 50)
+    .map(({ file }) => rel(file));
+  const moduleSignals = tsSample
+    .filter(({ text }) => /@NgModule\s*\(|RouterModule\.for(Root|Child)\s*\(/.test(text))
+    .slice(0, 50)
+    .map(({ file }) => rel(file));
+
+  const routingSignals = [
+    ...[...fileSet]
+      .filter((name) => /(^|\/)(app\.routes|.*-routing\.module|.*\.routes)\.ts$/.test(name))
+      .slice(0, 50)
+      .map((name) => ({ type: "file", path: name })),
+    ...tsSample
+      .filter(({ text }) => /\bRoutes\b|provideRouter\s*\(|RouterModule\.for(Root|Child)\s*\(|loadComponent\s*:|loadChildren\s*:/.test(text))
+      .slice(0, 50)
+      .map(({ file }) => ({ type: "file", path: rel(file) })),
+  ];
+
+  const componentDirCandidates = [
+    "src/app",
+    "src/app/components",
+    "src/app/shared",
+    "src/app/ui",
+    "src/app/features",
+    "projects",
+    "libs",
+  ].filter(hasDir);
+
+  const cdkA11ySignals = [
+    ...pickDeps(deps, ["@angular/cdk", "@angular/material"]).map((dep) => ({ type: "dependency", ...dep })),
+    ...[...tsSample, ...templateSample]
+      .filter(({ text }) =>
+        /cdkTrapFocus|cdkFocusInitial|cdkAriaLive|cdkMonitor(Element|Subtree)Focus|LiveAnnouncer|FocusMonitor|FocusTrap|A11yModule|cdkAriaDescriber|@angular\/cdk\/a11y/.test(text),
+      )
+      .slice(0, 50)
+      .map(({ file }) => ({ type: "file", path: rel(file) })),
+  ];
+
+  const ariaBindingSignals = templateSample
+    .filter(({ text }) => /\[attr\.aria-[a-z]+\]|\[attr\.role\]|\baria-[a-z]+=|\brole=/.test(text))
+    .slice(0, 75)
+    .map(({ file }) => rel(file));
+
+  const i18nSignals = [
+    ...pickDeps(deps, [
+      "@angular/localize",
+      "@ngx-translate/core",
+      "@ngx-translate/http-loader",
+      "@jsverse/transloco",
+      "transloco",
+      "@ngneat/transloco",
+    ]).map((dep) => ({ type: "dependency", ...dep })),
+    ...["src/assets/i18n", "src/locale", "src/i18n", "i18n", "translations"].filter(hasDir).map((dir) => ({ type: "directory", path: dir })),
+    ...templateSample
+      .filter(({ text }) => /\bi18n(-[a-z@.-]+)?=|\|\s*translate\b|\|\s*transloco\b|\*transloco\b/.test(text))
+      .slice(0, 50)
+      .map(({ file }) => ({ type: "file", path: rel(file) })),
+  ];
+
+  const a11yRelevantDependencies = pickDeps(deps, [
+    "@angular/cdk",
+    "@angular/material",
+    "@angular/forms",
+    "@angular/animations",
+    "primeng",
+    "ng-zorro-antd",
+    "@ng-bootstrap/ng-bootstrap",
+    "ngx-bootstrap",
+    "@ng-select/ng-select",
+    "@swimlane/ngx-datatable",
+    "@swimlane/ngx-charts",
+    "highcharts-angular",
+    "@angular/google-maps",
+    "ngx-translate",
+    "ngx-toastr",
+  ]);
+
+  return {
+    packageJson: pkg === null ? null : "package.json",
+    framework: angularLikely ? "angular" : null,
+    angularVersion: angularCore,
+    angularJsonFiles: angularJsonFiles.slice(0, 20),
+    appModel: standaloneSignals.length > 0 ? "standalone" : moduleSignals.length > 0 ? "ngmodule" : "unknown",
+    standaloneSignals,
+    moduleSignals,
+    routingSignals,
+    componentFileCount: componentFiles.length,
+    templateFileCount: templateFiles.length,
+    componentDirCandidates,
+    cdkA11ySignals,
+    ariaBindingSignals,
+    i18nSignals,
+    a11yRelevantDependencies,
+    ssrSignals: pickDeps(deps, ["@angular/ssr", "@angular/platform-server"]).map((dep) => ({ type: "dependency", ...dep })),
+  };
+}
+
 function detectReactNative(files, pkg) {
   const deps = depsOf(pkg);
   const fileSet = new Set(files.map((file) => rel(file)));
@@ -560,6 +673,7 @@ function detectAspNet(files) {
 const files = walk(root);
 const pkg = safeJson(path.join(root, "package.json"));
 const web = detectWeb(files, pkg);
+const angular = detectAngular(files, pkg);
 const reactNative = detectReactNative(files, pkg);
 const ios = detectIos(files);
 const android = detectAndroid(files);
@@ -582,6 +696,7 @@ const hasExplicitWebTarget =
         packageDeps["react-native-web"],
     ));
 if (reactNative.framework !== null) detectedPlatforms.push("mobile-react-native");
+if (angular.framework !== null) detectedPlatforms.push("web-angular");
 if (hasExplicitWebTarget || (hasReactDependency && reactNative.framework === null)) detectedPlatforms.push("web-react");
 if (aspNet.framework !== null) {
   detectedPlatforms.push(
@@ -621,6 +736,11 @@ if (detectedPlatforms.includes("flutter")) {
 if (detectedPlatforms.includes("flutter") && detectedPlatforms.some((platform) => platform.startsWith("android") || platform.startsWith("ios"))) {
   notes.push("Both Flutter and native-Android/iOS signals were found. A Flutter app ships android/ and ios/ host folders (often with a small MainActivity/AppDelegate); map the Flutter UI with mapper-flutter.md and use mapper-android.md / mapper-ios-swift.md only for genuinely native Kotlin/Java or Swift UI.");
 }
+if (detectedPlatforms.includes("web-angular")) {
+  notes.push(
+    `Angular project detected (${angular.appModel} app model${angular.angularVersion ? `, @angular/core ${angular.angularVersion}` : ""}). Map it with mapper-angular.md; audit it with auditor-web-a11y.md plus angular.md (Angular CDK a11y, [attr.aria-*] bindings, structural directives, router focus). React/Next.js web uses mapper-web.md.`,
+  );
+}
 if (ios.interfaceBuilderFileCount > 0) {
   const withoutConfig = ios.interfaceBuilder.filter((ib) => !ib.hasAccessibilityConfig).length;
   notes.push(
@@ -634,6 +754,7 @@ const result = {
   detectedPlatforms,
   packageManagers: detectPackageManagers(files),
   web,
+  angular,
   reactNative,
   ios,
   android,

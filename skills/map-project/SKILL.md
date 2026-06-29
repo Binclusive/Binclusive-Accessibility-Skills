@@ -1,11 +1,11 @@
 ---
 name: map-project
-description: Map a React, Next.js, React Native, Expo, ASP.NET, ASPX/Web Forms, SwiftUI, UIKit, native Android (Kotlin/Java, Jetpack Compose, Android Views/XML), or Flutter (Dart, Material/Cupertino) codebase for accessibility auditing. Use when the user says /mapaccessibility, map accessibility, project map, component/view map, iOS accessibility map, SwiftUI accessibility map, UIKit accessibility map, React Native accessibility map, Expo accessibility map, Android accessibility map, Jetpack Compose accessibility map, Kotlin accessibility map, Flutter accessibility map, Dart accessibility map, "binclusive projemi haritala", "projeyi erişilebilirlik için haritala", "accessibility için map çıkar", "proje haritası çıkar", or wants to inventory routes, screens, views, shared components, controls, dependencies, localization, and inline UI before an audit/test.
+description: Map a React, Next.js, Angular, React Native, Expo, ASP.NET, ASPX/Web Forms, SwiftUI, UIKit, native Android (Kotlin/Java, Jetpack Compose, Android Views/XML), or Flutter (Dart, Material/Cupertino) codebase for accessibility auditing. Use when the user says /mapaccessibility, map accessibility, project map, component/view map, iOS accessibility map, SwiftUI accessibility map, UIKit accessibility map, React Native accessibility map, Expo accessibility map, Angular accessibility map, Angular CDK accessibility map, Android accessibility map, Jetpack Compose accessibility map, Kotlin accessibility map, Flutter accessibility map, Dart accessibility map, "binclusive projemi haritala", "projeyi erişilebilirlik için haritala", "accessibility için map çıkar", "proje haritası çıkar", or wants to inventory routes, screens, views, shared components, controls, dependencies, localization, and inline UI before an audit/test.
 ---
 
 # Map Project
 
-Create an evidence-based project map for a React/Next.js web, React Native/Expo, ASP.NET/ASPX, iOS SwiftUI/UIKit, native Android (Jetpack Compose / Android Views/XML), or Flutter (Dart, Material/Cupertino) app. This skill observes and documents only. It never edits source code.
+Create an evidence-based project map for a React/Next.js web, Angular web, React Native/Expo, ASP.NET/ASPX, iOS SwiftUI/UIKit, native Android (Jetpack Compose / Android Views/XML), or Flutter (Dart, Material/Cupertino) app. This skill observes and documents only. It never edits source code.
 
 ## Start Here
 
@@ -17,7 +17,7 @@ Create an evidence-based project map for a React/Next.js web, React Native/Expo,
 4. Ask scope questions before scanning unless the user already gave exact scope:
    - Whole project/app, selected routes/screens, selected components/controls, a folder path, or free-form target list?
    - Should localization/hardcoded strings be included? Default: yes.
-   - Is this React/Next.js web, React Native/Expo, ASP.NET MVC/Razor, ASPX/Web Forms, SwiftUI, UIKit, native Android (Jetpack Compose / Android Views/XML), Flutter (Dart, Material/Cupertino), or mixed mobile/web? If not, state which references are available and continue only if the user wants a best-effort map.
+   - Is this React/Next.js web, Angular web, React Native/Expo, ASP.NET MVC/Razor, ASPX/Web Forms, SwiftUI, UIKit, native Android (Jetpack Compose / Android Views/XML), Flutter (Dart, Material/Cupertino), or mixed mobile/web? If not, state which references are available and continue only if the user wants a best-effort map.
 5. Create `Binclusive-auditing/` in the project root if missing.
 6. Write one map file named `<project-name>_<YYYY-MM-DD>_project-map.md` inside `Binclusive-auditing/`.
 
@@ -37,6 +37,7 @@ This step is optional for CI: it only improves cross-file usage context for the 
 Read the platform-specific mapping reference after scope is clear:
 
 - React/Next.js web: `references/mapper-web.md`
+- Angular web: `references/mapper-angular.md`
 - React Native/Expo: `references/mapper-react-native.md`
 - ASP.NET MVC/Razor or ASPX/Web Forms: `references/mapper-aspnet.md`
 - iOS SwiftUI/UIKit: `references/mapper-ios-swift.md`

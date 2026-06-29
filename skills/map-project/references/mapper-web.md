@@ -14,7 +14,7 @@ First, run the read-only project inspector if available:
 node map-project/scripts/inspect-project.mjs /path/to/project
 ```
 
-The inspector returns platform and manifest signals as JSON. Treat it as a fast discovery layer, not as a substitute for reading the actual files. If it detects Swift/iOS, use `references/mapper-ios-swift.md` for iOS mapping when it is in scope. If it detects Android/Kotlin, record those signals honestly and state that detailed Android mapping references are future work unless such references have been added.
+The inspector returns platform and manifest signals as JSON. Treat it as a fast discovery layer, not as a substitute for reading the actual files. This reference covers React and Next.js only — if the inspector reports `web-angular` (an `@angular/core`/`angular.json` project), use `references/mapper-angular.md` instead, not this file. If it detects Swift/iOS, use `references/mapper-ios-swift.md` for iOS mapping when it is in scope. If it detects Android/Kotlin, record those signals honestly and state that detailed Android mapping references are future work unless such references have been added.
 
 Determine these facts from the repository before asking the user:
 

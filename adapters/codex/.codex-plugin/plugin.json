@@ -1,7 +1,7 @@
 {
   "name": "binclusive-accessibility-skills",
   "version": "0.3.0",
-  "description": "Binclusive accessibility mapping, audit, and remediation skills for web, React Native, iOS, native Android, and Flutter projects.",
+  "description": "Binclusive accessibility mapping, audit, and remediation skills for web (React/Next.js and Angular), React Native, iOS, native Android, and Flutter projects.",
   "skills": [
     {
       "path": "../../skills/map-project/SKILL.md"
@@ -15,6 +15,6 @@
   ],
   "interface": {
     "displayName": "Binclusive Accessibility Skills",
-    "description": "Map React/Next.js, React Native/Expo, ASP.NET/ASPX, iOS SwiftUI/UIKit, native Android (Jetpack Compose / Android Views/XML), and Flutter (Dart, Material/Cupertino) projects, audit accessibility issues, and fix selected audit tasks with controlled verification."
+    "description": "Map React/Next.js, Angular, React Native/Expo, ASP.NET/ASPX, iOS SwiftUI/UIKit, native Android (Jetpack Compose / Android Views/XML), and Flutter (Dart, Material/Cupertino) projects, audit accessibility issues, and fix selected audit tasks with controlled verification."
   }
 }

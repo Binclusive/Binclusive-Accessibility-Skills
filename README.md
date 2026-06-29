@@ -1,6 +1,6 @@
 # Binclusive Accessibility Skills
 
-Reusable Agent Skills for mapping, auditing, and fixing accessibility issues in React, Next.js, React Native, Expo, ASP.NET, ASPX/Web Forms, Shopify themes, SwiftUI, UIKit, native Android (Kotlin/Java, Jetpack Compose, Android Views/XML), and Flutter (Dart, Material/Cupertino) projects.
+Reusable Agent Skills for mapping, auditing, and fixing accessibility issues in React, Next.js, Angular, React Native, Expo, ASP.NET, ASPX/Web Forms, Shopify themes, SwiftUI, UIKit, native Android (Kotlin/Java, Jetpack Compose, Android Views/XML), and Flutter (Dart, Material/Cupertino) projects.
 
 This repository keeps one canonical skill source and uses small adapters for Codex, Claude Code, and GitHub Copilot.
 
@@ -22,6 +22,7 @@ Canonical skill files live in `skills/<skill-name>/SKILL.md`.
 ## Supported Audit Targets
 
 - React and Next.js web applications.
+- Angular (2+) web applications, including standalone-components and NgModule apps, the Angular router, Angular CDK a11y (`LiveAnnouncer`, `cdkAriaLive`, `cdkTrapFocus`/`cdkFocusInitial`), and Angular Material.
 - Shopify Online Store themes, including Dawn-derived and custom Liquid/JSON theme structures.
 - React Native and Expo mobile applications.
 - ASP.NET MVC/Razor, Razor Pages, and ASPX/Web Forms applications.
