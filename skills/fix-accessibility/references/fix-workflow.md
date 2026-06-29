@@ -83,3 +83,39 @@ Rules:
 - **Custom `View` subclasses** that need a node usually take a `ViewCompat.setAccessibilityDelegate(...)` (or `ExploreByTouchHelper` for virtual sub-elements) — this is `FUNCTIONAL-RISK`; get approval and keep the change minimal.
 - **Keep it valid XML.** Match the file's existing indentation and namespaces; ensure the element still opens cleanly.
 - **Re-check** by re-reading the edited view and confirming the `@string/...` keys exist in each locale. TalkBack traversal order, font-scale layout at large sizes, recycled `RecyclerView` row state, and inflated/runtime output stay `RUNTIME-CHECK` — record them as manual steps, do not mark them statically solved.
+
+## Editing Flutter Widgets (Dart)
+
+Flutter accessibility fixes are Dart code edits in `lib/**`, not markup. Edit the widget tree with minimal, well-formed changes; do not reformat the file or alter unrelated widgets. Most fixes add one property or a thin `Semantics`/`Tooltip` wrapper around the target widget, plus a localized string.
+
+```dart
+// Icon-only button: add an accessible name via tooltip (surfaced to screen readers).
+IconButton(
+  icon: const Icon(Icons.close),
+  tooltip: AppLocalizations.of(context)!.closeDialog,
+  onPressed: _close,
+)
+
+// Custom tappable container: give it a role + name in the semantics tree.
+Semantics(
+  button: true,
+  label: AppLocalizations.of(context)!.addToCart,
+  onTap: _addToCart,
+  child: GestureDetector(onTap: _addToCart, child: /* ... */),
+)
+```
+
+Rules:
+
+- **Locate the widget** by the file path and the verified code in the finding; never invent a widget or rename an existing identifier.
+- **Prefer a real widget first.** Replace a `GestureDetector`/`InkWell`-on-a-`Container` control with `ElevatedButton`/`TextButton`/`IconButton` when feasible — that restores role, focus, and the 48x48 tap target for free. Only wrap with `Semantics(...)` when a real widget cannot be used.
+- **Add a name:** set `semanticLabel:` on `Image`/`Icon`/`CircleAvatar`, `tooltip:` on `IconButton`/`FloatingActionButton`, `InputDecoration(labelText:)` on a field, or a wrapping `Semantics(label:)`. Prefer the visible localized label when one already exists.
+- **Decorative image:** set `semanticLabel: null` or wrap in `ExcludeSemantics(...)` so screen readers skip it.
+- **Heading:** wrap an in-body section/screen title in `Semantics(header: true, child: Text(...))`. The `AppBar`/`SliverAppBar` title is already exposed — do not double-wrap it.
+- **Grouping:** wrap a fragmented row/tile in `MergeSemantics(child: ...)` so it reads as one item, keeping separately actionable children reachable; do not over-merge independent controls.
+- **State/value:** expose `Semantics(checked:/selected:/toggled:/value:/enabled:)`, or use a native `Checkbox`/`Switch`/`Radio`/`Slider` that exposes it automatically.
+- **Live updates:** wrap an updating status region in `Semantics(liveRegion: true, child: ...)`, or call `SemanticsService.announce(message, Directionality.of(context))` for transient messages.
+- **Touch target:** keep `MaterialTapTargetSize.padded` (the default) and avoid `shrinkWrap`; wrap small targets to ≥48x48 via `ConstrainedBox`/padding — this may be `VISUAL-IMPACT`.
+- **Localize the string.** A literal Dart string in `Text`/`semanticLabel`/`label:`/`tooltip:` is not translated. Add the key to the localization store (`.arb` + `AppLocalizations`, or `intl`/`easy_localization`) and reference the generated getter; use ICU plurals for counts. If the project has no localization setup, set the string inline and note localization readiness in `after-test.md`.
+- **Custom render widgets** (`CustomPaint`/`RenderObject`) that need a node take a wrapping `Semantics(...)` and a `CustomPainter.semanticsBuilder` — this is `FUNCTIONAL-RISK`; get approval and keep the change minimal.
+- **Re-check** by re-reading the edited widget and confirming the localization key exists for each locale. Rendered semantics tree, TalkBack/VoiceOver order, text-scale layout at large sizes, and Flutter-web semantics stay `RUNTIME-CHECK` — record them as manual steps, do not mark them statically solved.

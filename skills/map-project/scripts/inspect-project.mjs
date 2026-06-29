@@ -118,6 +118,9 @@ function detectPackageManagers(files) {
   ) {
     managers.push("nuget");
   }
+  if ([...names].some((name) => /(^|\/)pubspec\.yaml$/.test(name))) {
+    managers.push("pub");
+  }
   return managers;
 }
 
@@ -424,6 +427,44 @@ function detectAndroid(files) {
   };
 }
 
+function detectFlutter(files) {
+  const dartFiles = files.filter((file) => file.endsWith(".dart"));
+  const pubspecFiles = files.filter((file) => /(^|[/\\])pubspec\.yaml$/.test(file));
+  const pubspecText = pubspecFiles.map((file) => safeRead(file, 60000) ?? "").join("\n");
+  // A `flutter` SDK dependency in pubspec.yaml is what distinguishes a Flutter app from a plain Dart package.
+  const hasFlutterSdkDependency = /sdk:\s*flutter\b/.test(pubspecText) || /(^|\n)\s*flutter\s*:/.test(pubspecText);
+  const dartSample = dartFiles
+    .slice(0, 300)
+    .map((file) => ({ file, text: stripLineComments(safeRead(file, 8000) ?? "") }));
+  const l10nDeps = ["flutter_localizations", "intl", "intl_utils", "easy_localization", "slang"].filter((name) =>
+    new RegExp(`(^|\\n)\\s*${name}\\s*:`).test(pubspecText),
+  );
+  return {
+    pubspecFiles: pubspecFiles.slice(0, 20).map(rel),
+    pubspecLock: files.filter((file) => /(^|[/\\])pubspec\.lock$/.test(file)).slice(0, 20).map(rel),
+    hasFlutterSdkDependency,
+    entrypoints: files
+      .filter((file) => /(^|[/\\])lib[/\\]main(_[a-z0-9]+)?\.dart$/i.test(file))
+      .slice(0, 20)
+      .map(rel),
+    dartFileCount: dartFiles.length,
+    widgetSignals: dartSample
+      .filter(({ text }) => /package:flutter\/(material|cupertino|widgets)\.dart|extends\s+(StatelessWidget|StatefulWidget)|MaterialApp|CupertinoApp|Scaffold\b/.test(text))
+      .slice(0, 50)
+      .map(({ file }) => rel(file)),
+    accessibilitySignals: dartSample
+      .filter(({ text }) => /\bSemantics\s*\(|semanticLabel\s*:|ExcludeSemantics|MergeSemantics|BlockSemantics|SemanticsService\.announce|OrdinalSortKey|FocusTraversal(Group|Order)|tooltip\s*:|liveRegion\s*:/.test(text))
+      .slice(0, 50)
+      .map(({ file }) => rel(file)),
+    localizationSignals: [
+      ...l10nDeps.map((name) => ({ type: "dependency", name })),
+      ...files.filter((file) => /(^|[/\\])l10n\.yaml$/.test(file)).slice(0, 20).map((file) => ({ type: "file", path: rel(file) })),
+      ...files.filter((file) => file.endsWith(".arb")).slice(0, 100).map((file) => ({ type: "file", path: rel(file) })),
+    ],
+    platformDirs: ["android", "ios", "web", "macos", "linux", "windows"].filter(hasDir),
+  };
+}
+
 function extractPackageReferences(file) {
   const text = safeRead(file, 200000);
   if (text === null) return [];
@@ -522,6 +563,7 @@ const web = detectWeb(files, pkg);
 const reactNative = detectReactNative(files, pkg);
 const ios = detectIos(files);
 const android = detectAndroid(files);
+const flutter = detectFlutter(files);
 const aspNet = detectAspNet(files);
 const detectedPlatforms = [];
 const packageDeps = depsOf(pkg);
@@ -559,6 +601,9 @@ if (
 if (android.gradleFiles.length > 0 || android.kotlinFileCount > 0 || android.javaFileCount > 0) {
   detectedPlatforms.push(android.composeSignals.length > 0 ? "android-kotlin-compose" : "android");
 }
+if (flutter.hasFlutterSdkDependency || (flutter.pubspecFiles.length > 0 && flutter.dartFileCount > 0)) {
+  detectedPlatforms.push("flutter");
+}
 
 const notes = [];
 if (files.length >= MAX_FILES) notes.push(`File scan capped at ${MAX_FILES} files.`);
@@ -569,6 +614,12 @@ if (detectedPlatforms.some((platform) => platform.startsWith("ios") || platform 
 }
 if (detectedPlatforms.some((platform) => platform.startsWith("android")) && reactNative.framework !== null) {
   notes.push("Both native-Android and React Native signals were found. If this is a React Native/Expo app with a generated android/ folder, map it with mapper-react-native.md; use mapper-android.md only for genuinely native Compose/View UI.");
+}
+if (detectedPlatforms.includes("flutter")) {
+  notes.push("Flutter mapping is supported through mapper-flutter.md for Dart apps using Material, Cupertino, or the base Widgets library.");
+}
+if (detectedPlatforms.includes("flutter") && detectedPlatforms.some((platform) => platform.startsWith("android") || platform.startsWith("ios"))) {
+  notes.push("Both Flutter and native-Android/iOS signals were found. A Flutter app ships android/ and ios/ host folders (often with a small MainActivity/AppDelegate); map the Flutter UI with mapper-flutter.md and use mapper-android.md / mapper-ios-swift.md only for genuinely native Kotlin/Java or Swift UI.");
 }
 if (ios.interfaceBuilderFileCount > 0) {
   const withoutConfig = ios.interfaceBuilder.filter((ib) => !ib.hasAccessibilityConfig).length;
@@ -586,6 +637,7 @@ const result = {
   reactNative,
   ios,
   android,
+  flutter,
   aspNet,
   notes,
 };

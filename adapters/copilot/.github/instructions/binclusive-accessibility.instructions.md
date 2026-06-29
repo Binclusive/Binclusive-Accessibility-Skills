@@ -2,7 +2,7 @@
 
 Use the canonical Agent Skills in this repository as the source of truth:
 
-- `skills/map-project/SKILL.md` inventories React/Next.js, React Native/Expo, ASP.NET/ASPX, iOS SwiftUI/UIKit, or native Android (Jetpack Compose / Android Views/XML) routes, screens, views, pages, controls, dependencies, localization, and inline UI for accessibility review.
+- `skills/map-project/SKILL.md` inventories React/Next.js, React Native/Expo, ASP.NET/ASPX, iOS SwiftUI/UIKit, native Android (Jetpack Compose / Android Views/XML), or Flutter (Dart, Material/Cupertino) routes, screens, views, pages, controls, dependencies, localization, and inline UI for accessibility review.
 - `skills/audit-accessibility/SKILL.md` audits only the mapped scope and writes actionable accessibility TODOs.
 - `skills/shopify-theme-audit/SKILL.md` audits Shopify theme Liquid, JSON templates, sections, snippets, assets, config, and locales without requiring a prior map.
 - `skills/fix-accessibility/SKILL.md` fixes selected TODO tasks with severity/risk controls and verification notes.
@@ -19,4 +19,4 @@ Respect the fix policy from `skills/fix-accessibility/SKILL.md`:
 - `VISUAL-IMPACT` and `FUNCTIONAL-RISK` tasks require explicit user approval before editing.
 - `RUNTIME-CHECK` tasks need runtime verification steps and must not be marked solved by static code alone.
 
-Prefer semantic HTML before ARIA for web and Shopify Liquid themes, React Native primitives and accessibility props for React Native, native SwiftUI/UIKit controls and platform accessibility APIs for iOS, and native Compose/Material semantics or Android View accessibility APIs (`contentDescription`, `Modifier.semantics`, `labelFor`, `importantForAccessibility`) for native Android. Preserve existing styling/API/navigation contracts unless approved, and never claim full compliance. Report verified findings, changed files, checks run, and residual risk.
+Prefer semantic HTML before ARIA for web and Shopify Liquid themes, React Native primitives and accessibility props for React Native, native SwiftUI/UIKit controls and platform accessibility APIs for iOS, native Compose/Material semantics or Android View accessibility APIs (`contentDescription`, `Modifier.semantics`, `labelFor`, `importantForAccessibility`) for native Android, and native Material/Cupertino widgets or Flutter semantics (`Semantics`, `semanticLabel`, `MergeSemantics`/`ExcludeSemantics`, `tooltip`) for Flutter. Preserve existing styling/API/navigation contracts unless approved, and never claim full compliance. Report verified findings, changed files, checks run, and residual risk.

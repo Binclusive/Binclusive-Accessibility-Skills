@@ -1,11 +1,11 @@
 ---
 name: audit-accessibility
-description: Audit React, Next.js, React Native, Expo, ASP.NET, ASPX/Web Forms, SwiftUI, UIKit, native Android (Kotlin/Java, Jetpack Compose, Android Views/XML), or Python accessibility from a prior Binclusive project map. Use when the user says /auditaccessibility, audit accessibility, run accessibility audit, accessibility test, iOS accessibility audit, SwiftUI accessibility audit, UIKit accessibility audit, React Native accessibility audit, Expo accessibility audit, Android accessibility audit, Jetpack Compose accessibility audit, Kotlin accessibility audit, Python accessibility audit, Django accessibility audit, "binclusive projemi test et", "erisilebilirlik testi yap", "erisilebilirlik todo cikar", "accessibility todo cikar", or wants an accessibility TODO report from mapped routes, views, screens, components, controls, or paths. Also use to audit a single target only, e.g. "/auditaccessibility LoginButton", "audit only the X component", "sadece X componentini test et", or when a component/screen/folder name is passed as an argument - narrow the audit to that target from the existing map.
+description: Audit React, Next.js, React Native, Expo, ASP.NET, ASPX/Web Forms, SwiftUI, UIKit, native Android (Kotlin/Java, Jetpack Compose, Android Views/XML), Flutter (Dart, Material/Cupertino), or Python accessibility from a prior Binclusive project map. Use when the user says /auditaccessibility, audit accessibility, run accessibility audit, accessibility test, iOS accessibility audit, SwiftUI accessibility audit, UIKit accessibility audit, React Native accessibility audit, Expo accessibility audit, Android accessibility audit, Jetpack Compose accessibility audit, Kotlin accessibility audit, Flutter accessibility audit, Dart accessibility audit, Python accessibility audit, Django accessibility audit, "binclusive projemi test et", "erisilebilirlik testi yap", "erisilebilirlik todo cikar", "accessibility todo cikar", or wants an accessibility TODO report from mapped routes, views, screens, components, controls, or paths. Also use to audit a single target only, e.g. "/auditaccessibility LoginButton", "audit only the X component", "sadece X componentini test et", or when a component/screen/folder name is passed as an argument - narrow the audit to that target from the existing map.
 ---
 
 # Audit Accessibility
 
-Audit a previously mapped React/Next.js web, React Native/Expo, ASP.NET/ASPX, iOS SwiftUI/UIKit, native Android (Jetpack Compose / Android Views/XML), or Python (desktop GUI, CLI/TUI, web backend, or docs) scope and write an actionable accessibility TODO report. This skill observes and documents only. It never edits source code.
+Audit a previously mapped React/Next.js web, React Native/Expo, ASP.NET/ASPX, iOS SwiftUI/UIKit, native Android (Jetpack Compose / Android Views/XML), Flutter (Dart, Material/Cupertino), or Python (desktop GUI, CLI/TUI, web backend, or docs) scope and write an actionable accessibility TODO report. This skill observes and documents only. It never edits source code.
 
 ## Start Here
 
@@ -31,6 +31,9 @@ Audit a previously mapped React/Next.js web, React Native/Expo, ASP.NET/ASPX, iO
    - For native Android (Jetpack Compose / Android Views/XML), read:
      - `references/android.md`
      - `references/patterns/android-patterns.md` when available
+   - For Flutter (Dart, Material/Cupertino/Widgets), read:
+     - `references/flutter.md`
+     - `references/patterns/flutter-patterns.md` when available
    - For Python, read:
      - `references/python.md` (classify the surface first: desktop GUI, CLI/TUI, web backend, generated docs, or pure library)
      - `references/auditor-web-a11y.md` as well when the Python app renders HTML (Django/Flask/Jinja templates)
@@ -110,12 +113,20 @@ For native Android (Jetpack Compose / Android Views/XML) scopes:
 4. Screen-level patterns: app bar/toolbar titles, headings, focus/reading order, dialog/sheet presentation/dismissal, errors, status updates, localization, font scaling, animations, RTL, contrast, touch targets (48dp).
 5. Platform assistive technology behavior: TalkBack, Switch Access, Voice Access, Select to Speak, keyboard/D-pad focus, font scale, high-contrast/bold text, Color correction/inversion, Remove animations.
 
+For Flutter (Dart, Material/Cupertino/Widgets) scopes:
+
+1. Inline interactive UI in mapped screen/page widgets, custom widgets, `ListView`/`GridView` items, and dialogs/sheets.
+2. Shared interactive widgets: Button (`ElevatedButton`/`TextButton`/`OutlinedButton`/`FilledButton`), IconButton/FAB, tappable text/Link, TextField/`TextFormField`, Checkbox, Radio, Switch, Slider, Stepper, Dropdown, Dialog/BottomSheet, Menu, Tab, Chip, custom gesture targets (`GestureDetector`/`InkWell`).
+3. Shared display widgets: Image/`SvgPicture`, Icon, `CircleAvatar`, List/`ListView`/`GridView`, Chart, Map, Skeleton/Shimmer, Loading/Progress, Badge, SnackBar/Tooltip.
+4. Screen-level patterns: `AppBar`/`SliverAppBar` titles, headings (`Semantics(header:)`), focus/reading order (`sortKey`/`FocusTraversal`), dialog/sheet presentation/dismissal (`BlockSemantics`), errors, status updates (`liveRegion`), localization, text scaling, animations, RTL, contrast, touch targets (48x48).
+5. Platform assistive technology behavior: TalkBack (Android), VoiceOver (iOS), Switch Access/Switch Control, Voice Access/Voice Control, keyboard/focus traversal, text scale, bold/high-contrast text, Reduce Motion, and (when in scope) Flutter web/desktop semantics.
+
 ## Rules
 
 - User-provided audit documents may be read as inspiration only; do not copy customer data into skill resources.
 - Do not modify source code.
 - Do not include accessible elements as findings.
 - Do not guess contrast, screen-reader/VoiceOver/TalkBack output, focus trap/focus order behavior, touch target size, Dynamic Type/font-scale layout, or runtime state. Mark these `RUNTIME-CHECK`.
-- Prefer native HTML fixes for web, React Native primitives/accessibility props for React Native, native SwiftUI/UIKit controls/APIs for iOS, and native Compose/Material semantics or Android View accessibility APIs (`contentDescription`, `Modifier.semantics`, `labelFor`, `AccessibilityDelegate`) for native Android.
+- Prefer native HTML fixes for web, React Native primitives/accessibility props for React Native, native SwiftUI/UIKit controls/APIs for iOS, native Compose/Material semantics or Android View accessibility APIs (`contentDescription`, `Modifier.semantics`, `labelFor`, `AccessibilityDelegate`) for native Android, and native Material/Cupertino widgets or Flutter semantics (`Semantics`, `semanticLabel`, `MergeSemantics`/`ExcludeSemantics`, `tooltip`) for Flutter.
 - Do not claim compliance; report verified findings and residual risk only.
 - If the map has blind spots, carry them into the audit summary.
