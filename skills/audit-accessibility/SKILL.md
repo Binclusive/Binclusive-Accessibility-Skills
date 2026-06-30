@@ -70,6 +70,10 @@ as clean.
 This applies to **every** run. CI/Diff Mode already narrows to changed line ranges; the
 full-scope audit over a large mapped codebase is where the in-file skip bites.
 
+See `references/read-coverage-ledger-example.md` for a real read-coverage ledger from a
+101-file iOS run, including how a file larger than one read window is reported as
+`Partially read` until it is paged through to EOF.
+
 ## Focus Scope
 
 The map sets the outer boundary; within it the audit can run over everything mapped or narrow to one target.

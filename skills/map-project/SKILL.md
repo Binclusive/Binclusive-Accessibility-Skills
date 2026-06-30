@@ -59,6 +59,10 @@ an un-mapped file as a clean one. Guard against it with an explicit, reconciled 
 This is a hard requirement on **every** run, not just CI/Diff Mode — the diff path already
 scopes itself, but a full map over a huge tree is exactly where the silent skip happens.
 
+See `references/coverage-ledger-example.md` for a real ledger from a 101-file iOS run
+(`101 / 101` reconciled against an enumerated denominator, with the genuine out-of-scope
+boundary named) — what an honest map coverage section looks like in practice.
+
 ## Source Of Truth
 
 Read the platform-specific mapping reference after scope is clear:
