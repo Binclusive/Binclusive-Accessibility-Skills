@@ -43,8 +43,9 @@ Audit a previously mapped React/Next.js web, Angular web, React Native/Expo, ASP
      - `references/auditor-web-a11y.md` as well when the Python app renders HTML (Django/Flask/Jinja templates)
 6. For mixed-platform maps, keep findings grouped by platform/surface and do not apply web-only rules to native/mobile UI or mobile-only rules to web UI.
 7. Determine focus scope before auditing (see "Focus Scope" below).
-8. Audit only the scope listed in the map or the resolved narrowed focus scope, unless the user explicitly expands scope.
-9. Write `Binclusive-auditing/accessibility-todo.md` and also archive a dated copy: `accessibility-todo_<YYYY-MM-DD>.md`.
+8. Choose the execution mode — single-agent or subagent fan-out (see "Shard Mode" below). This decision applies only to a **full-scope** run on a harness that can spawn subagents; narrowed/single-target runs and CI/Diff Mode always run single-agent.
+9. Audit only the scope listed in the map or the resolved narrowed focus scope, unless the user explicitly expands scope.
+10. Write `Binclusive-auditing/accessibility-todo.md` and also archive a dated copy: `accessibility-todo_<YYYY-MM-DD>.md`.
 
 ## Coverage — read every in-scope file end to end
 
@@ -84,6 +85,88 @@ The map sets the outer boundary; within it the audit can run over everything map
 4. **Narrowing is always allowed; expanding is not.** You may scope down to any subset of the mapped areas freely. Only audit beyond the map with explicit user approval.
 5. **Record it.** Put the exact focus scope in the TODO header `Scope audited` field, and note when it was narrowed from a broader map (e.g. `LoginButton (narrowed from full project map)`). Keep stable `TASK-00x` ids scoped to this run.
 
+## Shard Mode — subagent fan-out for large maps
+
+The Coverage rules above make a skipped file *visible* (it shows as `partially-read`/`unread`
+in the read-coverage ledger), but a single agent holding a large map can still run low on
+attention/budget and surface a long unread-gap list instead of auditing the tail. Sharding
+the audit across subagents — one per slice of the map — lets each slice be audited to
+completion, raising real coverage rather than just disclosing the shortfall.
+
+Fan-out is an **optimization layered on top of the single-agent audit, never a replacement
+for it.** The single-agent path is the portable baseline; sharding only ever *adds*
+parallelism to a full-scope run on a harness that can spawn subagents. Because the
+read-coverage ledger guarantees honest reporting in **either** mode, opting out of fan-out
+degrades *throughput*, not *correctness* — you get the honest unread-gap list instead of full
+coverage, never a false "all clear."
+
+### Mode selection (three states; auto is the default)
+
+- **Auto (default).** Shard only when the resolved full-scope worklist is large enough to
+  benefit: **more than ~25 in-scope files, or more than ~6 shard groups** (top-level mapped
+  folders / route-groups). Below that threshold, run single-agent — fan-out on a small map is
+  pure overhead with no coverage gain. These numbers are guidance, not a hard gate; round
+  toward single-agent when a map is near the line.
+- **Force on** — `--shard` argument (or the user asking to "fan out" / "shard" the audit).
+  Fan out regardless of size, as long as the harness is capable.
+- **Force off** — `--no-shard` argument (or the user asking to keep it single-agent). Always
+  run single-agent, for cost control, reproducibility, or an unsupported harness.
+
+### Harness capability — fall back silently, never error
+
+Subagent fan-out requires a harness that can spawn parallel subagents (the Claude Code `Task`
+tool). The Copilot, Codex, and OpenAI (`agents/openai.yaml`) adapters cannot. On any harness
+without that capability, **run single-agent regardless of mode** — including `--shard` — and
+produce the **same report shape**, with no error. If `--shard` was requested but the harness
+can't honor it, note the fallback in the audit summary (one line: "fan-out requested but
+unavailable on this harness; ran single-agent") rather than failing the run.
+
+### Fan-out procedure (full-scope, capable harness only)
+
+1. **Enumerate the worklist from the map.** Before dispatching anything, list every in-scope
+   target the map records — pages/views/screens, inline UI, shared components, controls — as
+   an explicit worklist. This is the master list the merge step reconciles 100% coverage
+   against; it is the same enumeration the single-agent path audits in order.
+2. **Build the shards.** One shard per top-level mapped folder / route-group, **plus one
+   dedicated shared-components shard**. Keep shards roughly balanced; split an oversized
+   folder or merge tiny sibling folders so no shard is itself too large to audit to
+   completion.
+3. **Shared components are audited once.** The shared-components shard audits each shared
+   component a **single time against the usage list the map records for it** — not once per
+   consumer. Folder/route-group shards audit their inline and page-level UI and may *reference*
+   a shared component's usage context, but must **not** re-audit the shared component itself.
+   This is what stops a `Button` used across N pages from being audited N times (duplicate
+   TASK ids) or missed entirely.
+4. **Dispatch one subagent per shard.** Give each subagent: its slice of the worklist, the
+   relevant map excerpts, and **only the framework references that match the mapped platform**
+   (the same reference set from "Start Here" step 5). Instruct each subagent to follow the full
+   Coverage rules (read every file in its slice to EOF in paged chunks) and the Audit Order,
+   and to return: (a) its findings in the standard format, (b) its slice of the read-coverage
+   ledger (fully-read / partially-read / unread), and (c) any coverage gaps it hit. Subagents
+   number their findings locally (each will start at `TASK-001`).
+5. **Merge deterministically.** Collect all shard results and:
+   - **Renumber TASK ids into one stable sequence.** Concatenate findings in a deterministic
+     order (by Audit Order layer, then by shard) and assign final `TASK-001…TASK-0NN` across
+     the whole run, so the per-shard local ids never collide in the report.
+   - **Union the read-coverage ledgers** across shards into the single report-header ledger.
+   - **Assert 100% worklist coverage before writing.** Every target enumerated in step 1 must
+     appear in exactly one shard's results — audited, or carried as an explicit coverage gap.
+     If a shard died or returned nothing for part of its slice, that slice is an **unread**
+     coverage gap (re-dispatch it if possible; otherwise record it), never silently dropped.
+     The #15 invariant holds end-to-end: a slice no subagent covered is a named gap in the
+     ledger, not an implicit "clean."
+6. **Write the report** exactly as the single-agent path would — same format, same header
+   read-coverage ledger, stable merged TASK ids. The report does not expose shard structure;
+   fan-out is an execution detail, not a reporting one.
+
+### When fan-out does NOT apply
+
+- **Narrowed / single-target focus scope.** A `/auditaccessibility <target>` run or any
+  narrowed scope audits one target plus its mapped usages — already small, so it runs
+  single-agent with no fan-out overhead, even under `--shard`.
+- **CI / Diff Mode.** Never shards — see that section. The diff scope is already small, so
+  fan-out would only add overhead.
+
 ## CI / Diff Mode
 
 Use this mode for CI/CD pull-request checks. It is triggered by a `--diff` or `--ci` argument, or when the `BINCLUSIVE_CI` environment variable is set. In this mode the audit is **non-interactive, diff-scoped, and gated** — it asks no questions and audits only what the change touched.
@@ -95,8 +178,9 @@ Use this mode for CI/CD pull-request checks. It is triggered by a `--diff` or `-
    - If `baselineMap` is null (diff-only), search for importers/consumers of each changed file to recover usage context. Record this as a coverage limitation.
 4. **Audit only the changed targets,** and prioritize the `changedLineRanges` — do not raise findings on unchanged lines of a touched file unless the change made them newly reachable. Apply the normal Audit Order and reference rules to that narrowed scope.
 5. **Never ask scope questions, never expand beyond the diff,** and never fall back to a whole-project audit in this mode.
-6. **Write the report as usual** (`accessibility-todo.md` + dated copy), with `Scope audited: diff vs <base ref>` and the changed file list in the header.
-7. **Do not edit source code.** CI mode is audit-and-gate only; remediation is a separate human-reviewed step.
+6. **Never shard.** CI/Diff Mode always runs single-agent, regardless of the "Shard Mode" setting (including `--shard`) — the diff scope is already small, so subagent fan-out would only add overhead.
+7. **Write the report as usual** (`accessibility-todo.md` + dated copy), with `Scope audited: diff vs <base ref>` and the changed file list in the header.
+8. **Do not edit source code.** CI mode is audit-and-gate only; remediation is a separate human-reviewed step.
 
 The build pass/fail is decided by the gate, run after this skill: `node <skill-dir>/scripts/gate.mjs Binclusive-auditing/accessibility-todo.md --max-severity=serious` exits non-zero when any open finding is at or above the threshold. See `references/ci-cd.md` for the full pipeline wiring.
 
@@ -116,6 +200,12 @@ The report header must also carry a **read-coverage ledger**: count of in-scope 
 fully-read vs partially-read vs unread, and the explicit list of any partially-read or
 unread files (see "Coverage"). A report with no coverage ledger reads as "everything was
 audited" — which is the exact false-complete signal this guards against.
+
+In a sharded run (see "Shard Mode") this ledger is the **union of every shard's ledger**, and
+the 100% worklist-coverage assertion must pass before the report is written — a slice no
+subagent covered is a named `unread` gap here, never an implicit "clean." The output is
+otherwise identical to a single-agent run: same format, same merged `TASK-00x` sequence, no
+shard structure exposed.
 
 ## Audit Order
 
@@ -177,3 +267,4 @@ For Flutter (Dart, Material/Cupertino/Widgets) scopes:
 - Do not claim compliance; report verified findings and residual risk only.
 - If the map has blind spots, carry them into the audit summary.
 - Never present a partially-read file as audited. Read every in-scope file to EOF (large files in paged offset chunks), and record any file or region left unread as an explicit coverage gap in the report (see "Coverage").
+- Subagent fan-out (see "Shard Mode") is an optional throughput optimization, never required: the single-agent path is the portable baseline, CI/Diff Mode and narrowed scopes never shard, and any harness that cannot spawn subagents falls back to single-agent with the same report shape. Opting out degrades throughput, not correctness — the read-coverage ledger keeps every run honest either way.
