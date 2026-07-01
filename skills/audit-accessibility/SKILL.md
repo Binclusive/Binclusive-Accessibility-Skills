@@ -112,14 +112,22 @@ coverage, never a false "all clear."
 - **Force off** — `--no-shard` argument (or the user asking to keep it single-agent). Always
   run single-agent, for cost control, reproducibility, or an unsupported harness.
 
-### Harness capability — fall back silently, never error
+### Harness capability — Claude-Code-only by design, fall back silently, never error
 
-Subagent fan-out requires a harness that can spawn parallel subagents (the Claude Code `Task`
-tool). The Copilot, Codex, and OpenAI (`agents/openai.yaml`) adapters cannot. On any harness
-without that capability, **run single-agent regardless of mode** — including `--shard` — and
-produce the **same report shape**, with no error. If `--shard` was requested but the harness
-can't honor it, note the fallback in the audit summary (one line: "fan-out requested but
-unavailable on this harness; ran single-agent") rather than failing the run.
+Subagent fan-out is a **Claude-Code-only optimization, by design.** It requires a harness that
+can spawn parallel subagents (the Claude Code `Task` tool). The Copilot, Codex, and OpenAI
+(`agents/openai.yaml`) adapters cannot, and there is **no portable fan-out path** — **non-Claude
+harnesses run single-agent, by design.** On any harness without the `Task` capability, **run
+single-agent regardless of mode** — including an explicit `--shard` — and produce the **same
+report shape**, with no error. If `--shard` was requested but the harness can't honor it, note
+the fallback in the audit summary (one line: "fan-out requested but unavailable on this harness;
+ran single-agent") rather than failing the run.
+
+This is a **deliberate, ratified scoping** (`.decisions/0001-shard-mode-fanout-claude-only.md`),
+not a gap to close: fan-out is a throughput optimization only, and correctness is preserved on
+every harness by the read-coverage ledger (see "Coverage" and the fan-out merge step). A
+non-Claude harness gives up parallel wall-clock speed on large maps — never coverage or
+findings.
 
 ### Fan-out procedure (full-scope, capable harness only)
 
@@ -267,4 +275,4 @@ For Flutter (Dart, Material/Cupertino/Widgets) scopes:
 - Do not claim compliance; report verified findings and residual risk only.
 - If the map has blind spots, carry them into the audit summary.
 - Never present a partially-read file as audited. Read every in-scope file to EOF (large files in paged offset chunks), and record any file or region left unread as an explicit coverage gap in the report (see "Coverage").
-- Subagent fan-out (see "Shard Mode") is an optional throughput optimization, never required: the single-agent path is the portable baseline, CI/Diff Mode and narrowed scopes never shard, and any harness that cannot spawn subagents falls back to single-agent with the same report shape. Opting out degrades throughput, not correctness — the read-coverage ledger keeps every run honest either way.
+- Subagent fan-out (see "Shard Mode") is an optional throughput optimization, never required, and is **Claude-Code-only by design** (`.decisions/0001-shard-mode-fanout-claude-only.md`): it is gated on the Claude Code `Task` tool, so **non-Claude harnesses (Copilot, Codex, the OpenAI adapter) run single-agent by design** — even under an explicit `--shard`. The single-agent path is the portable baseline, CI/Diff Mode and narrowed scopes never shard, and any harness that cannot spawn subagents falls back to single-agent with the same report shape. Opting out — or running on a non-Claude harness — degrades throughput, not correctness: the read-coverage ledger keeps every run honest either way.
