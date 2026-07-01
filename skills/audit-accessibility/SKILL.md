@@ -114,10 +114,9 @@ coverage, never a false "all clear."
 
 ### Harness capability — use whatever parallel-subtask primitive the harness exposes
 
-Subagent fan-out needs exactly **one capability: the ability to spawn parallel sub-tasks.** It
-is **not tied to any single vendor's tool** — detect the capability, don't hardcode the
-primitive. Map Shard Mode onto whatever parallel-subtask primitive the **active** harness
-provides:
+Subagent fan-out needs exactly **one capability: the ability to spawn parallel sub-tasks.**
+Detect that capability and map Shard Mode onto whatever parallel-subtask primitive the
+**active** harness provides:
 
 - **Claude Code** — the `Task` tool (spawn one subagent per shard).
 - **GitHub Copilot** — its parallel agent / sub-task primitive where the runtime exposes one
@@ -141,9 +140,9 @@ than failing the run. Because the read-coverage ledger keeps every run honest on
 harness (see "Coverage" and the fan-out merge step), the single-agent fallback gives up parallel
 wall-clock speed on large maps — never coverage or findings.
 
-This capability-detected, harness-neutral design is the ratified choice
-(`.decisions/0001-portable-shard-mode-fanout.md`): fan-out is portable across agent harnesses
-(Claude Code, Copilot, Cursor, Codex/OpenAI, and future runtimes), not a Claude-Code exclusive.
+This capability-detected design is the ratified choice
+(`.decisions/0001-portable-shard-mode-fanout.md`): fan-out is portable across agent harnesses —
+Claude Code, Copilot, Cursor, Codex/OpenAI, and future runtimes.
 
 ### Fan-out procedure (full-scope, capable harness only)
 
@@ -294,4 +293,4 @@ For Flutter (Dart, Material/Cupertino/Widgets) scopes:
 - Do not claim compliance; report verified findings and residual risk only.
 - If the map has blind spots, carry them into the audit summary.
 - Never present a partially-read file as audited. Read every in-scope file to EOF (large files in paged offset chunks), and record any file or region left unread as an explicit coverage gap in the report (see "Coverage").
-- Subagent fan-out (see "Shard Mode") is an optional throughput optimization, never required, and is **portable across harnesses by capability detection** (`.decisions/0001-portable-shard-mode-fanout.md`): it runs on **whatever parallel-subtask primitive the active harness exposes** — the Claude Code `Task` tool, Copilot/Cursor parallel agents, or concurrent tool-call fan-out on Codex/OpenAI — not a single vendor's tool. Only a harness with **no** parallel-subtask primitive falls back to single-agent (same report shape), even under an explicit `--shard`. The single-agent path is the portable baseline, CI/Diff Mode and narrowed scopes never shard. Opting out — or running on a harness with no fan-out primitive — degrades throughput, not correctness: the read-coverage ledger keeps every run honest either way.
+- Subagent fan-out (see "Shard Mode") is an optional throughput optimization, never required, and is **portable across harnesses by capability detection** (`.decisions/0001-portable-shard-mode-fanout.md`): it runs on **whatever parallel-subtask primitive the active harness exposes** — the Claude Code `Task` tool, Copilot/Cursor parallel agents, or concurrent tool-call fan-out on Codex/OpenAI. Only a harness with **no** parallel-subtask primitive falls back to single-agent (same report shape), even under an explicit `--shard`. The single-agent path is the portable baseline, CI/Diff Mode and narrowed scopes never shard. Opting out — or running on a harness with no fan-out primitive — degrades throughput, not correctness: the read-coverage ledger keeps every run honest either way.
