@@ -5,6 +5,8 @@ description: Fix accessibility tasks from Binclusive accessibility-todo.md with 
 
 # Fix Accessibility
 
+> **Requires the `binclusive` CLI** (the unified CLI providing `scan` / `scan --url` / `init` / `ci`). If `binclusive scan` errors as an unknown command, upgrade the CLI — the agent-driven remediation still works without it, just without the source-provable re-scan check.
+
 Resolve selected tasks from `Binclusive-auditing/accessibility-todo.md` through a controlled, user-guided remediation loop.
 
 ## Start Here
@@ -19,8 +21,16 @@ Resolve selected tasks from `Binclusive-auditing/accessibility-todo.md` through 
    - a component/page/path
    - one task at a time
 5. Read the source files for selected tasks before editing.
-6. Apply fixes incrementally. Re-check the relevant file/scope after each task when feasible.
+6. Apply fixes incrementally. Re-check the relevant file/scope after each task (see "Verify each fix" below).
 7. Write or append `Binclusive-auditing/after-test.md`; also archive `after-test_<YYYY-MM-DD>.md` when a batch completes.
+
+## Verify each fix (deterministic where covered)
+
+Close the fix→verify loop with the shipped `binclusive` CLI wherever it can scan the target, so a fix is proven cleared instead of assumed cleared.
+
+- **React / Next.js (TSX):** after applying a fix, **re-run `npx @binclusive/cli scan <path>`** (add `--format json` to diff findings programmatically) and confirm the targeted finding is **gone** before marking the task done. If the finding persists, the fix is incomplete — keep the task open. If the project has no `binclusive.json`, run `npx @binclusive/cli init` first (it detects the stack and writes the config).
+- **Any live page (rendered DOM):** re-run `npx @binclusive/cli scan --url <url>` to confirm the finding cleared on the running page.
+- **Engine-less / not-yet-dispatched platforms** (SwiftUI/UIKit, Jetpack Compose / Kotlin, Android Views/XML, Shopify/Liquid, Unity, ASP.NET/ASPX, Python, Angular, Flutter, React Native): the CLI does not scan these today, so verification stays agent-driven — re-read the changed source against the reference rules and record the manual/runtime test steps. Note honestly in `after-test.md` that verification was agent-driven, not engine-proven; a deterministic floor arrives for the collector platforms once the CLI wires them.
 
 ## CI / Diff Mode
 
