@@ -16,7 +16,7 @@ Where the shipped `binclusive` CLI can scan the target, run it **before** the re
 - **Engine-groundable now — run the CLI:**
   - **React / Next.js web** (static source): `npx @binclusive/cli scan <path> --format json`.
   - **Any live page, any framework** (rendered DOM): `npx @binclusive/cli scan --url <url> --format json`.
-- **Deterministic floor coming — stays agent-driven today** (the engine has a collector but the CLI does not dispatch it yet, so `binclusive scan` does **not** cover these): SwiftUI/UIKit, Jetpack Compose / Kotlin, Android Views/XML, Shopify/Liquid, Unity. Audit these with the agent + references exactly as below; a deterministic floor arrives once the CLI wires the collector.
+- **Deterministic floor coming — stays agent-driven today** (the engine has a collector but the CLI does not dispatch it yet, so `binclusive scan` does **not** cover these): SwiftUI/UIKit, Jetpack Compose / Kotlin, Android Views/XML, Shopify/Liquid, Unity. Audit these with the agent + references exactly as below; a deterministic floor arrives once the CLI wires the collector (tracked in Binclusive/monorepo#2563 — the multi-collector `scan` dispatch that unlocks grounding these platforms).
 - **No engine — agent-only** (unchanged): ASP.NET/ASPX, Python, Angular, Flutter, React Native.
 
 **Procedure when the CLI covers the scope (React/Next.js web, or any live URL):**
