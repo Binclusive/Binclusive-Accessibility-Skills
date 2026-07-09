@@ -5,6 +5,8 @@ description: Audit React, Next.js, Angular, React Native, Expo, ASP.NET, ASPX/We
 
 # Audit Accessibility
 
+> **Requires the unified `binclusive` CLI** — the version from the monorepo unify release that ships `scan` / `scan --url` / `init` / `ci`. This is **not** the legacy `@binclusive/cli@0.3.0` dashboard-only CLI (which has no `scan`/`ci`), and **not** the legacy standalone `a11y-checker`. If `binclusive scan` errors as an unknown command you are on a pre-unify CLI — upgrade before using the deterministic floor below. The agent + references path still works without it (just without the source-provable floor).
+
 Audit a previously mapped React/Next.js web, Angular web, React Native/Expo, ASP.NET/ASPX, iOS SwiftUI/UIKit, native Android (Jetpack Compose / Android Views/XML), Flutter (Dart, Material/Cupertino), or Python (desktop GUI, CLI/TUI, web backend, or docs) scope and write an actionable accessibility TODO report. This skill observes and documents only. It never edits source code.
 
 ## Deterministic engine floor — run the tool first (where covered)
