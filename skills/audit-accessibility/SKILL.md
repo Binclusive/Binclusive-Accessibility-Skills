@@ -7,6 +7,29 @@ description: Audit React, Next.js, Angular, React Native, Expo, ASP.NET, ASPX/We
 
 Audit a previously mapped React/Next.js web, Angular web, React Native/Expo, ASP.NET/ASPX, iOS SwiftUI/UIKit, native Android (Jetpack Compose / Android Views/XML), Flutter (Dart, Material/Cupertino), or Python (desktop GUI, CLI/TUI, web backend, or docs) scope and write an actionable accessibility TODO report. This skill observes and documents only. It never edits source code.
 
+## Deterministic engine floor — run the tool first (where covered)
+
+Where the shipped `binclusive` CLI can scan the target, run it **before** the reference-driven agent pass. The CLI is the deterministic engine (resolver + enforce + jsx-a11y + corpus enrichment for TSX; rendered-DOM axe for a live URL); its output is the **source-provable** floor the agent then builds on. This grounds the audit in the real engine instead of agent judgment alone. Engine coverage is **partial by platform** — be honest about which tier a finding came from.
+
+**Coverage tiers (what the CLI can actually scan today):**
+
+- **Engine-groundable now — run the CLI:**
+  - **React / Next.js web** (static source): `npx @binclusive/cli scan <path> --format json`.
+  - **Any live page, any framework** (rendered DOM): `npx @binclusive/cli scan --url <url> --format json`.
+- **Deterministic floor coming — stays agent-driven today** (the engine has a collector but the CLI does not dispatch it yet, so `binclusive scan` does **not** cover these): SwiftUI/UIKit, Jetpack Compose / Kotlin, Android Views/XML, Shopify/Liquid, Unity. Audit these with the agent + references exactly as below; a deterministic floor arrives once the CLI wires the collector.
+- **No engine — agent-only** (unchanged): ASP.NET/ASPX, Python, Angular, Flutter, React Native.
+
+**Procedure when the CLI covers the scope (React/Next.js web, or any live URL):**
+
+1. **Run the engine first.** `npx @binclusive/cli scan <path> --format json` for static React/TSX, and/or `npx @binclusive/cli scan --url <url> --format json` for a rendered page. If the project has no `binclusive.json`, it is auto-detected; `npx @binclusive/cli init` writes one when you want it pinned.
+2. **Ingest engine findings as the `engine: source-provable` tier.** These are proven by the deterministic engine against real source / rendered DOM.
+3. **Then run the existing reference-driven agent pass** to ADD what the engine cannot see — cross-file usage context, runtime/AT behavior, and framework-specific judgment. Label these `agent: judgment` or `agent: runtime`.
+4. **Reconcile and dedup the two sets.** Never double-report the same finding. When the engine already proved a finding, keep the engine one and drop the agent duplicate.
+
+**Provenance is mandatory.** Every finding in the TODO carries a provenance label — `engine: source-provable`, `agent: judgment`, or `agent: runtime` — alongside the existing coverage-bucket / fix-type language. This is the honest coverage split: the reader sees which findings the deterministic engine proved and which rest on agent judgment.
+
+For the deterministic-floor-coming and no-engine platforms above, the audit stays exactly as it is today (agent + references); every such finding is `agent: judgment` or `agent: runtime`.
+
 ## Start Here
 
 1. Locate `Binclusive-auditing/` in the project root.
@@ -196,6 +219,8 @@ Claude Code, Copilot, Cursor, Codex/OpenAI, and future runtimes.
 ## CI / Diff Mode
 
 Use this mode for CI/CD pull-request checks. It is triggered by a `--diff` or `--ci` argument, or when the `BINCLUSIVE_CI` environment variable is set. In this mode the audit is **non-interactive, diff-scoped, and gated** — it asks no questions and audits only what the change touched.
+
+**Prefer the deterministic CLI gate for React/TSX.** For a React/Next.js (TSX) diff, run the shipped engine as the gate: `npx @binclusive/cli ci --base $BASE_REF --fail-on block --format sarif > results.sarif`. It is diff-scoped, exits `1` iff a gating finding exists, and emits SARIF for code-scanning upload. (`--format sarif` is landing in the CLI's next release; until it ships, use the CLI's JSON output and keep the gate on its exit code.) The base ref comes from `BINCLUSIVE_BASE_REF`, else `GITHUB_BASE_REF`, else `origin/main`. Layer the reference-driven agent pass on top for what the engine cannot see, labeled with provenance as above. The `scripts/git-diff-scope.mjs` + `scripts/gate.mjs` path below remains the **fallback**, and is the primary CI path for the engine-less / not-yet-dispatched platforms (SwiftUI, Compose/Kotlin, Android XML, Shopify/Liquid, Unity, ASP.NET/ASPX, Python, Angular, Flutter, React Native).
 
 1. **Compute the change scope.** Run `node <skill-dir>/scripts/git-diff-scope.mjs <project-root>`. It returns `changedFiles` (auditable source files changed between the base ref and HEAD), `changedLineRanges` per file, `mode`, and `baselineMap`. The base ref comes from `BINCLUSIVE_BASE_REF`, else `GITHUB_BASE_REF`, else `origin/main`. By default the scope is **committed history only** (`base...HEAD`); pass `--include-working` (or `BINCLUSIVE_INCLUDE_WORKING=1`) to also audit uncommitted/untracked local edits for pre-commit runs. A file with `status: "U"` (untracked) or empty `changedLineRanges` is audited whole. Always read the `notes` — if it reports uncommitted files excluded, surface that rather than reporting an empty audit as "all clear."
 2. **If `changedFiles` is empty,** write no findings, state "no auditable changes in this diff," and stop. CI passes.
