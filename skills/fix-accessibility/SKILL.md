@@ -5,7 +5,7 @@ description: Fix accessibility tasks from Binclusive accessibility-todo.md with 
 
 # Fix Accessibility
 
-> **Requires the unified `binclusive` CLI** — the version from the monorepo unify release that ships `scan` / `scan --url` / `init` / `ci`. This is **not** the legacy `@binclusive/cli@0.3.0` dashboard-only CLI (which has no `scan`/`ci`), and **not** the legacy standalone `a11y-checker`. If `binclusive scan` errors as an unknown command you are on a pre-unify CLI — upgrade before using the deterministic verification below. The agent-driven remediation still works without it (just without the source-provable re-scan check).
+> **Requires the `binclusive` CLI** (the unified CLI providing `scan` / `scan --url` / `init` / `ci`). If `binclusive scan` errors as an unknown command, upgrade the CLI — the agent-driven remediation still works without it, just without the source-provable re-scan check.
 
 Resolve selected tasks from `Binclusive-auditing/accessibility-todo.md` through a controlled, user-guided remediation loop.
 

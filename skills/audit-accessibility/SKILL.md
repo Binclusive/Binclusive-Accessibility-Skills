@@ -5,7 +5,7 @@ description: Audit React, Next.js, Angular, React Native, Expo, ASP.NET, ASPX/We
 
 # Audit Accessibility
 
-> **Requires the unified `binclusive` CLI** — the version from the monorepo unify release that ships `scan` / `scan --url` / `init` / `ci`. This is **not** the legacy `@binclusive/cli@0.3.0` dashboard-only CLI (which has no `scan`/`ci`), and **not** the legacy standalone `a11y-checker`. If `binclusive scan` errors as an unknown command you are on a pre-unify CLI — upgrade before using the deterministic floor below. The agent + references path still works without it (just without the source-provable floor).
+> **Requires the `binclusive` CLI** (the unified CLI providing `scan` / `scan --url` / `init` / `ci`). If `binclusive scan` errors as an unknown command, upgrade the CLI — the agent + references path still works without it, just without the source-provable floor.
 
 Audit a previously mapped React/Next.js web, Angular web, React Native/Expo, ASP.NET/ASPX, iOS SwiftUI/UIKit, native Android (Jetpack Compose / Android Views/XML), Flutter (Dart, Material/Cupertino), or Python (desktop GUI, CLI/TUI, web backend, or docs) scope and write an actionable accessibility TODO report. This skill observes and documents only. It never edits source code.
 
@@ -18,7 +18,7 @@ Where the shipped `binclusive` CLI can scan the target, run it **before** the re
 - **Engine-groundable now — run the CLI:**
   - **React / Next.js web** (static source): `npx @binclusive/cli scan <path> --format json`.
   - **Any live page, any framework** (rendered DOM): `npx @binclusive/cli scan --url <url> --format json`.
-- **Deterministic floor coming — stays agent-driven today** (the engine has a collector but the CLI does not dispatch it yet, so `binclusive scan` does **not** cover these): SwiftUI/UIKit, Jetpack Compose / Kotlin, Android Views/XML, Shopify/Liquid, Unity. Audit these with the agent + references exactly as below; a deterministic floor arrives once the CLI wires the collector (tracked in Binclusive/monorepo#2563 — the multi-collector `scan` dispatch that unlocks grounding these platforms).
+- **Deterministic floor coming — stays agent-driven today** (the engine has a collector but the CLI does not dispatch it yet, so `binclusive scan` does **not** cover these): SwiftUI/UIKit, Jetpack Compose / Kotlin, Android Views/XML, Shopify/Liquid, Unity. Audit these with the agent + references exactly as below; a deterministic floor follows as the CLI gains multi-collector `scan` dispatch for them.
 - **No engine — agent-only** (unchanged): ASP.NET/ASPX, Python, Angular, Flutter, React Native.
 
 **Procedure when the CLI covers the scope (React/Next.js web, or any live URL):**
