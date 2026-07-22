@@ -1,0 +1,30 @@
+# Gate the Claude Code plugin + marketplace manifests. See ADR 0121.
+name: Validate plugin manifests
+
+on:
+  pull_request:
+    paths:
+      - ".claude-plugin/**"
+      - "skills/**"
+      - ".github/workflows/plugin-validate.yml"
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Validate plugin + marketplace manifests
+        # First-party static validation (Claude Code 2.1.217+); cross-checks that
+        # .claude-plugin/plugin.json and the marketplace entry agree. Schema-only,
+        # no auth required.
+        run: claude plugin validate . --strict

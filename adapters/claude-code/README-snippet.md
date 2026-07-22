@@ -16,6 +16,7 @@ The installed commands are:
 
 - `/map-project`
 - `/audit-accessibility`
+- `/shopify-theme-audit`
 - `/fix-accessibility`
 
 Do not fork the `SKILL.md` files for Claude-specific behavior. Keep the canonical instructions in `skills/<skill-name>/SKILL.md` and update this adapter only for Claude Code installation notes.

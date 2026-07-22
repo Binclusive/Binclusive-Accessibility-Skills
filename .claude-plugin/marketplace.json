@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "binclusive",
+  "description": "Binclusive accessibility skills and the Binclusive MCP data connection, shipped as one Claude Code plugin.",
+  "owner": {
+    "name": "Binclusive",
+    "url": "https://binclusive.io"
+  },
+  "plugins": [
+    {
+      "name": "accessibility",
+      "source": "./",
+      "description": "Binclusive accessibility mapping, audit, and remediation skills, plus the Binclusive MCP data connection.",
+      "category": "accessibility"
+    }
+  ]
+}

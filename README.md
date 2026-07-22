@@ -180,6 +180,7 @@ See [`skills/audit-accessibility/references/ci-cd.md`](skills/audit-accessibilit
 skills/
   map-project/
   audit-accessibility/
+  shopify-theme-audit/
   fix-accessibility/
 adapters/
   codex/
