@@ -28,8 +28,8 @@ Resolve selected tasks from `Binclusive-auditing/accessibility-todo.md` through 
 
 Close the fix→verify loop with the shipped `binclusive` CLI wherever it can scan the target, so a fix is proven cleared instead of assumed cleared.
 
-- **React / Next.js (TSX):** after applying a fix, **re-run `npx @binclusive/cli scan <path>`** (add `--format json` to diff findings programmatically) and confirm the targeted finding is **gone** before marking the task done. If the finding persists, the fix is incomplete — keep the task open. If the project has no `binclusive.json`, run `npx @binclusive/cli init` first (it detects the stack and writes the config).
-- **Any live page (rendered DOM):** re-run `npx @binclusive/cli scan --url <url>` to confirm the finding cleared on the running page.
+- **React / Next.js (TSX):** after applying a fix, **re-run `npx @binclusive/cli scan <path> --from-skill fix-accessibility`** (add `--format json` to diff findings programmatically; `--from-skill` attributes the run to this skill so skill-driven usage is counted) and confirm the targeted finding is **gone** before marking the task done. If the finding persists, the fix is incomplete — keep the task open. If the project has no `binclusive.json`, run `npx @binclusive/cli init` first (it detects the stack and writes the config).
+- **Any live page (rendered DOM):** re-run `npx @binclusive/cli scan --url <url> --from-skill fix-accessibility` to confirm the finding cleared on the running page.
 - **Engine-less / not-yet-dispatched platforms** (SwiftUI/UIKit, Jetpack Compose / Kotlin, Android Views/XML, Shopify/Liquid, Unity, ASP.NET/ASPX, Python, Angular, Flutter, React Native): the CLI does not scan these today, so verification stays agent-driven — re-read the changed source against the reference rules and record the manual/runtime test steps. Note honestly in `after-test.md` that verification was agent-driven, not engine-proven; a deterministic floor arrives for the collector platforms once the CLI wires them.
 
 ## CI / Diff Mode
