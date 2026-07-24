@@ -26,6 +26,9 @@ Read a selected `Binclusive-auditing/*_project-map.md` first. It is the source o
 - Anchors used as buttons or anchors without valid `href`.
 - Nested interactive elements.
 - Positive `tabIndex` values or non-focusable custom controls.
+- Interactive or focusable descendants inside roles with presentational children (`option`, `tab`, `button`, `checkbox`, `radio`, `switch`, `menuitem`, `slider`, `img`) — the descendants lose their role/name and an `aria-label` on the ancestor overrides the whole subtree (ACT rule 307n5z).
+- Composite widgets (`listbox`, `grid`, `tree`) with no keyboard entry point: container without `tabIndex`/`aria-activedescendant` and every item `tabIndex="-1"`, relying on programmatic focus only.
+- Single-character keyboard shortcuts bound on `document`/`window` (WCAG 2.1.4). Focus-scoping can satisfy the SC, but never report 2.1.4 as satisfied from static code — bare letters collide with screen-reader quick-nav keys in browse mode; raise as `RUNTIME-CHECK`.
 
 ### Names, Labels, and Forms
 
@@ -69,6 +72,8 @@ Read a selected `Binclusive-auditing/*_project-map.md` first. It is the source o
 - Toasts, async result banners, loaders, counters, and validation messages without status/live-region strategy.
 - Loading areas without `aria-busy` where appropriate.
 - Animations or carousels without reduced-motion support or pause control.
+- Excessive live regions: `aria-live` on per-keystroke or per-frame values (character counters, timers), or several competing `aria-live`/`role="status"` regions in one view instead of a single shared status region.
+- Dynamic values interpolated into `aria-label` so the accessible name changes while the control is focused; keep the name static and expose the value via the control's value or `aria-valuetext`.
 
 ### Layout, Navigation, and Page-Level Checks
 
@@ -89,6 +94,8 @@ Mark `RUNTIME-CHECK` when static code cannot prove the issue:
 - 200% text resize and 400% reflow
 - SPA route transition focus behavior
 - carousel autoplay behavior
+- single-character shortcut collisions with screen-reader quick-nav keys in browse mode
+- whether a custom composite widget actually triggers forms/application mode in JAWS and NVDA
 
 ## Finding Rules
 
