@@ -6,7 +6,7 @@
     "name": "Binclusive",
     "url": "https://binclusive.io"
   },
-  "description": "Binclusive accessibility mapping, audit, and remediation skills for React/Next.js, Angular, React Native/Expo, ASP.NET/ASPX, Shopify themes, iOS (SwiftUI/UIKit), native Android (Compose/Views), and Flutter — with a live data connection to the Binclusive MCP server.",
+  "description": "Binclusive accessibility mapping, audit, and remediation skills for React/Next.js, Angular, React Native/Expo, ASP.NET/ASPX, WordPress and Shopify themes, iOS (SwiftUI/UIKit), native Android (Compose/Views), and Flutter — with a live data connection to the Binclusive MCP server.",
   "homepage": "https://binclusive.io",
   "repository": "https://github.com/Binclusive/Binclusive-Accessibility-Skills",
   "keywords": ["accessibility", "a11y", "wcag", "audit", "screen-reader"],

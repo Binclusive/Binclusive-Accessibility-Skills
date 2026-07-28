@@ -24,7 +24,7 @@ const ENGINE_GROUNDABLE = [
   "Unity",
   "Any live page",
 ];
-const AGENT_ONLY = ["ASP.NET/ASPX", "Python", "Angular", "Flutter", "React Native"];
+const AGENT_ONLY = ["ASP.NET/ASPX", "WordPress/PHP source", "Python", "Angular", "Flutter", "React Native"];
 
 const md = readFileSync(SKILL, "utf8");
 

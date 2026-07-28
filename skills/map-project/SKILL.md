@@ -1,11 +1,11 @@
 ---
 name: map-project
-description: Map a React, Next.js, Angular, React Native, Expo, ASP.NET, ASPX/Web Forms, SwiftUI, UIKit, native Android (Kotlin/Java, Jetpack Compose, Android Views/XML), or Flutter (Dart, Material/Cupertino) codebase for accessibility auditing. Use when the user says /mapaccessibility, map accessibility, project map, component/view map, iOS accessibility map, SwiftUI accessibility map, UIKit accessibility map, React Native accessibility map, Expo accessibility map, Angular accessibility map, Angular CDK accessibility map, Android accessibility map, Jetpack Compose accessibility map, Kotlin accessibility map, Flutter accessibility map, Dart accessibility map, "binclusive projemi haritala", "projeyi erişilebilirlik için haritala", "accessibility için map çıkar", "proje haritası çıkar", or wants to inventory routes, screens, views, shared components, controls, dependencies, localization, and inline UI before an audit/test.
+description: Map a React, Next.js, Angular, React Native, Expo, ASP.NET, ASPX/Web Forms, WordPress theme or plugin (PHP, classic, block, hybrid, public, admin, or editor UI), SwiftUI, UIKit, native Android, or Flutter codebase for accessibility auditing. Use for /mapaccessibility, WordPress theme map, WordPress plugin map, PHP theme/plugin map, "binclusive projemi haritala", "wordpress temamı haritala", "wordpress eklentimi haritala", or to inventory routes, templates, admin pages, editor controls, shared components, dependencies, localization, and inline UI before an audit.
 ---
 
 # Map Project
 
-Create an evidence-based project map for a React/Next.js web, Angular web, React Native/Expo, ASP.NET/ASPX, iOS SwiftUI/UIKit, native Android (Jetpack Compose / Android Views/XML), or Flutter (Dart, Material/Cupertino) app. This skill observes and documents only. It never edits source code.
+Create an evidence-based project map for a React/Next.js web, Angular web, React Native/Expo, ASP.NET/ASPX, WordPress theme, iOS SwiftUI/UIKit, native Android (Jetpack Compose / Android Views/XML), or Flutter (Dart, Material/Cupertino) app. This skill observes and documents only. It never edits source code.
 
 ## Start Here
 
@@ -17,7 +17,7 @@ Create an evidence-based project map for a React/Next.js web, Angular web, React
 4. Ask scope questions before scanning unless the user already gave exact scope:
    - Whole project/app, selected routes/screens, selected components/controls, a folder path, or free-form target list?
    - Should localization/hardcoded strings be included? Default: yes.
-   - Is this React/Next.js web, Angular web, React Native/Expo, ASP.NET MVC/Razor, ASPX/Web Forms, SwiftUI, UIKit, native Android (Jetpack Compose / Android Views/XML), Flutter (Dart, Material/Cupertino), or mixed mobile/web? If not, state which references are available and continue only if the user wants a best-effort map.
+   - Is this React/Next.js web, Angular web, React Native/Expo, ASP.NET MVC/Razor, ASPX/Web Forms, WordPress classic/block/hybrid theme, SwiftUI, UIKit, native Android (Jetpack Compose / Android Views/XML), Flutter (Dart, Material/Cupertino), or mixed mobile/web? If not, state which references are available and continue only if the user wants a best-effort map.
 5. Choose the execution mode — single-agent or subagent fan-out (see "Shard Mode" below). This decision applies only to a **full-scope** map on a harness that can spawn subagents; narrowed/single-scope maps and CI/Diff Mode always run single-agent.
 6. Create `Binclusive-auditing/` in the project root if missing.
 7. Write one map file named `<project-name>_<YYYY-MM-DD>_project-map.md` inside `Binclusive-auditing/`.
@@ -42,7 +42,7 @@ an un-mapped file as a clean one. Guard against it with an explicit, reconciled 
 1. **Enumerate the full in-scope file set up front.** Before mapping, list every source
    file the agreed scope covers — don't discover files ad hoc while writing entries. The
    inspector (`scripts/inspect-project.mjs`) already walks the tree and reports per-type
-   **counts** (`swiftFileCount`, `kotlinFileCount`, `dartFileCount`, `componentFileCount`,
+   **counts** (`swiftFileCount`, `kotlinFileCount`, `dartFileCount`, `phpFileCount`, `componentFileCount`,
    etc.); use those counts as the coverage **denominator**. When the inspector is
    unavailable or you need the actual paths, enumerate them directly, e.g.
    `find <scope> \( -name '*.swift' -o -name '*.kt' -o -name '*.dart' -o -name '*.tsx' \) -not -path '*/node_modules/*'`
@@ -174,6 +174,7 @@ Read the platform-specific mapping reference after scope is clear:
 - Angular web: `references/mapper-angular.md`
 - React Native/Expo: `references/mapper-react-native.md`
 - ASP.NET MVC/Razor or ASPX/Web Forms: `references/mapper-aspnet.md`
+- WordPress classic/block/hybrid theme or plugin: `references/mapper-wordpress-theme.md`
 - iOS SwiftUI/UIKit: `references/mapper-ios-swift.md`
 - Native Android (Jetpack Compose / Android Views/XML): `references/mapper-android.md`
 - Flutter (Dart, Material/Cupertino/Widgets): `references/mapper-flutter.md`
@@ -184,6 +185,10 @@ Native Android (Kotlin/Java) projects are mapped with `references/mapper-android
 
 Flutter (Dart) projects — a `pubspec.yaml` with a `flutter` SDK dependency and a `lib/` Dart tree — are mapped with `references/mapper-flutter.md`. A Flutter app ships `android/` and `ios/` host folders, so the inspector may also report native-Android/iOS signals; map the Flutter UI with `references/mapper-flutter.md` and use `mapper-android.md` / `mapper-ios-swift.md` only for genuinely native Kotlin/Java or Swift UI.
 
+WordPress themes — a root `style.css` with a `Theme Name:` header plus PHP templates and/or `theme.json`/block templates — are mapped with `references/mapper-wordpress-theme.md`. Do not treat an entire WordPress installation, plugin tree, uploads, cache, vendor packages, or WordPress core as theme scope unless the user explicitly includes them.
+
+WordPress plugins — one or more root PHP files with a `Plugin Name:` header — use the same reference. Map the selected plugin's public, admin, editor and async UI; do not silently expand scope to unrelated installed plugins.
+
 ## Required Output
 
 The map file must state:
@@ -193,6 +198,7 @@ The map file must state:
 - i18n/localization setup, locales, fallback locale, RTL/mirroring evidence
 - a11y/l10n relevant dependencies and known concerns
 - pages/views/routes or screens/flows with file paths
+- WordPress template hierarchy or plugin entrypoints; templates, admin pages, editor controls, settings, list tables, metaboxes, notices, widgets, shortcodes, blocks, REST/AJAX UI, render callbacks, hooks, and localization catalogs when relevant
 - shared UI components/controls with file paths, type, wrapper/native element or platform control, and known usages
 - inline UI inventory per page/view/screen
 - hardcoded string and localization hotspots

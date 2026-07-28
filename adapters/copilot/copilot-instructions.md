@@ -2,14 +2,14 @@
 
 Use the canonical Agent Skills in this repository as the source of truth:
 
-- `skills/map-project/SKILL.md` inventories React/Next.js, Angular, React Native/Expo, ASP.NET/ASPX, iOS SwiftUI/UIKit, native Android (Jetpack Compose / Android Views/XML), or Flutter (Dart, Material/Cupertino) routes, screens, views, pages, controls, dependencies, localization, and inline UI for accessibility review.
+- `skills/map-project/SKILL.md` inventories React/Next.js, Angular, React Native/Expo, ASP.NET/ASPX, WordPress themes, iOS SwiftUI/UIKit, native Android (Jetpack Compose / Android Views/XML), or Flutter (Dart, Material/Cupertino) routes, templates, screens, views, pages, controls, dependencies, localization, and inline UI for accessibility review.
 - `skills/audit-accessibility/SKILL.md` audits only the mapped scope and writes actionable accessibility TODOs.
 - `skills/shopify-theme-audit/SKILL.md` audits Shopify theme Liquid, JSON templates, sections, snippets, assets, config, and locales without requiring a prior map.
 - `skills/fix-accessibility/SKILL.md` fixes selected TODO tasks with severity/risk controls and verification notes.
 
 Follow the workflow in order unless the user explicitly narrows the task:
 
-1. Map first for app projects: create or reuse `Binclusive-auditing/*_project-map.md`. For Shopify themes, use `shopify-theme-audit` directly.
+1. Map first for app projects and WordPress themes: create or reuse `Binclusive-auditing/*_project-map.md`. For Shopify themes, use `shopify-theme-audit` directly.
 2. Audit second: create `Binclusive-auditing/accessibility-todo.md` from the selected map or Shopify theme source.
 3. Fix last: remediate only user-selected task IDs, SAFE tasks, severities, components, pages, screens, controls, or paths.
 

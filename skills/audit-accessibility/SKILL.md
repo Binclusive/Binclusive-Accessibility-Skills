@@ -1,13 +1,13 @@
 ---
 name: audit-accessibility
-description: Audit React, Next.js, Angular, React Native, Expo, ASP.NET, ASPX/Web Forms, SwiftUI, UIKit, native Android (Kotlin/Java, Jetpack Compose, Android Views/XML), Flutter (Dart, Material/Cupertino), or Python accessibility from a prior Binclusive project map. Use when the user says /auditaccessibility, audit accessibility, run accessibility audit, accessibility test, iOS accessibility audit, SwiftUI accessibility audit, UIKit accessibility audit, React Native accessibility audit, Expo accessibility audit, Angular accessibility audit, Angular CDK accessibility audit, Android accessibility audit, Jetpack Compose accessibility audit, Kotlin accessibility audit, Flutter accessibility audit, Dart accessibility audit, Python accessibility audit, Django accessibility audit, "binclusive projemi test et", "erisilebilirlik testi yap", "erisilebilirlik todo cikar", "accessibility todo cikar", or wants an accessibility TODO report from mapped routes, views, screens, components, controls, or paths. Also use to audit a single target only, e.g. "/auditaccessibility LoginButton", "audit only the X component", "sadece X componentini test et", or when a component/screen/folder name is passed as an argument - narrow the audit to that target from the existing map.
+description: Audit React, Next.js, Angular, React Native, Expo, ASP.NET, ASPX/Web Forms, WordPress themes or plugins (PHP, classic, block, hybrid, public, admin, or editor UI), SwiftUI, UIKit, native Android, Flutter, or Python accessibility from a prior Binclusive project map. Use for /auditaccessibility, WordPress theme/plugin accessibility audits, PHP plugin audits, "binclusive projemi test et", "wordpress eklenti erişilebilirlik testi", or an accessibility TODO from mapped routes, templates, admin pages, editor controls, components, or paths.
 ---
 
 # Audit Accessibility
 
 > **Requires the `binclusive` CLI** (the unified CLI providing `scan` / `scan --url` / `init` / `ci`). If `binclusive scan` errors as an unknown command, upgrade the CLI — the agent + references path still works without it, just without the source-provable floor.
 
-Audit a previously mapped React/Next.js web, Angular web, React Native/Expo, ASP.NET/ASPX, iOS SwiftUI/UIKit, native Android (Jetpack Compose / Android Views/XML), Flutter (Dart, Material/Cupertino), or Python (desktop GUI, CLI/TUI, web backend, or docs) scope and write an actionable accessibility TODO report. This skill observes and documents only. It never edits source code.
+Audit a previously mapped React/Next.js web, Angular web, React Native/Expo, ASP.NET/ASPX, WordPress theme, iOS SwiftUI/UIKit, native Android (Jetpack Compose / Android Views/XML), Flutter (Dart, Material/Cupertino), or Python (desktop GUI, CLI/TUI, web backend, or docs) scope and write an actionable accessibility TODO report. This skill observes and documents only. It never edits source code.
 
 ## Deterministic engine floor — run the tool first (where covered)
 
@@ -24,7 +24,7 @@ Where the shipped `binclusive` CLI can scan the target, run it **before** the re
   - **Android Views/XML** (static source).
   - **Unity** (static source, when the target is a Unity project).
   - **Any live page, any framework** (rendered DOM): `npx @binclusive/cli scan --url <url> --format json`.
-- **No engine — agent-only** (unchanged): ASP.NET/ASPX, Python, Angular, Flutter, React Native. The engine ships no collector for these; audit them with the agent + references exactly as below.
+- **No engine — agent-only** (unchanged): ASP.NET/ASPX, WordPress/PHP source, Python, Angular, Flutter, React Native. The engine ships no source collector for these; a published WordPress page can still use the live-URL engine tier.
 
 **Procedure when the CLI covers the scope (any engine-groundable platform above, or any live URL):**
 
@@ -59,6 +59,10 @@ For the no-engine platforms above, the audit stays exactly as it is today (agent
      - `references/auditor-web-a11y.md`
      - `references/aspnet-aspx.md`
      - `references/patterns/aspnet-aspx-patterns.md` when available
+   - For WordPress classic/block/hybrid themes or plugins, read:
+     - `references/auditor-web-a11y.md`
+     - `references/wordpress-theme.md`
+     - `references/patterns/wordpress-theme-patterns.md` when available
    - For iOS SwiftUI/UIKit, read:
      - `references/ios-swift.md`
      - `references/patterns/ios-swift-patterns.md` when available
@@ -227,7 +231,7 @@ Claude Code, Copilot, Cursor, Codex/OpenAI, and future runtimes.
 
 Use this mode for CI/CD pull-request checks. It is triggered by a `--diff` or `--ci` argument, or when the `BINCLUSIVE_CI` environment variable is set. In this mode the audit is **non-interactive, diff-scoped, and gated** — it asks no questions and audits only what the change touched.
 
-**Prefer the deterministic CLI gate for React/TSX.** For a React/Next.js (TSX) diff, run the shipped engine as the gate: `npx @binclusive/cli ci --base $BASE_REF --fail-on block --format sarif > results.sarif`. It is diff-scoped, exits `1` iff a gating finding exists, and emits SARIF for code-scanning upload. (`--format sarif` is landing in the CLI's next release; until it ships, use the CLI's JSON output and keep the gate on its exit code.) The base ref comes from `BINCLUSIVE_BASE_REF`, else `GITHUB_BASE_REF`, else `origin/main`. Layer the reference-driven agent pass on top for what the engine cannot see, labeled with provenance as above. The same `ci` gate also covers the other engine-groundable static platforms — the `ci` command runs the same multi-collector dispatch, so an Astro, Shopify/Liquid, SwiftUI/UIKit, Compose/Kotlin, Android Views/XML, or Unity diff is gated on the engine too. The `scripts/git-diff-scope.mjs` + `scripts/gate.mjs` path below remains the **fallback**, and is the primary CI path for the engine-less platforms (ASP.NET/ASPX, Python, Angular, Flutter, React Native).
+**Prefer the deterministic CLI gate for React/TSX.** For a React/Next.js (TSX) diff, run the shipped engine as the gate: `npx @binclusive/cli ci --base $BASE_REF --fail-on block --format sarif > results.sarif`. It is diff-scoped, exits `1` iff a gating finding exists, and emits SARIF for code-scanning upload. (`--format sarif` is landing in the CLI's next release; until it ships, use the CLI's JSON output and keep the gate on its exit code.) The base ref comes from `BINCLUSIVE_BASE_REF`, else `GITHUB_BASE_REF`, else `origin/main`. Layer the reference-driven agent pass on top for what the engine cannot see, labeled with provenance as above. The same `ci` gate also covers the other engine-groundable static platforms — the `ci` command runs the same multi-collector dispatch, so an Astro, Shopify/Liquid, SwiftUI/UIKit, Compose/Kotlin, Android Views/XML, or Unity diff is gated on the engine too. The `scripts/git-diff-scope.mjs` + `scripts/gate.mjs` path below remains the **fallback**, and is the primary CI path for the engine-less source platforms (ASP.NET/ASPX, WordPress/PHP, Python, Angular, Flutter, React Native).
 
 1. **Compute the change scope.** Run `node <skill-dir>/scripts/git-diff-scope.mjs <project-root>`. It returns `changedFiles` (auditable source files changed between the base ref and HEAD), `changedLineRanges` per file, `mode`, and `baselineMap`. The base ref comes from `BINCLUSIVE_BASE_REF`, else `GITHUB_BASE_REF`, else `origin/main`. By default the scope is **committed history only** (`base...HEAD`); pass `--include-working` (or `BINCLUSIVE_INCLUDE_WORKING=1`) to also audit uncommitted/untracked local edits for pre-commit runs. A file with `status: "U"` (untracked) or empty `changedLineRanges` is audited whole. Always read the `notes` — if it reports uncommitted files excluded, surface that rather than reporting an empty audit as "all clear."
 2. **If `changedFiles` is empty,** write no findings, state "no auditable changes in this diff," and stop. CI passes.

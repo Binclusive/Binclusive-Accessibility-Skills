@@ -1,6 +1,6 @@
 # Binclusive Accessibility Skills
 
-Reusable Agent Skills for mapping, auditing, and fixing accessibility issues in React, Next.js, Angular, React Native, Expo, ASP.NET, ASPX/Web Forms, Shopify themes, SwiftUI, UIKit, native Android (Kotlin/Java, Jetpack Compose, Android Views/XML), and Flutter (Dart, Material/Cupertino) projects.
+Reusable Agent Skills for mapping, auditing, and fixing accessibility issues in React, Next.js, Angular, React Native, Expo, ASP.NET, ASPX/Web Forms, WordPress themes/plugins and Shopify themes, SwiftUI, UIKit, native Android (Kotlin/Java, Jetpack Compose, Android Views/XML), and Flutter (Dart, Material/Cupertino) projects.
 
 This repository keeps one canonical skill source and uses small adapters for Codex, Claude Code, GitHub Copilot, and Cursor.
 
@@ -24,6 +24,8 @@ Canonical skill files live in `skills/<skill-name>/SKILL.md`.
 - React and Next.js web applications.
 - Angular (2+) web applications, including standalone-components and NgModule apps, the Angular router, Angular CDK a11y (`LiveAnnouncer`, `cdkAriaLive`, `cdkTrapFocus`/`cdkFocusInitial`), and Angular Material.
 - Shopify Online Store themes, including Dawn-derived and custom Liquid/JSON theme structures.
+- WordPress classic, block, hybrid, and child themes, including PHP template hierarchy, block templates/parts, custom blocks, hooks, JavaScript, CSS, `theme.json`, and theme-owned WooCommerce overrides.
+- WordPress plugins, including public UI, wp-admin settings/list tables/notices/metaboxes, widgets and shortcodes, block/Site Editor controls, REST/AJAX states, onboarding, localization, and role/network variants.
 - React Native and Expo mobile applications.
 - ASP.NET MVC/Razor, Razor Pages, and ASPX/Web Forms applications.
 - iOS apps built with SwiftUI, UIKit, or mixed SwiftUI/UIKit architecture.

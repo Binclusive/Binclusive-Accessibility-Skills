@@ -10,7 +10,6 @@ const SKIP_DIRS = new Set([
   ".expo",
   ".turbo",
   ".vercel",
-  "build",
   "coverage",
   "dist",
   "node_modules",
@@ -670,6 +669,88 @@ function detectAspNet(files) {
   };
 }
 
+function detectWordPressTheme(files) {
+  const stylePath = path.join(root, "style.css");
+  const styleText = safeRead(stylePath, 120000) ?? "";
+  const header = styleText.match(/(?:^|\n)\s*\/\*[\s\S]*?(?:^|\n)\s*Theme Name:\s*(.+)$/im);
+  const themeName = header?.[1]?.trim() ?? null;
+  const parent = styleText.match(/(?:^|\n)\s*Template:\s*([^\r\n*]+)/im)?.[1]?.trim() ?? null;
+  const textDomain = styleText.match(/(?:^|\n)\s*Text Domain:\s*([^\r\n*]+)/im)?.[1]?.trim() ?? null;
+  const version = styleText.match(/(?:^|\n)\s*Version:\s*([^\r\n*]+)/im)?.[1]?.trim() ?? null;
+  const phpFiles = files.filter((file) => file.endsWith(".php"));
+  const pluginEntries = phpFiles
+    .filter((file) => path.dirname(file) === root)
+    .map((file) => ({ file, text: safeRead(file, 120000) ?? "" }))
+    .filter(({ text }) => /(?:^|\n)\s*\/?\*+\s*Plugin Name:\s*.+$/im.test(text));
+  const pluginName = pluginEntries[0]?.text.match(/(?:^|\n)\s*\*?\s*Plugin Name:\s*([^\r\n*]+)/im)?.[1]?.trim() ?? null;
+  const pluginVersion = pluginEntries[0]?.text.match(/(?:^|\n)\s*\*?\s*Version:\s*([^\r\n*]+)/im)?.[1]?.trim() ?? null;
+  const pluginTextDomain = pluginEntries[0]?.text.match(/(?:^|\n)\s*\*?\s*Text Domain:\s*([^\r\n*]+)/im)?.[1]?.trim() ?? null;
+  const blockTemplates = files.filter((file) => /(^|[/\\])(templates|parts)[/\\].+\.html$/i.test(file));
+  const classicTemplates = phpFiles.filter((file) =>
+    /(^|[/\\])(index|front-page|home|single(?:-[^/\\]+)?|singular|page(?:-[^/\\]+)?|archive(?:-[^/\\]+)?|taxonomy(?:-[^/\\]+)?|category(?:-[^/\\]+)?|tag(?:-[^/\\]+)?|author|date|search|404|attachment|comments|header|footer|sidebar)\.php$/i.test(file),
+  );
+  const blockJson = files.filter((file) => /(^|[/\\])block\.json$/i.test(file));
+  const themeJson = files.filter((file) => /(^|[/\\])theme\.json$/i.test(file));
+  const patterns = files.filter((file) => /(^|[/\\])patterns[/\\].+\.php$/i.test(file));
+  const phpSample = phpFiles.slice(0, 500).map((file) => ({ file, text: safeRead(file, 60000) ?? "" }));
+  const hasClassic = classicTemplates.length > 0;
+  const hasBlock = themeJson.length > 0 || blockTemplates.length > 0 || blockJson.length > 0;
+  const model = hasClassic && hasBlock ? "hybrid" : hasBlock ? "block" : hasClassic ? "classic" : null;
+  const localizationCatalogs = files.filter((file) => /\.(po|pot)$/i.test(file));
+  const buildConfigFiles = files.filter((file) =>
+    /(^|[/\\])(build|scripts|tools|webpack|vite|gulp|grunt)([/\\]|\.)/i.test(file) &&
+    /\.(js|cjs|mjs|ts|json)$/i.test(file),
+  );
+  const distributionFiles = files.filter((file) =>
+    /(^|[/\\])(public|dist)([/\\]).+\.(css|js|mjs)$/i.test(file),
+  );
+
+  return {
+    isTheme: themeName !== null,
+    isPlugin: pluginEntries.length > 0,
+    kind: themeName !== null && pluginEntries.length > 0 ? "theme-and-plugin" : themeName !== null ? "theme" : pluginEntries.length > 0 ? "plugin" : null,
+    themeName,
+    version,
+    textDomain,
+    parentTheme: parent,
+    pluginName,
+    pluginVersion,
+    pluginTextDomain,
+    pluginEntries: pluginEntries.slice(0, 20).map(({ file }) => rel(file)),
+    model,
+    styleHeader: themeName === null ? null : "style.css",
+    phpFileCount: phpFiles.length,
+    classicTemplates: classicTemplates.slice(0, 150).map(rel),
+    blockTemplates: blockTemplates.slice(0, 150).map(rel),
+    blockMetadata: blockJson.slice(0, 100).map(rel),
+    themeJson: themeJson.slice(0, 20).map(rel),
+    patterns: patterns.slice(0, 100).map(rel),
+    templateParts: files
+      .filter((file) => /(^|[/\\])template-parts[/\\].+\.php$/i.test(file))
+      .slice(0, 150)
+      .map(rel),
+    hookAndRegistrationSignals: phpSample
+      .filter(({ text }) => /\b(add_action|add_filter|register_block_type|register_nav_menus?|register_sidebar|add_theme_support|get_template_part|wp_nav_menu)\s*\(/.test(text))
+      .slice(0, 100)
+      .map(({ file }) => rel(file)),
+    localizationSignals: phpSample
+      .filter(({ text }) => /\b(__|_e|_x|_n|esc_html__|esc_html_e|esc_attr__|esc_attr_e)\s*\(/.test(text))
+      .slice(0, 100)
+      .map(({ file }) => rel(file)),
+    localizationCatalogs: localizationCatalogs.slice(0, 200).map(rel),
+    buildConfigFiles: buildConfigFiles.slice(0, 200).map(rel),
+    distributionFiles: distributionFiles.slice(0, 200).map(rel),
+    pluginUiSignals: phpSample
+      .filter(({ text }) => /\b(add_menu_page|add_submenu_page|register_setting|add_settings_(section|field)|add_meta_box|WP_List_Table|wp_ajax_|register_rest_route|register_widget|add_shortcode|register_block_type|enqueue_block_(editor_)?assets|enqueue_block_editor_assets|admin_notices|network_admin_menu|customize_register)\b/.test(text))
+      .slice(0, 150)
+      .map(({ file }) => rel(file)),
+    woocommerceOverrides: files
+      .filter((file) => /(^|[/\\])woocommerce[/\\].+\.php$/i.test(file))
+      .slice(0, 150)
+      .map(rel),
+  };
+}
+
 const files = walk(root);
 const pkg = safeJson(path.join(root, "package.json"));
 const web = detectWeb(files, pkg);
@@ -679,6 +760,7 @@ const ios = detectIos(files);
 const android = detectAndroid(files);
 const flutter = detectFlutter(files);
 const aspNet = detectAspNet(files);
+const wordpress = detectWordPressTheme(files);
 const detectedPlatforms = [];
 const packageDeps = depsOf(pkg);
 const hasReactDependency = Boolean(packageDeps.react);
@@ -719,6 +801,8 @@ if (android.gradleFiles.length > 0 || android.kotlinFileCount > 0 || android.jav
 if (flutter.hasFlutterSdkDependency || (flutter.pubspecFiles.length > 0 && flutter.dartFileCount > 0)) {
   detectedPlatforms.push("flutter");
 }
+if (wordpress.isTheme) detectedPlatforms.push("web-wordpress-theme");
+if (wordpress.isPlugin) detectedPlatforms.push("web-wordpress-plugin");
 
 const notes = [];
 if (files.length >= MAX_FILES) notes.push(`File scan capped at ${MAX_FILES} files.`);
@@ -741,6 +825,11 @@ if (detectedPlatforms.includes("web-angular")) {
     `Angular project detected (${angular.appModel} app model${angular.angularVersion ? `, @angular/core ${angular.angularVersion}` : ""}). Map it with mapper-angular.md; audit it with auditor-web-a11y.md plus angular.md (Angular CDK a11y, [attr.aria-*] bindings, structural directives, router focus). React/Next.js web uses mapper-web.md.`,
   );
 }
+if (wordpress.isTheme || wordpress.isPlugin) {
+  notes.push(
+    `WordPress ${wordpress.kind}${wordpress.isTheme ? ` (${wordpress.model ?? "unclassified"} theme${wordpress.parentTheme ? `, child of ${wordpress.parentTheme}` : ""})` : ""} detected. Map it with mapper-wordpress-theme.md; include PO/POT catalogs and name build/distribution coverage explicitly; keep WordPress core, unrelated plugins, uploads, caches, vendor dependencies, and unavailable parent themes outside scope unless requested.`,
+  );
+}
 if (ios.interfaceBuilderFileCount > 0) {
   const withoutConfig = ios.interfaceBuilder.filter((ib) => !ib.hasAccessibilityConfig).length;
   notes.push(
@@ -760,8 +849,8 @@ const result = {
   android,
   flutter,
   aspNet,
+  wordpress,
   notes,
 };
 
 process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
-

@@ -18,6 +18,22 @@ Ask one concise question when the user has not selected tasks:
 
 A task is only considered remediated when the code has been changed and the relevant file/scope has been re-read or re-checked. Record the result in `after-test.md`.
 
+## WordPress Theme and Plugin Tasks
+
+Before editing, trace the selected finding through the mapped template hierarchy, template part or block part, hook callback, JavaScript behavior, and theme setting that produces the public UI. Confirm the file is theme-owned and in scope.
+
+Treat a WordPress task as `SAFE` only when all conditions hold:
+
+- The current theme source proves the failure and the exact local remedy.
+- The change does not alter template selection, hook/filter order, public PHP function signatures, saved block serialization, block attributes, database content, WooCommerce/plugin contracts, parent-theme behavior, or visual layout.
+- Accessible names and status messages use the established text domain and correct escaping context.
+- State attributes are synchronized with theme-owned behavior rather than added as static ARIA.
+- The change preserves WordPress coding/security behavior, including escaping and sanitization.
+
+Classify template hierarchy, custom walkers, render callbacks, hook composition, focus traps, WooCommerce overrides, block schema/serialization, and saved-content migrations as `FUNCTIONAL-RISK`. Classify visible labels, focus design, colors, spacing, typography, target size, or reflow changes as `VISUAL-IMPACT`. Classify plugin/parent-theme/database/editor-controlled outcomes as `RUNTIME-CHECK`.
+
+After each safe edit, run existing PHP/WordPress lint and test commands when present, re-read the complete changed composition path, and verify the targeted source condition is gone. If a runnable URL exists, re-run `binclusive scan --url` and document keyboard plus screen-reader checks. Never claim the WordPress PHP source was engine-scanned.
+
 ## Editing Storyboards and XIBs (Interface Builder XML)
 
 `.storyboard` and `.xib` files are XML. For iOS Interface Builder findings, edit the markup directly with minimal, well-formed insertions. Treat this like any source edit — do not rewrite or reformat the whole file.
