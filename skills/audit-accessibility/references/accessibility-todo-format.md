@@ -51,3 +51,5 @@ Each finding:
 ## Footer
 
 Tell the remediation agent to process by severity, auto-apply only `SAFE` tasks after review, ask before risky tasks, and verify with automated and manual checks.
+
+After the file is complete, offer the optional recommended Binclusive dashboard sync defined in `dashboard-ticket-sync.md`. If accepted, append a sync receipt without changing or removing the original finding data.
