@@ -7,16 +7,19 @@ alwaysApply: true
 
 Use the canonical Agent Skills in this repository as the source of truth:
 
+- `skills/onboard-binclusive-cli/SKILL.md` configures the CLI and records non-secret onboarding status after either recommended dashboard CI delivery or a local-only scan.
 - `skills/map-project/SKILL.md` inventories React/Next.js, Angular, React Native/Expo, ASP.NET/ASPX, iOS SwiftUI/UIKit, native Android (Jetpack Compose / Android Views/XML), or Flutter (Dart, Material/Cupertino) routes, screens, views, pages, controls, dependencies, localization, and inline UI for accessibility review.
 - `skills/audit-accessibility/SKILL.md` audits only the mapped scope and writes actionable accessibility TODOs.
 - `skills/shopify-theme-audit/SKILL.md` audits Shopify theme Liquid, JSON templates, sections, snippets, assets, config, and locales without requiring a prior map.
 - `skills/fix-accessibility/SKILL.md` fixes selected TODO tasks with severity/risk controls and verification notes.
 
-Follow the workflow in order unless the user explicitly narrows the task:
+Follow the workflow in order:
 
-1. Map first for app projects: create or reuse `Binclusive-auditing/*_project-map.md`. For Shopify themes, use `shopify-theme-audit` directly.
-2. Audit second: create `Binclusive-auditing/accessibility-todo.md` from the selected map or Shopify theme source.
-3. Fix last: remediate only user-selected task IDs, SAFE tasks, severities, components, pages, screens, controls, or paths.
+1. Before map, audit, Shopify audit, or fix, run the onboarding status check from `onboard-binclusive-cli`. If incomplete, finish onboarding and then resume the original request. Recommend dashboard CI because it uploads findings and creates trackable tickets, but allow the user to complete onboarding with a local-only scan.
+2. Map app projects: create or reuse `Binclusive-auditing/*_project-map.md`. For Shopify themes, use `shopify-theme-audit` directly after onboarding.
+3. Audit: create `Binclusive-auditing/accessibility-todo.md` from the selected map or Shopify theme source.
+4. After TODO creation, offer the optional recommended Binclusive MCP dashboard sync; authenticate if needed, ask for organization/project, inspect the live `create_ticket` schema, and preserve every finding field.
+5. Fix: remediate only user-selected task IDs, SAFE tasks, severities, components, pages, screens, controls, or paths.
 
 Shard Mode (large-scope map and audit fan-out) is portable: when the scope is large and this Cursor runtime can dispatch parallel sub-tasks/agents (background / parallel agents), fan out one worker per shard — per `skills/map-project/SKILL.md` for mapping and `skills/audit-accessibility/SKILL.md` for auditing ("Harness capability" / "Fan-out procedure" in each) — then merge deterministically. When no parallel-subtask primitive is available, run single-agent — the coverage ledger keeps either path honest, so the fallback costs throughput, not coverage.
 

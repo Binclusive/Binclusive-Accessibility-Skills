@@ -1,0 +1,4 @@
+interface:
+  display_name: "Onboard Binclusive CLI"
+  short_description: "Configure Binclusive CLI and verify a scan"
+  default_prompt: "Use $onboard-binclusive-cli to configure this project and complete either the recommended dashboard CI scan or a local-only scan."

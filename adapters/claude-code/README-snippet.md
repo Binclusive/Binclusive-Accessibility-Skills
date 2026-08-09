@@ -14,6 +14,7 @@ scripts/install.ps1 --target claude
 
 The installed commands are:
 
+- `/onboard-binclusive-cli`
 - `/map-project`
 - `/audit-accessibility`
 - `/shopify-theme-audit`

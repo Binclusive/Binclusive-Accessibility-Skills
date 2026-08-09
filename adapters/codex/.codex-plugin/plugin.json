@@ -4,6 +4,9 @@
   "description": "Binclusive accessibility mapping, audit, and remediation skills for web, WordPress themes, React Native, iOS, native Android, and Flutter projects.",
   "skills": [
     {
+      "path": "../../skills/onboard-binclusive-cli/SKILL.md"
+    },
+    {
       "path": "../../skills/map-project/SKILL.md"
     },
     {

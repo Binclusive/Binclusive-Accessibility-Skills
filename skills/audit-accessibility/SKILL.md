@@ -5,6 +5,10 @@ description: Audit React, Next.js, Angular, React Native, Expo, ASP.NET, ASPX/We
 
 # Audit Accessibility
 
+## CLI Onboarding Gate
+
+Before reading mapped source for auditing, run `node <onboard-binclusive-cli-skill-dir>/scripts/onboarding-state.mjs status <project-root>`. If it exits `2`, route to `$onboard-binclusive-cli` and resume this request after onboarding completes. Onboarding is required, but dashboard delivery is not: recommend `binclusive ci` because it uploads findings and creates dashboard tickets for centralized assignment and tracking; let the user choose a local `binclusive scan` instead. If it exits `1`, stop and surface the invalid state instead of bypassing it. CI/Diff Mode must fail with onboarding guidance rather than opening an interactive prompt.
+
 > **Requires the `binclusive` CLI** (the unified CLI providing `scan` / `scan --url` / `init` / `ci`). If `binclusive scan` errors as an unknown command, upgrade the CLI — the agent + references path still works without it, just without the source-provable floor.
 
 Audit a previously mapped React/Next.js web, Angular web, React Native/Expo, ASP.NET/ASPX, WordPress theme, iOS SwiftUI/UIKit, native Android (Jetpack Compose / Android Views/XML), Flutter (Dart, Material/Cupertino), or Python (desktop GUI, CLI/TUI, web backend, or docs) scope and write an actionable accessibility TODO report. This skill observes and documents only. It never edits source code.
@@ -268,6 +272,10 @@ the 100% worklist-coverage assertion must pass before the report is written — 
 subagent covered is a named `unread` gap here, never an implicit "clean." The output is
 otherwise identical to a single-agent run: same format, same merged `TASK-00x` sequence, no
 shard structure exposed.
+
+## Optional Dashboard Ticket Sync
+
+After writing and verifying the TODO report, read and follow `references/dashboard-ticket-sync.md`. Offer to publish every open TODO to a user-selected Binclusive organization and project. This is recommended for shared ownership and ticket tracking, but requires explicit opt-in. Keep the local report as the source of truth, inspect the authenticated MCP `create_ticket` schema at runtime, and transfer every finding without data loss.
 
 ## Audit Order
 

@@ -5,6 +5,10 @@ description: Audit Shopify Online Store themes for accessibility from Liquid, JS
 
 # Shopify Theme Audit
 
+## CLI Onboarding Gate
+
+Before reading theme source for auditing, run `node <onboard-binclusive-cli-skill-dir>/scripts/onboarding-state.mjs status <theme-root>`. If it exits `2`, route to `$onboard-binclusive-cli` and resume this request after onboarding completes. Onboarding is required, but dashboard delivery is not: recommend `binclusive ci` because it uploads findings and creates dashboard tickets for centralized assignment and tracking; let the user choose a local `binclusive scan` instead. If it exits `1`, stop and surface the invalid state instead of bypassing it.
+
 Audit a Shopify theme statically and write an actionable accessibility TODO report. This skill observes and documents only. It never edits source code.
 
 ## Start Here
@@ -27,6 +31,8 @@ Audit a Shopify theme statically and write an actionable accessibility TODO repo
    - `Binclusive-auditing/accessibility-todo_<YYYY-MM-DD>.md`
 
 ## Required Output
+
+After writing and verifying `Binclusive-auditing/accessibility-todo.md`, read and follow `../audit-accessibility/references/dashboard-ticket-sync.md`. Offer the optional, recommended Binclusive dashboard sync and publish only after the user selects and confirms the authenticated organization and project.
 
 Use `references/shopify-accessibility-todo-format.md`. Every finding must include:
 

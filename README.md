@@ -12,6 +12,7 @@ Binclusive develops technologies that help organizations make their applications
 Codebase auditing is only one part of a complete accessibility process. Accessibility should also be validated with end-user testing after implementation. Binclusive provides disabled-user testing services and production-environment accessibility testing for organizations that need deeper validation. Learn more at https://binclusive.io.
 
 ## Skills
+- `onboard-binclusive-cli`: configure the CLI and verify either recommended dashboard delivery or a local-only scan.
 - `map-project`: inventory routes, screens, views, shared UI, dependencies, localization, and inline UI before an accessibility audit.
 - `audit-accessibility`: audit a mapped scope and write `Binclusive-auditing/accessibility-todo.md` without editing source code.
 - `shopify-theme-audit`: audit Shopify theme Liquid, JSON templates, sections, snippets, assets, config, and locales without editing source code.
@@ -103,6 +104,7 @@ The rules file is `alwaysApply: true`, so Cursor loads the Binclusive accessibil
 Invoke skills explicitly with:
 
 ```text
+$onboard-binclusive-cli
 $map-project
 $audit-accessibility
 $shopify-theme-audit
@@ -114,6 +116,7 @@ $fix-accessibility
 Invoke skills explicitly with:
 
 ```text
+/onboard-binclusive-cli
 /map-project
 /audit-accessibility
 /shopify-theme-audit
@@ -124,9 +127,16 @@ Invoke skills explicitly with:
 
 After installing the adapter into a project, ask Copilot to follow the Binclusive accessibility workflow. The intended order is:
 
-1. Map the project.
-2. Audit the mapped scope.
-3. Fix only selected audit tasks.
+1. Complete Binclusive CLI onboarding; prefer dashboard CI, or choose a local-only scan.
+2. Map the project.
+3. Audit the mapped scope.
+4. Fix only selected audit tasks.
+
+## CLI Onboarding Gate
+
+Every map, audit, Shopify audit, and fix workflow checks `Binclusive-auditing/cli-onboarding.json` before reading source for that work. Onboarding is required, but dashboard delivery is a recommended choice rather than a requirement. The preferred `binclusive ci` path uploads findings and creates dashboard tickets for centralized assignment and tracking. A user may instead complete onboarding with a local `binclusive scan`; its findings remain local and no dashboard tickets are created.
+
+After an audit writes `Binclusive-auditing/accessibility-todo.md`, the workflow offers an optional MCP sync to `https://mcp.binclusive.io/mcp`. If accepted, it authenticates through browser-based OAuth when needed, asks the user to choose the destination organization and project, inspects the live `create_ticket` schema, and creates one lossless dashboard ticket per open TODO. Fields without an exact native ticket match are preserved in the ticket description.
 
 ## Map & Audit Reliability: Coverage & Shard Mode
 
@@ -180,6 +190,7 @@ See [`skills/audit-accessibility/references/ci-cd.md`](skills/audit-accessibilit
 
 ```text
 skills/
+  onboard-binclusive-cli/
   map-project/
   audit-accessibility/
   shopify-theme-audit/
