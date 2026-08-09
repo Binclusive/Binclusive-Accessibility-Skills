@@ -107,6 +107,30 @@ For each mapped screen/page widget, record inline UI that bypasses shared compon
 
 Record file path, approximate line range when verified, UI element/control type, interactivity, existing accessibility props/widgets, localization status, runtime-only concerns, and notes.
 
+## Required UI Surface Coverage Ledger
+
+Do not treat a list of screens as a complete Flutter map. Add a ledger with one row for every category below and mark it `FOUND`, `NOT FOUND`, `OUT OF SCOPE`, or `UNKNOWN - inspect/runtime required`:
+
+1. App shell, screen titles, headings, safe areas, orientation and adaptive layout.
+2. Navigation: routes, tabs, rails, drawers, deep links, back/close and nested navigators.
+3. Actions: buttons, icon actions, links, menus, shortcuts and custom gesture controls.
+4. Forms: text/search/autocomplete, validation, required/read-only/obscured fields, pickers and file input.
+5. Selection/value controls: checkbox, radio, switch, slider, dropdown/combo, stepper, rating and segmented controls.
+6. Collections: lists, grids, slivers, tables, trees, feeds, carousels, pages and reorderable content.
+7. Layered UI: disclosure, tooltip, popup/context menu, dialog, alert, sheet, drawer and custom overlay.
+8. Dynamic feedback: loading, progress, badges, banners, snackbars/toasts, errors and live data.
+9. Text/content: rich/selectable text, headings, inline links, markdown/HTML/code and truncation.
+10. Visual content: images, icons, avatars, SVG, custom paint, charts, diagrams and maps.
+11. Media/platform views: audio, video, captions, camera/scanner, WebView and native platform views.
+12. Direct manipulation: drag/drop, dismiss, reorder, swipe, long-press, pinch/zoom and gesture-only actions.
+13. Layout/input adaptation: text scale, display scale, narrow/wide/landscape, keyboard/D-pad, mouse/hover and scroll.
+14. Motion/theme: animations, timers, Reduce Motion, dark/high-contrast modes, visible focus and non-color cues.
+15. Localization/bidi: visible and semantic strings, plurals/formats, RTL and long translations.
+16. Target-specific surfaces: Android, iOS, web, Windows, macOS, Linux, wearable/TV/automotive and add-to-app host boundaries.
+17. Accessibility tests/diagnostics: `SemanticsTester`, `SemanticsDebugger`, semantics matchers, guideline tests and integration/device plans.
+
+For each `FOUND` row record the owning files/widgets, mapped screens, existing semantics mechanism, localization source, likely static risks, and required runtime target/assistive technology. `NOT FOUND` must be evidence-based; `UNKNOWN` is preferable to guessing.
+
 ## Output File
 
 Write one file in project-root `Binclusive-auditing/` named `<project-name>_<YYYY-MM-DD>_project-map.md`.
@@ -120,9 +144,10 @@ Required sections:
 5. Shared Components / Controls: reusable widget inventory.
 6. Inline UI Inventory: per-screen inline UI table.
 7. Widget/Asset Inventory: custom widgets, `CustomPaint` surfaces, assets, and localized resources when present.
-8. Platform Feature Inventory: text scaling (`MediaQuery.textScaler`/`textScaleFactor`, fixed heights), TalkBack/VoiceOver (Flutter renders to both), Switch Access/Switch Control, Voice Access/Voice Control, touch target size (48x48, `MaterialTapTargetSize`), Reduce Motion (`MediaQuery.disableAnimations`), bold text / high contrast (`MediaQuery.boldText`/`highContrast`), dark theme, haptics/audio, and Flutter-web/desktop semantics differences when in scope.
-9. Coverage and Blind Spots: runtime-only concerns, generated/build-time UI, third-party widgets, excluded packages/targets, emulator/device/screen-reader checks required.
-10. How to Use This File: instructions for `audit-accessibility`.
+8. UI Surface Coverage Ledger: all 17 categories above with status, evidence, ownership and runtime target.
+9. Platform Feature Inventory: text scaling (`MediaQuery.textScaler`/`textScaleFactor`, fixed heights), TalkBack/VoiceOver (Flutter renders to both), Switch Access/Switch Control, Voice Access/Voice Control, touch target size (48x48, `MaterialTapTargetSize`), Reduce Motion (`MediaQuery.disableAnimations`), bold text / high contrast (`MediaQuery.boldText`/`highContrast`), dark theme, haptics/audio, and Flutter-web/desktop semantics differences when in scope.
+10. Coverage and Blind Spots: runtime-only concerns, generated/build-time UI, third-party widgets, excluded packages/targets, emulator/device/screen-reader checks required.
+11. How to Use This File: instructions for `audit-accessibility`.
 
 ## Non-Negotiable Rules
 

@@ -176,3 +176,81 @@ This catalog contains anonymized, reusable accessibility patterns only. Do not a
 - Correct fix: Wrap the updating region in `Semantics(liveRegion: true, child: ...)`, or announce transient messages via `SemanticsService.announce(message, textDirection)`. Material `SnackBar` content is read — verify it is meaningful.
 - Verification: With a screen reader on, the update is announced without moving focus; whether it fires is a runtime check.
 - False positives / exceptions: Do not mark high-frequency or non-essential updates as live regions; that creates announcement spam.
+
+### PATTERN-FLT-013: Dialog or overlay leaks focus to background content
+- Platform: Flutter
+- Framework: Material | Cupertino | Widgets | Mixed
+- Component type: Dialog / sheet / drawer / custom overlay
+- WCAG / Platform: WCAG 2.4.3 Focus Order, WCAG 4.1.2 Name/Role/Value, TalkBack/VoiceOver modal behavior
+- Severity default: Serious
+- Fix type default: FUNCTIONAL-RISK
+- Bad shape: A custom `OverlayEntry`, dialog, sheet, or full-screen panel has no meaningful title/dismiss action, does not block background semantics, or does not restore focus to its trigger.
+- Detection hints: `OverlayEntry`, `Stack`/`Positioned.fill`, custom barrier, or route popup without `BlockSemantics`, `ModalBarrier`, named close action, focus scope, or restoration strategy.
+- Correct fix: Prefer framework dialog/sheet routes. For a custom layer, expose a named route/dialog region, block background semantics and interaction, provide an accessible dismiss action, establish a focus scope, and restore focus to the invoking control.
+- Verification: TalkBack/VoiceOver remains inside the layer, announces its context, dismisses predictably, and returns to the trigger; keyboard Escape/back behavior is correct on applicable targets.
+- False positives / exceptions: Do not flag a standard dialog solely because source lacks custom `BlockSemantics`; verify the framework route/barrier behavior first.
+
+### PATTERN-FLT-014: Drag, swipe, or reorder is the only operation path
+- Platform: Flutter
+- Framework: Material | Cupertino | Widgets | Mixed
+- Component type: Dismissible / draggable / reorderable / custom gesture
+- WCAG / Platform: WCAG 2.1.1 Keyboard, WCAG 2.5.1 Pointer Gestures, WCAG 2.5.7 Dragging Movements
+- Severity default: Serious
+- Fix type default: FUNCTIONAL-RISK
+- Bad shape: Delete, reorder, reveal, zoom, adjust, or another essential action is available only through swipe, drag, pinch, or long-press.
+- Detection hints: `Dismissible`, `Draggable`, `LongPressDraggable`, `ReorderableListView`, scale/pan recognizers, `onHorizontalDrag*`, `onPan*`, or `onLongPress` with no visible command or semantic custom action.
+- Correct fix: Add a tap/keyboard/menu alternative and, where useful, localized `customSemanticsActions`, `onIncrease`/`onDecrease`, or explicit move controls. Preserve confirmation/undo for destructive actions.
+- Verification: Screen reader, Switch Control/Access, Voice Control/Access, and keyboard users can complete the same operation without the gesture.
+- False positives / exceptions: Exploratory gestures may remain when an equivalent accessible summary/control path provides the same outcome.
+
+### PATTERN-FLT-015: Form state is visible but not semantically exposed
+- Platform: Flutter
+- Framework: Material | Cupertino | Widgets | Mixed
+- Component type: Form field / validation / selection control
+- WCAG / Platform: WCAG 3.3.1 Error Identification, WCAG 3.3.2 Labels or Instructions, WCAG 4.1.2 Name/Role/Value
+- Severity default: Serious
+- Fix type default: SAFE
+- Bad shape: Required, invalid, read-only, mixed, or expanded state is conveyed only by color, an icon, helper text, or a label suffix.
+- Detection hints: custom `FormField`, visual asterisk/error border, `readOnly`, tri-state or disclosure state without corresponding native control semantics or supported `Semantics` state properties.
+- Correct fix: Prefer native form/selection widgets and connect visible labels, help, and errors. When the pinned SDK supports them, use `isRequired`, `validationResult`, `readOnly`, `mixed`, and `expanded`; never raise the minimum Flutter SDK silently.
+- Verification: State and error are announced at the field/control, remain correct after change, and are understandable without color.
+- False positives / exceptions: Do not duplicate state already exposed correctly by a native widget.
+
+### PATTERN-FLT-016: Table, chart, map, or canvas has no equivalent structure
+- Platform: Flutter
+- Framework: Material | Widgets | Mixed
+- Component type: Data table / chart / map / diagram / CustomPaint
+- WCAG / Platform: WCAG 1.1.1 Non-text Content, WCAG 1.3.1 Info and Relationships, WCAG 1.4.1 Use of Color
+- Severity default: Serious
+- Fix type default: FUNCTIONAL-RISK
+- Bad shape: Important data or interactive regions exist only as pixels, positions, or colors, with no semantic summary, row/column relationship, labeled data nodes, or accessible alternative.
+- Detection hints: `CustomPaint`, `Canvas`, chart/map package, custom `RenderObject`, or dense `Stack` without `semanticsBuilder`, `Semantics`, textual summary/table, or named actions.
+- Correct fix: Provide a concise summary plus navigable data/controls; use `CustomPainter.semanticsBuilder` or render-object semantics for meaningful regions and differentiate series/states beyond color.
+- Verification: Screen-reader users can identify purpose, values, relationships, and actions; keyboard/switch users can operate interactive regions; contrast is measured.
+- False positives / exceptions: Pure decoration should be excluded, not described. A nearby accessible table/summary can be the primary equivalent.
+
+### PATTERN-FLT-017: Web or desktop control is pointer-only
+- Platform: Flutter web | Windows | macOS | Linux
+- Framework: Material | Cupertino | Widgets | Mixed
+- Component type: Hover region / custom control / shortcut / link
+- WCAG / Platform: WCAG 2.1.1 Keyboard, WCAG 2.4.7 Focus Visible, WCAG 4.1.2 Name/Role/Value
+- Severity default: Critical
+- Fix type default: FUNCTIONAL-RISK
+- Bad shape: A control responds to mouse hover/click or pointer events but cannot receive logical keyboard focus, activate through keyboard actions, or expose a correct web semantic role/link target.
+- Detection hints: `MouseRegion`, `Listener`, raw pointer callbacks, `GestureDetector`, custom shortcut handling, link-like text without `Link`/`SemanticsRole.link` and `linkUrl`, or removed focus highlight.
+- Correct fix: Use focusable native controls/links, wire `Shortcuts`/`Actions` intentionally, preserve visible focus, expose the correct role/URL, and ensure source/tab order matches the visual flow.
+- Verification: Keyboard-only operation, browser/desktop screen reader, zoom/reflow, hover-independent discovery, and high-contrast focus visibility.
+- False positives / exceptions: Passive hover decoration is not interactive and need not be focusable.
+
+### PATTERN-FLT-018: Accessibility tests omit the critical custom control
+- Platform: Flutter
+- Framework: Material | Cupertino | Widgets | Mixed
+- Component type: Test coverage / custom widget
+- WCAG / Platform: Quality gate; Flutter semantics regression prevention
+- Severity default: Minor
+- Fix type default: SAFE
+- Bad shape: A reusable custom control with manually-authored semantics has no widget-test assertion for its name, role, state, and action, allowing regressions to ship silently.
+- Detection hints: custom `Semantics`/render object in `lib/` with no nearby `SemanticsTester`, `matchesSemantics`, or equivalent widget test in `test/`.
+- Correct fix: Add focused widget tests for the semantic contract and relevant guideline matchers. Treat missing tests as a coverage gap, not proof that the product is inaccessible.
+- Verification: The test fails when the required semantic property/action is removed and passes with the intended contract; retain device AT testing for spoken behavior and traversal.
+- False positives / exceptions: An integration or golden semantics test elsewhere may already cover the control; locate it before reporting.
