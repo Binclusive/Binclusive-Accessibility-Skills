@@ -565,7 +565,15 @@ function detectFlutter(files) {
       .slice(0, 50)
       .map(({ file }) => rel(file)),
     accessibilitySignals: dartSample
-      .filter(({ text }) => /\bSemantics\s*\(|semanticLabel\s*:|ExcludeSemantics|MergeSemantics|BlockSemantics|SemanticsService\.announce|OrdinalSortKey|FocusTraversal(Group|Order)|tooltip\s*:|liveRegion\s*:/.test(text))
+      .filter(({ text }) => /\bSemantics(?:\.fromProperties)?\s*\(|SemanticsProperties|SemanticsRole|semanticLabel\s*:|ExcludeSemantics|MergeSemantics|BlockSemantics|SemanticsService\.announce|CustomPainter\.semanticsBuilder|describeSemanticsConfiguration|assembleSemanticsNode|OrdinalSortKey|FocusTraversal(Group|Order)|SemanticsTester|SemanticsDebugger|tooltip\s*:|liveRegion\s*:|headingLevel\s*:|validationResult\s*:/.test(text))
+      .slice(0, 50)
+      .map(({ file }) => rel(file)),
+    uiRiskSignals: dartSample
+      .filter(({ text }) => /GestureDetector|InkWell|InkResponse|Dismissible|Draggable|ReorderableListView|CustomPaint|Canvas\b|OverlayEntry|WebView|PlatformView|VideoPlayer|Camera|Barcode|Qr|Lottie|Rive|MaterialTapTargetSize\.shrinkWrap|textScaler\s*:|textScaleFactor\s*:|maxLines\s*:|TextOverflow\.(ellipsis|clip)|SizedBox\s*\(|Container\s*\(|itemExtent\s*:/.test(text))
+      .slice(0, 100)
+      .map(({ file }) => rel(file)),
+    testSignals: dartSample
+      .filter(({ text }) => /SemanticsTester|SemanticsHandle|matchesSemantics|meetsGuideline|androidTapTargetGuideline|iOSTapTargetGuideline|textContrastGuideline|labeledTapTargetGuideline|showSemanticsDebugger/.test(text))
       .slice(0, 50)
       .map(({ file }) => rel(file)),
     localizationSignals: [
