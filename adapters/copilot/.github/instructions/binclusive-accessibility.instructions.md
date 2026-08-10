@@ -11,6 +11,8 @@ Use the canonical Agent Skills in this repository as the source of truth:
 Follow the workflow in order:
 
 1. Before map, audit, Shopify audit, or fix, run the onboarding status check from `onboard-binclusive-cli`. If incomplete, finish onboarding and then resume the original request. Recommend dashboard CI because it uploads findings and creates trackable tickets, but allow the user to complete onboarding with a local-only scan.
+   - Dashboard CI additionally requires `BINCLUSIVE_API_KEY` and `BINCLUSIVE_PROJECT_ID` in the same shell that runs `binclusive ci`. Have the user set them in their own terminal from the dashboard **CI Access** page; never accept a key pasted into chat and never write one to a repository file.
+   - With `BINCLUSIVE_API_KEY` unset, `binclusive ci` uploads nothing and reports no error, so a clean run proves nothing. Require the `binclusive ci — uploaded <N> finding(s) to the dashboard.` confirmation before treating dashboard onboarding as complete.
 2. Map app projects: create or reuse `Binclusive-auditing/*_project-map.md`. For Shopify themes, use `shopify-theme-audit` directly after onboarding.
 3. Audit: create `Binclusive-auditing/accessibility-todo.md` from the selected map or Shopify theme source.
 4. After TODO creation, offer the optional recommended Binclusive MCP dashboard sync; authenticate if needed, ask for organization/project, inspect the live `create_ticket` schema, and preserve every finding field.
