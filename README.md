@@ -123,6 +123,8 @@ Invoke skills explicitly with:
 /fix-accessibility
 ```
 
+Plain requests route too, in English or Turkish — "run the onboarding", "onboarding yap", "map the project", "erişilebilirlik testi yap". If a request lands on the wrong skill, the receiving skill's trigger phrases are the thing to extend, not the caller's wording.
+
 ### Copilot
 
 After installing the adapter into a project, ask Copilot to follow the Binclusive accessibility workflow. The intended order is:
@@ -175,6 +177,18 @@ git-diff-scope.mjs   ->  audit (diff mode)   ->  gate.mjs
 - **Gate** — `node skills/audit-accessibility/scripts/gate.mjs Binclusive-auditing/accessibility-todo.md --max-severity=serious` exits non-zero when any open finding is at/above the threshold, which fails the PR check.
 
 Key settings: `BINCLUSIVE_BASE_REF` (diff base, defaults to `GITHUB_BASE_REF` then `origin/main`), `BINCLUSIVE_CI` (forces non-interactive mode), and `--max-severity` (`critical|serious|moderate|minor`). The `fix-accessibility` skill is intentionally **not** part of the gate — remediation stays a human-reviewed step.
+
+### Dashboard delivery credentials
+
+Sending findings to the dashboard as tickets — `binclusive ci` rather than a local `binclusive scan` — needs two values from **Settings → CI access**, set in the same shell (or CI secret store) that runs the command:
+
+```bash
+export BINCLUSIVE_API_KEY="b8e_paste_your_ci_token_here"
+export BINCLUSIVE_PROJECT_ID="prj_paste_your_project_id_here"
+b8e ci
+```
+
+`onboard-binclusive-cli` walks through this interactively; the user always enters the values in their own terminal, never into chat or a git-tracked file. **When `BINCLUSIVE_API_KEY` is unset, `b8e ci` scans and reports but uploads nothing, without erroring** — so dashboard delivery is proven only by the `uploaded <N> finding(s)` confirmation, never by a clean exit. A key set without `BINCLUSIVE_PROJECT_ID` fails loudly, as does a revoked or wrong-organization key.
 
 See [`skills/audit-accessibility/references/ci-cd.md`](skills/audit-accessibility/references/ci-cd.md) for the full pipeline, a ready-to-use GitHub Actions workflow, and the committed-vs-working-tree scope rules.
 

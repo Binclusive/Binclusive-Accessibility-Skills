@@ -1,6 +1,6 @@
 ---
 name: onboard-binclusive-cli
-description: Configure and verify the Binclusive CLI for a project, then run either the recommended dashboard-connected CI scan or a local-only scan. Use before any Binclusive map, audit, Shopify audit, or fix workflow when `Binclusive-auditing/cli-onboarding.json` is missing or incomplete; or when a user asks to login, authorize, configure, or onboard the Binclusive CLI.
+description: Configure and verify the Binclusive CLI for a project, then run either the recommended dashboard-connected CI scan or a local-only scan. Use when the user says /onboard, /onboardbinclusive, onboarding, run onboarding, run the onboarding skill, run the Binclusive onboarding, Binclusive onboarding, onboard Binclusive, onboard this project, set up Binclusive, Binclusive setup, configure the Binclusive CLI, CLI onboarding, Binclusive login, log in to Binclusive, authorize the CLI, connect the dashboard, "binclusive onboarding'i çalıştır", "onboarding'i çalıştır", "onboarding yap", "binclusive kurulumunu yap", "binclusive'i kur", "projeyi onboard et", "cli'yi yapılandır", "binclusive'e giriş yap", "panoya bağla", or otherwise asks to login, authorize, configure, or onboard the Binclusive CLI. Also required before any Binclusive map, audit, Shopify audit, or fix workflow when `Binclusive-auditing/cli-onboarding.json` is missing or incomplete.
 ---
 
 # Onboard Binclusive CLI
@@ -85,6 +85,8 @@ Otherwise give the clickable organization-specific link after substituting only 
 ### 4. Configure CI credentials (dashboard path only)
 
 Explain: "The login session identifies you interactively. The next two environment variables authorize automated `binclusive ci` uploads and route findings to the selected dashboard project."
+
+Never skip this stage on the dashboard path, and never infer that it succeeded. When `BINCLUSIVE_API_KEY` is unset or empty, `binclusive ci` skips the upload path **silently** — it still scans, still reports, still exits non-zero on gating findings, but creates no tickets and prints no error. A clean-looking `ci` run is therefore not evidence of delivery; only the stage 5 confirmation string is. The neighbouring misconfigurations do fail loudly: a key set without `BINCLUSIVE_PROJECT_ID` throws, and a revoked or wrong-organization key is rejected as `UNAUTHORIZED`. The silent case is the one that quietly ships an unmonitored project, so ask for both values every time.
 
 1. Derive the organization slug only after authenticated context is known. Show or open `https://app.binclusive.io/<organization-slug>/settings/ci-access`.
 2. Tell the user exactly where to look: copy the CI API key and project ID from the **CI Access** page.
