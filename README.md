@@ -188,7 +188,18 @@ export BINCLUSIVE_PROJECT_ID="prj_paste_your_project_id_here"
 b8e ci
 ```
 
-`onboard-binclusive-cli` walks through this interactively; the user always enters the values in their own terminal, never into chat or a git-tracked file. **When `BINCLUSIVE_API_KEY` is unset, `b8e ci` scans and reports but uploads nothing, without erroring** — so dashboard delivery is proven only by the `uploaded <N> finding(s)` confirmation, never by a clean exit. A key set without `BINCLUSIVE_PROJECT_ID` fails loudly, as does a revoked or wrong-organization key.
+`onboard-binclusive-cli` walks through this interactively; the user always enters the values in their own terminal, never into chat or a git-tracked file.
+
+`b8e login` does **not** authorize `b8e ci`. The CLI keeps two non-overlapping credential lanes: human commands (`scan`, `whoami`, `audit`, `tickets`, …) read the session file and never the environment, while `ci` reads `BINCLUSIVE_API_KEY` and never the session file — so a logged-in laptop still uploads nothing without the exports. `BINCLUSIVE_ORG_ID` is not needed; the server derives the organization from the token's own membership.
+
+**When `BINCLUSIVE_API_KEY` is unset, `b8e ci` scans and reports but uploads nothing, without erroring** — a deliberate local-first no-op. Dashboard delivery is therefore proven only by one of two stderr confirmations, never by a clean exit:
+
+```text
+binclusive ci — uploaded <N> finding(s) to the dashboard.
+binclusive ci — clean scan reported to the dashboard (0 findings).
+```
+
+A zero-finding run still uploads and still counts as delivered — the run itself is the payload. Every other failure is loud: a key without `BINCLUSIVE_PROJECT_ID` throws, and a revoked, wrong-organization, or ingestion-disabled key is rejected with a specific message.
 
 See [`skills/audit-accessibility/references/ci-cd.md`](skills/audit-accessibility/references/ci-cd.md) for the full pipeline, a ready-to-use GitHub Actions workflow, and the committed-vs-working-tree scope rules.
 
