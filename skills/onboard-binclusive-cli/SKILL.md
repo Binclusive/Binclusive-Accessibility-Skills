@@ -86,7 +86,11 @@ Otherwise give the clickable organization-specific link after substituting only 
 
 Explain: "The login session identifies you interactively. The next two environment variables authorize automated `binclusive ci` uploads and route findings to the selected dashboard project."
 
-Never skip this stage on the dashboard path, and never infer that it succeeded. When `BINCLUSIVE_API_KEY` is unset or empty, `binclusive ci` skips the upload path **silently** — it still scans, still reports, still exits non-zero on gating findings, but creates no tickets and prints no error. A clean-looking `ci` run is therefore not evidence of delivery; only the stage 5 confirmation string is. The neighbouring misconfigurations do fail loudly: a key set without `BINCLUSIVE_PROJECT_ID` throws, and a revoked or wrong-organization key is rejected as `UNAUTHORIZED`. The silent case is the one that quietly ships an unmonitored project, so ask for both values every time.
+Never skip this stage on the dashboard path, and never infer that it succeeded. The CLI splits credentials into two lanes that never overlap: a **human** lane (`scan`, `login`, `org`, `project`, `whoami`, `audit`, `stop`, `tickets`) reads the session file and never the environment, and a **machine** lane (`ci`, `ci close`) reads `BINCLUSIVE_API_KEY` from the environment and never the session file. So completing stage 3a authorizes nothing for `ci` — being logged in does not upload, and these two variables are the only thing that does.
+
+When `BINCLUSIVE_API_KEY` is unset or empty, `binclusive ci` skips the upload path **silently**: it still scans, still reports, still exits non-zero on gating findings, but creates no tickets and prints no error, because absent-token is a deliberate local-first no-op. A clean-looking `ci` run is therefore not evidence of delivery; only a stage 5 confirmation line is. Every other cause fails loudly — a key set without `BINCLUSIVE_PROJECT_ID` throws, and a revoked, wrong-organization, or ingestion-disabled key is rejected with a specific message. The silent case is the one that quietly ships an unmonitored project, so ask for both values every time.
+
+`BINCLUSIVE_ORG_ID` is deliberately not part of this stage: the server derives the organization from the `b8e_` token's own membership, so `ci` neither resolves nor sends it. `BINCLUSIVE_PROJECT_ID` cannot be token-derived, which is why it is separately required.
 
 1. Derive the organization slug only after authenticated context is known. Show or open `https://app.binclusive.io/<organization-slug>/settings/ci-access`.
 2. Tell the user exactly where to look: copy the CI API key and project ID from the **CI Access** page.
@@ -135,13 +139,14 @@ For the dashboard path, explain: "I will run `binclusive ci`. It uploads finding
 
 1. Ask: "The destination organization and project are confirmed. Shall I run the CI scan and send its findings now?"
 2. From the project root run `npx @binclusive/cli ci <project-root> --format json`. Keep stderr visible because dashboard delivery confirmation is written there.
-3. Inspect the combined terminal output. Dashboard delivery is proven only by this exact success shape:
-   `binclusive ci — uploaded <N> finding(s) to the dashboard.`
-4. Reject these as onboarding failures: unusable credential, missing project ID, ingest API rejection, GraphQL/4xx/network failure, or the absence of the upload confirmation.
-5. A non-zero exit caused only by `FAIL — gating findings present` is acceptable when the upload confirmation is also present. Record the uploaded count from the confirmation.
+3. Inspect the combined terminal output. Dashboard delivery is proven by either of these two exact success shapes, written to stderr — accept both:
+   - `binclusive ci — uploaded <N> finding(s) to the dashboard.`
+   - `binclusive ci — clean scan reported to the dashboard (0 findings).`
+4. Reject these as onboarding failures: unusable credential, missing project ID, ingest API rejection, GraphQL/4xx/network failure, ingestion not enabled for the organization, or the absence of either confirmation.
+5. A non-zero exit caused only by `FAIL — gating findings present` is acceptable when a confirmation is also present. Record the uploaded count from the confirmation.
 6. Report the count to the user and ask them to confirm the run is visible in the selected dashboard project. If it is not visible, keep onboarding incomplete and troubleshoot before any map/audit/fix work.
 
-The current CLI does not call the dashboard ingest path when a CI scan produces zero findings, so it emits no upload confirmation. In that case, state this limitation clearly and keep dashboard-delivery onboarding incomplete; do not pretend an empty local scan was uploaded. A CLI change that records zero-finding runs is required to make that case verifiable.
+A zero-finding run still completes dashboard onboarding. The CLI has no zero-findings early return — the run itself is the payload, so a clean scan is uploaded and confirmed with the second success shape above. Treat that as delivery proven, not as a limitation to work around.
 
 For the local path:
 
