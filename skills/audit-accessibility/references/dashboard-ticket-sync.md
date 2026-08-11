@@ -14,11 +14,17 @@ In CI/Diff Mode or another non-interactive run, do not configure MCP, open a bro
 
 Use the remote MCP endpoint `https://mcp.binclusive.io/mcp`. MCP setup is separate from CLI onboarding; do not assume that a working CLI or `cli-onboarding.json` means the MCP server is configured.
 
+Connection has exactly one owner per harness, and this file is not it: the **Claude Code plugin** owns Claude MCP, and the **dashboard Integrations → MCP page** owns per-harness connect for every other client. Route the user to the owning surface. Never reproduce a per-harness connect snippet here — those snippets live in the dashboard, and a copy in this file is one more thing to drift.
+
 1. Detect whether the active client already exposes Binclusive MCP tools. Prefer capability/tool discovery over inspecting secrets or guessing from CLI state.
-2. If absent, explain that adding the remote server changes persistent client configuration and that first use opens a browser for Binclusive OAuth login. Ask permission before configuring it.
-3. Configure the endpoint using the active client's supported MCP setup mechanism. For Claude Code, the documented command is `claude mcp add --transport http binclusive https://mcp.binclusive.io/mcp`. For clients using JSON MCP configuration, add an HTTP server named `binclusive` with that URL. Do not invent a client-specific location or command; inspect client help/documentation when uncertain.
+2. If absent, explain that connecting changes persistent client configuration and that first use opens a browser for Binclusive OAuth login. Ask permission before configuring it.
+3. Route by harness:
+   - **Claude Code** — the `accessibility@binclusive` plugin ships the skills and the MCP server together, so installing the plugin *is* the connect step: `claude plugin marketplace add Binclusive/Binclusive-Accessibility-Skills`, then `claude plugin install accessibility@binclusive`. Do not run `claude mcp add` for this endpoint: the plugin's manifest already declares the server, so a hand-added entry is a second competing registration with its own OAuth and no plugin attribution. When the plugin is already installed the server is already declared — verify with `claude mcp list` and reconnect, rather than adding anything. Installing skills with `scripts/install.sh` copies skill files only and never wires MCP, so a skills-only install still needs the plugin (or another client) for the sync.
+   - **Every other client** (Codex, Cursor, Windsurf, VS Code, Zed, Claude Desktop) — send the user to the authed dashboard page, which renders a tabbed, copy-to-clipboard snippet per harness: `https://app.binclusive.io/<organization-slug>/integrations/mcp`. Substitute only the slug the user supplies. Do not guess a config file path or invent a command.
 4. Reload/reconnect the MCP client if required. Invoke a harmless Binclusive list/identity tool to trigger OAuth. Tell the user to finish login in the browser; never request credentials or tokens in chat.
 5. After authentication, rediscover the available Binclusive tools and their live input schemas. Do not continue until the organization/project listing tools and ticket-creation tool are available.
+
+`binclusive init --mcp` and `binclusive add mcp` write no MCP configuration for any harness. They print the dashboard pointer and, when Claude is detected, offer the same plugin install as above — so they are another entrance to this routing, never a third mechanism to reconcile against.
 
 OAuth and endpoint behavior are documented at `https://www.binclusive.io/en/blog/binclusive-mcp-server-is-now-live`.
 
