@@ -275,7 +275,7 @@ shard structure exposed.
 
 ## Optional Dashboard Ticket Sync
 
-After writing and verifying the TODO report, read and follow `references/dashboard-ticket-sync.md`. Offer to publish every open TODO to a user-selected Binclusive organization and project. This is recommended for shared ownership and ticket tracking, but requires explicit opt-in. Keep the local report as the source of truth, inspect the authenticated MCP `create_ticket` schema at runtime, and transfer every finding without data loss.
+After writing and verifying the TODO report, read and follow `references/dashboard-ticket-sync.md`. Offer to publish every open TODO to a user-selected Binclusive organization and project. This is recommended for shared ownership and ticket tracking, but requires explicit opt-in. Inspect the authenticated MCP `create_ticket` schema and map each finding into its native location, element, impact, evidence, description, and recommendation fields. Send readable plain text, never the Markdown file or raw finding sections. Keep exact code and report-only metadata in the local report, with task-to-ticket mappings in the sync receipt.
 
 ## Audit Order
 

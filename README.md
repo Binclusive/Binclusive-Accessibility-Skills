@@ -138,7 +138,7 @@ After installing the adapter into a project, ask Copilot to follow the Binclusiv
 
 Every map, audit, Shopify audit, and fix workflow checks `Binclusive-auditing/cli-onboarding.json` before reading source for that work. Onboarding is required, but dashboard delivery is a recommended choice rather than a requirement. The preferred `binclusive ci` path uploads findings and creates dashboard tickets for centralized assignment and tracking. A user may instead complete onboarding with a local `binclusive scan`; its findings remain local and no dashboard tickets are created.
 
-After an audit writes `Binclusive-auditing/accessibility-todo.md`, the workflow offers an optional MCP sync to `https://mcp.binclusive.io/mcp`. If accepted, it authenticates through browser-based OAuth when needed, asks the user to choose the destination organization and project, inspects the live `create_ticket` schema, and creates one lossless dashboard ticket per open TODO. Fields without an exact native ticket match are preserved in the ticket description.
+After an audit writes `Binclusive-auditing/accessibility-todo.md`, the workflow offers an optional MCP sync to `https://mcp.binclusive.io/mcp`. If accepted, it authenticates through browser-based OAuth when needed, asks the user to choose the destination organization and project, inspects the live `create_ticket` schema, and creates one structured dashboard ticket per open TODO. Each finding maps to native location, element, impact, evidence, description, and recommendation fields using plain text. The Markdown report and raw finding sections are never uploaded; exact code and report-only metadata stay in the local TODO, alongside task-to-ticket sync receipts.
 
 ## Map & Audit Reliability: Coverage & Shard Mode
 

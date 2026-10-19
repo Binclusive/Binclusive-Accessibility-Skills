@@ -37,67 +37,64 @@ OAuth and endpoint behavior are documented at `https://www.binclusive.io/en/blog
 
 ## Inspect `create_ticket` before mapping
 
-Read the live MCP tool definition for the ticket creation tool (commonly `create_ticket`) after authentication. Treat its current `inputSchema`, required fields, enums, formats, and descriptions as authoritative. Do not hard-code a historical field list.
+Read the authenticated ticket-creation tool's live input schema, required fields, enums, formats, and descriptions before building payloads. The mapping below follows the Binclusive MCP contract; if the deployed schema differs, adapt without inventing fields.
 
-Build the mapping for the current schema:
+Reference contracts (recheck when the schema changes):
+- https://github.com/Binclusive/monorepo/blob/main/services/mcp/src/findings/adapters/driving/tools.ts
+- https://github.com/Binclusive/monorepo/blob/main/services/mcp/docs/reference/vocabularies.md
 
-- Map a TODO value to a native ticket field only when the meaning is an exact match.
-- Always populate every required field from verified report data or the user-selected organization/project context.
-- Never invent assignees, due dates, statuses, asset IDs, WCAG criteria, URLs, or enum values.
-- If a required field cannot be derived safely, pause before creating tickets and ask only for that missing value.
-- Preserve the TODO's stable task ID in a native external/reference field when an exact field exists; otherwise include it in both the title and description.
-- Use schema-supported native fields for exact matches such as title, project, severity/priority, status, location, WCAG criterion, component, or source only when the schema explicitly exposes them and accepts the report's value.
+## Map each finding to structured fields
 
-## Lossless description envelope
+Parse individual open TODO findings. The Markdown file is a local input, never an upload payload. Create one ticket per finding. Never send the whole file, a raw finding section, summary table, coverage ledger, or sync receipt in any field or attachment.
 
-For every TODO, put all information that is not represented exactly in a native `create_ticket` field into `description`. To make the transfer auditable, include the complete finding even when some values are also mapped natively. Preserve fenced code verbatim.
+| MCP input | Source and transformation |
+| --- | --- |
+| `organization_id` | ID from the user-selected `list_organizations` result; required for user authentication. Do not use the default organization from `get_viewer`. |
+| `project_id` | ID of the selected project belonging to that organization. |
+| `location` | Verified occurrence location using one of the shapes below. |
+| `element` | Verified DOM selector or accessibility-tree path. A task ID or component name alone is not a locator. |
+| `criterion` | Explicit, verified WCAG success-criterion ID, e.g. `1.4.3`; omit when unmapped. Never guess from severity or fix type. |
+| `impact` | Severity normalized to `critical`, `serious`, `moderate`, or `minor`. Use `unknown` only for explicitly unjudged impact when accepted by the live schema. |
+| `evidence` | Plain-language observation from the detailed problem and verified code/runtime evidence: what is missing or behaving incorrectly at the element. Preserve static/runtime uncertainty; do not paste source code. |
+| `description` | Finding title and detailed problem as prose explaining affected behavior and user impact. Include only context relevant to this finding, without duplicating dedicated fields. |
+| `recommendation` | Correct solution rewritten as actionable prose, followed by verification steps. Preserve runtime checks and risk/approval qualifications; do not paste solution code. |
 
-Use this structure, omitting only fields that truly do not exist in the source report:
+The current creation schema has no `title`, `status`, `priority`, `assignee`, `fixType`, or external task-reference input. Do not send unsupported keys, equate severity with priority, or force local TODO status onto a server-assigned status. Keep stable task IDs and unmapped audit metadata in the local report and sync receipt. If a future schema exposes an exact native reference field, use it.
 
-````md
-## Binclusive audit finding
+### Location and evidence
 
-- Task ID: <TASK-001>
-- Source report: Binclusive-auditing/accessibility-todo.md
-- Component / Page / Screen: <value>
-- File path: <value>
-- Used in pages/screens: <value>
-- Severity: <value>
-- Fix Type: <value>
-- Status: <value>
-- Provenance: <value, when present>
-- Coverage bucket: <value, when present>
-- WCAG / APG / platform impact: <value, when present>
+- For a verified rendered page, use `{ "type": "page", "url": "<observed page URL>" }`. A route or source path alone is not a verified page URL; never invent a host or use a file path as a URL.
+- For static source findings, use `{ "type": "source", "path": "<repo-relative file>", "lineHash": "<fingerprint>", "index": <occurrence index>, "line": <optional display line> }`. Read the actual offending source line. Compute `lineHash` as hexadecimal MD5 with spaces and tabs removed: `crypto.createHash("md5").update(line.replace(/[ \t]/g, "")).digest("hex")`. `index` is zero-based among identical normalized lines in that file; optional `line` is the verified one-based line number. Never hash TODO text, substitute a line number for a hash, or add snippet/source properties to location.
+- For native/mobile findings, use a verified source location and accessibility-tree path when available. Do not fabricate web selectors or URLs.
+- Verify missing required values from source/runtime evidence or ask only for missing data. Leave an unresolved ticket pending; never send placeholders or fabricated observations.
 
-### Code block in question
-```<language>
-<exact source-report code block>
+### Plain text, not Markdown
+
+Convert Markdown field values into ordinary text before assigning MCP string fields. Remove heading, checkbox, list, emphasis, table, inline-code, and code-fence formatting; convert links to their label and URL. Preserve meaningful words, identifiers, URLs, and line breaks. Do not strip punctuation belonging to selectors or identifiers.
+
+Describe code evidence and remediation in prose; keep exact original and proposed code in the local TODO. Never serialize Markdown, HTML, rich-text documents, or a JSON copy of the finding inside `description`, `evidence`, or `recommendation`.
+
+For the synthetic icon-button TODO, after verifying the actual occurrence, use text such as:
+
+```json
+{
+  "impact": "serious",
+  "evidence": "The close button contains only an icon and has no accessible name in the verified source.",
+  "description": "Icon-only button has no accessible name. Screen-reader users cannot identify the shared close control's action.",
+  "recommendation": "Give the button a localized accessible name describing the close action and hide the decorative icon from assistive technology. Verify that the accessibility tree exposes the intended localized close action as the button name."
+}
 ```
 
-### Problem (detailed)
-<complete value>
+This illustrates text fields, not a complete tool call. Resolve the actual selector/tree path, organization, project, and location before sending. Do not infer a criterion absent from the report.
 
-### Correct solution
-<complete value>
-
-### Verification
-<complete value>
-
-### Additional source data
-<every remaining key/value, note, context, metadata, or custom field from this finding that was not listed above>
-
-### Audit context
-<report-level project, framework/platform, scope, date, map reference, static/runtime note, blind spots, and coverage-ledger context relevant to this finding>
-````
-
-Do not truncate, summarize away, or silently drop source fields. If the MCP schema imposes a description limit, create the most lossless valid representation and stop for user direction before omitting anything; do not split one finding into multiple tickets without approval.
+The local report remains the full audit record. Keep report-only metadata and exact code there rather than duplicating them into dashboard prose. Preserve the meaning of the problem, evidence, user impact, remediation, and verification during conversion. If a field limit would remove essential information, leave the ticket pending and report the limitation instead of truncating or reverting to a Markdown dump.
 
 ## Create and verify all tickets
 
-1. Parse every open `TODO` finding from the active report before writing. Build a deterministic queue ordered by report order/stable task ID.
-2. Check available list/search tools for an existing ticket carrying the same project plus stable task ID. Reuse/skip exact matches rather than creating duplicates; do not merge merely similar findings.
-3. Create one ticket per TODO with the live schema mapping and lossless description envelope.
-4. Continue through the queue while calls succeed. On a failure, retain the failed item and reason, then continue only when retrying cannot create duplicates.
-5. Verify each returned ticket ID and destination. Report counts for created, already existing, and failed tickets, and list failed task IDs.
-6. Append a `Dashboard sync` receipt to the TODO report with destination names, timestamp, source report fingerprint when available, and `TASK-ID -> ticket ID/URL` results. Never store auth tokens, secrets, or reusable customer identifiers.
-7. Claim full sync only when every open TODO is either verified-created or verified-existing in the selected project.
+1. Parse open TODO finding bodies in report order, keyed by stable task ID. Do not count summary-table rows as extra findings or republish completed tasks.
+2. Check local sync receipts and available ticket lookup tools for verified task-to-ticket mappings in the same destination. Where supported, also compare exact occurrence identity (location, element, criterion). Do not merge merely similar findings. Resolve uncertain prior call outcomes before retrying; local task IDs are not searchable remote fields in the current schema.
+3. Before each call, validate required fields, accepted enums, location shape, and that every value belongs to this finding. Ensure text fields contain prose rather than raw report sections or formatting. Create one ticket using the structured mapping above.
+4. Inspect both transport success and the tool's error/result body. Record failures and reasons; retry only when duplicates can be ruled out.
+5. Verify returned finding/ticket IDs and destination through returned data or a supported read tool. Where readable, compare saved impact, location, evidence, description, and recommendation with the mapped values. Report created, already existing, pending, and failed counts with task IDs.
+6. Append a `Dashboard sync` receipt locally with destination names, timestamp, report fingerprint when available, and `TASK-ID -> finding ID / ticket ID / URL` results, including pending/failed reasons. Preserve original finding data. Never store auth tokens or secrets.
+7. Claim full sync only when every open TODO is verified-created or verified-existing in the selected project. Never create test tickets just to validate formatting.
