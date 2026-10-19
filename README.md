@@ -15,6 +15,7 @@ Codebase auditing is only one part of a complete accessibility process. Accessib
 - `onboard-binclusive-cli`: configure the CLI and verify either recommended dashboard delivery or a local-only scan.
 - `map-project`: inventory routes, screens, views, shared UI, dependencies, localization, and inline UI before an accessibility audit.
 - `audit-accessibility`: audit a mapped scope and write `Binclusive-auditing/accessibility-todo.md` without editing source code.
+- `accessibility-test-journey-creator`: co-create web/mobile accessibility journeys through focused questions and source inspection; the user selects goals, directs steps, and reviews the final flow before export.
 - `shopify-theme-audit`: audit Shopify theme Liquid, JSON templates, sections, snippets, assets, config, and locales without editing source code.
 - `fix-accessibility`: remediate selected TODO tasks with severity/risk controls and verification notes.
 
@@ -107,6 +108,7 @@ Invoke skills explicitly with:
 $onboard-binclusive-cli
 $map-project
 $audit-accessibility
+$accessibility-test-journey-creator
 $shopify-theme-audit
 $fix-accessibility
 ```
@@ -119,6 +121,7 @@ Invoke skills explicitly with:
 /onboard-binclusive-cli
 /map-project
 /audit-accessibility
+/accessibility-test-journey-creator
 /shopify-theme-audit
 /fix-accessibility
 ```
@@ -218,6 +221,7 @@ skills/
   onboard-binclusive-cli/
   map-project/
   audit-accessibility/
+  accessibility-test-journey-creator/
   shopify-theme-audit/
   fix-accessibility/
 adapters/

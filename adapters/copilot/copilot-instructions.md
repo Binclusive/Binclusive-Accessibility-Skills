@@ -5,6 +5,7 @@ Use the canonical Agent Skills in this repository as the source of truth:
 - `skills/onboard-binclusive-cli/SKILL.md` configures the CLI and records non-secret onboarding status after either recommended dashboard CI delivery or a local-only scan.
 - `skills/map-project/SKILL.md` inventories React/Next.js, Angular, React Native/Expo, ASP.NET/ASPX, WordPress themes, iOS SwiftUI/UIKit, native Android (Jetpack Compose / Android Views/XML), or Flutter (Dart, Material/Cupertino) routes, templates, screens, views, pages, controls, dependencies, localization, and inline UI for accessibility review.
 - `skills/audit-accessibility/SKILL.md` audits only the mapped scope and writes actionable accessibility TODOs.
+- `skills/accessibility-test-journey-creator/SKILL.md` derives requested web/mobile test flows from source into native Binclusive accessibility journey definitions and a local evidence/readiness review. Publishing and execution require a user request.
 - `skills/shopify-theme-audit/SKILL.md` audits Shopify theme Liquid, JSON templates, sections, snippets, assets, config, and locales without requiring a prior map.
 - `skills/fix-accessibility/SKILL.md` fixes selected TODO tasks with severity/risk controls and verification notes.
 
