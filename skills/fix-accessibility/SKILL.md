@@ -5,9 +5,9 @@ description: Fix accessibility tasks from Binclusive accessibility-todo.md with 
 
 # Fix Accessibility
 
-## CLI Onboarding Gate
+## Optional Binclusive integration
 
-Before reading TODO source for remediation, run `node <onboard-binclusive-cli-skill-dir>/scripts/onboarding-state.mjs status <project-root>`. If it exits `2`, route to `$onboard-binclusive-cli` and resume this request after onboarding completes. Onboarding is required, but dashboard delivery is not: recommend `binclusive ci` because it uploads findings and creates dashboard tickets for centralized assignment and tracking; let the user choose a local `binclusive scan` instead. If it exits `1`, stop and surface the invalid state instead of bypassing it.
+Run this skill directly without CLI onboarding, login, dashboard access, credentials, binclusive.json, or cli-onboarding.json. Do not run onboarding-state.mjs as a prerequisite, redirect to onboarding, or stop for missing/stale/invalid onboarding state. Offer $onboard-binclusive-cli only when the user asks for CLI setup or connected delivery. If an optional CLI/MCP operation is unavailable, continue the local workflow and report only that integration limitation. CI/Diff Mode must also work without onboarding or interactive setup.
 
 > **Requires the `binclusive` CLI** (the unified CLI providing `scan` / `scan --url` / `init` / `ci`). If `binclusive scan` errors as an unknown command, upgrade the CLI — the agent-driven remediation still works without it, just without the source-provable re-scan check.
 

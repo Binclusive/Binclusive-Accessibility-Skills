@@ -1,0 +1,4 @@
+interface:
+  display_name: "Runtime Accessibility Journey Creator"
+  short_description: "Create journeys from live Chrome page inspections"
+  default_prompt: "Use $accessibility-runtime-journey-creator to inspect this website in Google Chrome and co-create reviewed Binclusive accessibility journeys."

@@ -15,7 +15,9 @@ Codebase auditing is only one part of a complete accessibility process. Accessib
 - `onboard-binclusive-cli`: configure the CLI and verify either recommended dashboard delivery or a local-only scan.
 - `map-project`: inventory routes, screens, views, shared UI, dependencies, localization, and inline UI before an accessibility audit.
 - `audit-accessibility`: audit a mapped scope and write `Binclusive-auditing/accessibility-todo.md` without editing source code.
+- `audit-runtime-accessibility`: audit a live page or user flow through a connected browser, including visible elements, keyboard interactions, focus, and dynamic states.
 - `accessibility-test-journey-creator`: co-create web/mobile accessibility journeys through focused questions and source inspection; the user selects goals, directs steps, and reviews the final flow before export.
+- `accessibility-runtime-journey-creator`: inspect live website pages in Chrome, discover robots/sitemap/navigation URLs, compare locales and co-create reviewed runtime journeys.
 - `shopify-theme-audit`: audit Shopify theme Liquid, JSON templates, sections, snippets, assets, config, and locales without editing source code.
 - `fix-accessibility`: remediate selected TODO tasks with severity/risk controls and verification notes.
 
@@ -108,7 +110,9 @@ Invoke skills explicitly with:
 $onboard-binclusive-cli
 $map-project
 $audit-accessibility
+$audit-runtime-accessibility
 $accessibility-test-journey-creator
+$accessibility-runtime-journey-creator
 $shopify-theme-audit
 $fix-accessibility
 ```
@@ -121,7 +125,9 @@ Invoke skills explicitly with:
 /onboard-binclusive-cli
 /map-project
 /audit-accessibility
+/audit-runtime-accessibility
 /accessibility-test-journey-creator
+/accessibility-runtime-journey-creator
 /shopify-theme-audit
 /fix-accessibility
 ```
@@ -132,14 +138,14 @@ Plain requests route too, in English or Turkish — "run the onboarding", "onboa
 
 After installing the adapter into a project, ask Copilot to follow the Binclusive accessibility workflow. The intended order is:
 
-1. Complete Binclusive CLI onboarding; prefer dashboard CI, or choose a local-only scan.
+1. Use the requested skill directly. CLI onboarding is optional; run it only for requested CLI setup or dashboard delivery.
 2. Map the project.
 3. Audit the mapped scope.
 4. Fix only selected audit tasks.
 
-## CLI Onboarding Gate
+## Optional CLI and dashboard integration
 
-Every map, audit, Shopify audit, and fix workflow checks `Binclusive-auditing/cli-onboarding.json` before reading source for that work. Onboarding is required, but dashboard delivery is a recommended choice rather than a requirement. The preferred `binclusive ci` path uploads findings and creates dashboard tickets for centralized assignment and tracking. A user may instead complete onboarding with a local `binclusive scan`; its findings remain local and no dashboard tickets are created.
+All skills can be used locally without CLI onboarding, login, dashboard access, credentials, binclusive.json, or cli-onboarding.json. Missing, stale, or invalid onboarding state never blocks mapping, auditing, remediation, journey creation, or CI/Diff Mode. Use onboard-binclusive-cli only when setup is requested. Dashboard publishing is optional; if its connection is unavailable, keep working locally. When selected, binclusive ci can upload findings and create trackable tickets; a local binclusive scan keeps results on the machine.
 
 After an audit writes `Binclusive-auditing/accessibility-todo.md`, the workflow offers an optional MCP sync to `https://mcp.binclusive.io/mcp`. If accepted, it authenticates through browser-based OAuth when needed, asks the user to choose the destination organization and project, inspects the live `create_ticket` schema, and creates one structured dashboard ticket per open TODO. Each finding maps to native location, element, impact, evidence, description, and recommendation fields using plain text. The Markdown report and raw finding sections are never uploaded; exact code and report-only metadata stay in the local TODO, alongside task-to-ticket sync receipts.
 
@@ -221,7 +227,9 @@ skills/
   onboard-binclusive-cli/
   map-project/
   audit-accessibility/
+  audit-runtime-accessibility/
   accessibility-test-journey-creator/
+  accessibility-runtime-journey-creator/
   shopify-theme-audit/
   fix-accessibility/
 adapters/
