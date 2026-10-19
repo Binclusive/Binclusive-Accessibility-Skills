@@ -17,7 +17,9 @@ The installed commands are:
 - `/onboard-binclusive-cli`
 - `/map-project`
 - `/audit-accessibility`
+- `/audit-runtime-accessibility`
 - `/accessibility-test-journey-creator`
+- `/accessibility-runtime-journey-creator`
 - `/shopify-theme-audit`
 - `/fix-accessibility`
 

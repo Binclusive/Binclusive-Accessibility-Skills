@@ -1,0 +1,4 @@
+interface:
+  display_name: "Audit Runtime Accessibility"
+  short_description: "Audit live browser flows for accessibility"
+  default_prompt: "Use $audit-runtime-accessibility to audit this live page or user flow in the connected browser."

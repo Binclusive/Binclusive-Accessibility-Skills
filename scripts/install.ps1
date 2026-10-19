@@ -8,7 +8,7 @@ param(
 $ErrorActionPreference = "Stop"
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $Root = Split-Path -Parent $ScriptDir
-$SkillNames = @("onboard-binclusive-cli", "map-project", "audit-accessibility", "accessibility-test-journey-creator", "shopify-theme-audit", "fix-accessibility")
+$SkillNames = @("onboard-binclusive-cli", "map-project", "audit-accessibility", "audit-runtime-accessibility", "accessibility-test-journey-creator", "accessibility-runtime-journey-creator", "shopify-theme-audit", "fix-accessibility")
 
 function Copy-SkillSet {
   param(

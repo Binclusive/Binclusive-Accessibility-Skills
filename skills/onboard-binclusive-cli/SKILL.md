@@ -1,11 +1,11 @@
 ---
 name: onboard-binclusive-cli
-description: Configure and verify the Binclusive CLI for a project, then run either the recommended dashboard-connected CI scan or a local-only scan. Use when the user says /onboard, /onboardbinclusive, onboarding, run onboarding, run the onboarding skill, run the Binclusive onboarding, Binclusive onboarding, onboard Binclusive, onboard this project, set up Binclusive, Binclusive setup, configure the Binclusive CLI, CLI onboarding, Binclusive login, log in to Binclusive, authorize the CLI, connect the dashboard, "binclusive onboarding'i çalıştır", "onboarding'i çalıştır", "onboarding yap", "binclusive kurulumunu yap", "binclusive'i kur", "projeyi onboard et", "cli'yi yapılandır", "binclusive'e giriş yap", "panoya bağla", or otherwise asks to login, authorize, configure, or onboard the Binclusive CLI. Also required before any Binclusive map, audit, Shopify audit, or fix workflow when `Binclusive-auditing/cli-onboarding.json` is missing or incomplete.
+description: Configure and verify the Binclusive CLI for a project, then run either the recommended dashboard-connected CI scan or a local-only scan. Use when the user says /onboard, /onboardbinclusive, onboarding, run onboarding, run the onboarding skill, run the Binclusive onboarding, Binclusive onboarding, onboard Binclusive, onboard this project, set up Binclusive, Binclusive setup, configure the Binclusive CLI, CLI onboarding, Binclusive login, log in to Binclusive, authorize the CLI, connect the dashboard, "binclusive onboarding'i çalıştır", "onboarding'i çalıştır", "onboarding yap", "binclusive kurulumunu yap", "binclusive'i kur", "projeyi onboard et", "cli'yi yapılandır", "binclusive'e giriş yap", "panoya bağla", or otherwise asks to login, authorize, configure, or onboard the Binclusive CLI.
 ---
 
 # Onboard Binclusive CLI
 
-Complete CLI setup and a verified scan before handing the project to mapping, audit, or remediation skills. Recommend dashboard-connected CI, but allow a local-only onboarding path.
+Configure the CLI only when the user requests setup or connected delivery. This optional workflow is never a prerequisite for mapping, auditing, remediation, or journey creation. Those skills remain available without CLI configuration, login, dashboard access, credentials, or an onboarding record. Recommend dashboard-connected CI within this setup workflow, but allow a local-only path and let the user skip or leave setup incomplete without blocking local skills.
 
 ## Security rules
 
@@ -22,9 +22,9 @@ Use `<project-root>/Binclusive-auditing/cli-onboarding.json` as the non-secret o
 
 Run `node <this-skill-dir>/scripts/onboarding-state.mjs status <project-root>` first.
 
-- Exit `0`: authenticated dashboard onboarding is complete. Resume the skill that routed here.
-- Exit `2`: onboarding is missing, incomplete, or stale. Continue below.
-- Exit `1`: state is invalid or unreadable. Explain the error; repair or recreate it only with user approval.
+- Exit `0`: the recorded local or dashboard setup is complete. Continue the user-requested work.
+- Exit `2`: optional setup is missing, incomplete, or stale. Continue setup only if requested; other skills may proceed directly.
+- Exit `1`: the optional setup record is invalid or unreadable. Explain the setup diagnostic and repair it when requested; do not block other skills.
 
 Completion always requires a verified CLI version, `binclusive.json`, and one successful scan. Recommend the dashboard path: login, verified organization/project context, CI credentials, and `binclusive ci` delivery create dashboard tickets for assignment and tracking. If the user declines dashboard delivery, a successful local `binclusive scan` also completes onboarding; state clearly that it neither uploads findings nor creates dashboard tickets.
 
@@ -144,7 +144,7 @@ For the dashboard path, explain: "I will run `binclusive ci`. It uploads finding
    - `binclusive ci — clean scan reported to the dashboard (0 findings).`
 4. Reject these as onboarding failures: unusable credential, missing project ID, ingest API rejection, GraphQL/4xx/network failure, ingestion not enabled for the organization, or the absence of either confirmation.
 5. A non-zero exit caused only by `FAIL — gating findings present` is acceptable when a confirmation is also present. Record the uploaded count from the confirmation.
-6. Report the count to the user and ask them to confirm the run is visible in the selected dashboard project. If it is not visible, keep onboarding incomplete and troubleshoot before any map/audit/fix work.
+6. Report the count to the user and ask them to confirm the run is visible in the selected dashboard project. If it is not visible, keep dashboard delivery unverified and troubleshoot that integration when requested. Local map/audit/fix/journey work can continue regardless.
 
 A zero-finding run still completes dashboard onboarding. The CLI has no zero-findings early return — the run itself is the payload, so a clean scan is uploaded and confirmed with the second success shape above. Treat that as delivery proven, not as a limitation to work around.
 
