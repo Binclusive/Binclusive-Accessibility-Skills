@@ -1,0 +1,4 @@
+interface:
+  display_name: "Accessibility Test Journey Creator"
+  short_description: "Co-create web and mobile journeys through questions"
+  default_prompt: "Use $accessibility-test-journey-creator to guide me with focused questions and build reviewed Binclusive test journeys from this project."
