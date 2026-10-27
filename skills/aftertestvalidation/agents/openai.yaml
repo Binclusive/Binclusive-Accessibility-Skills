@@ -1,0 +1,4 @@
+interface:
+  display_name: "Accessibility After Test Validation"
+  short_description: "Validate accessibility fixes on web, Android and iOS"
+  default_prompt: "Use $aftertestvalidation to locate a fixed accessibility issue, create an aftertest journey, run it in my selected Binclusive organization/project and record the evidence in aftertest.md."

@@ -18,6 +18,7 @@ Codebase auditing is only one part of a complete accessibility process. Accessib
 - `audit-runtime-accessibility`: audit a live page or user flow through a connected browser, including visible elements, keyboard interactions, focus, and dynamic states.
 - `accessibility-test-journey-creator`: co-create web/mobile accessibility journeys through focused questions and source inspection; the user selects goals, directs steps, and reviews the final flow before export.
 - `accessibility-runtime-journey-creator`: create action-only journeys from real Chrome, Android or iOS interactions; guide physical-device/emulator setup, explore the whole app or requested flows, verify sequences, save `binclusive-accessibility-test-journies.md`, and deliver through Binclusive MCP to the selected organization/project.
+- `aftertestvalidation`: validate reported accessibility fixes from Excel, PDF, text or Binclusive tickets on web, Android or iOS; locate the target, create a launch-to-target `aftertest` journey, publish/run it in the selected Binclusive organization/project and record evidence or blockers in `aftertest.md`.
 - `shopify-theme-audit`: audit Shopify theme Liquid, JSON templates, sections, snippets, assets, config, and locales without editing source code.
 - `fix-accessibility`: remediate selected TODO tasks with severity/risk controls and verification notes.
 
@@ -113,6 +114,7 @@ $audit-accessibility
 $audit-runtime-accessibility
 $accessibility-test-journey-creator
 $accessibility-runtime-journey-creator
+$aftertestvalidation
 $shopify-theme-audit
 $fix-accessibility
 ```
@@ -128,6 +130,7 @@ Invoke skills explicitly with:
 /audit-runtime-accessibility
 /accessibility-test-journey-creator
 /accessibility-runtime-journey-creator
+/aftertestvalidation
 /shopify-theme-audit
 /fix-accessibility
 ```
@@ -230,6 +233,7 @@ skills/
   audit-runtime-accessibility/
   accessibility-test-journey-creator/
   accessibility-runtime-journey-creator/
+  aftertestvalidation/
   shopify-theme-audit/
   fix-accessibility/
 adapters/

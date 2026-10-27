@@ -20,6 +20,7 @@ The installed commands are:
 - `/audit-runtime-accessibility`
 - `/accessibility-test-journey-creator`
 - `/accessibility-runtime-journey-creator`
+- `/aftertestvalidation`
 - `/shopify-theme-audit`
 - `/fix-accessibility`
 
