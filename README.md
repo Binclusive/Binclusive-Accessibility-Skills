@@ -17,7 +17,7 @@ Codebase auditing is only one part of a complete accessibility process. Accessib
 - `audit-accessibility`: audit a mapped scope and write `Binclusive-auditing/accessibility-todo.md` without editing source code.
 - `audit-runtime-accessibility`: audit a live page or user flow through a connected browser, including visible elements, keyboard interactions, focus, and dynamic states.
 - `accessibility-test-journey-creator`: co-create web/mobile accessibility journeys through focused questions and source inspection; the user selects goals, directs steps, and reviews the final flow before export.
-- `accessibility-runtime-journey-creator`: inspect live website pages in Chrome, discover robots/sitemap/navigation URLs, compare locales and co-create reviewed runtime journeys.
+- `accessibility-runtime-journey-creator`: create action-only journeys from real Chrome, Android or iOS interactions; guide physical-device/emulator setup, explore the whole app or requested flows, verify sequences, save `binclusive-accessibility-test-journies.md`, and deliver through Binclusive MCP to the selected organization/project.
 - `shopify-theme-audit`: audit Shopify theme Liquid, JSON templates, sections, snippets, assets, config, and locales without editing source code.
 - `fix-accessibility`: remediate selected TODO tasks with severity/risk controls and verification notes.
 

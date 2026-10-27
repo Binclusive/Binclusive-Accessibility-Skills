@@ -12,7 +12,7 @@ Use the canonical Agent Skills in this repository as the source of truth:
 - `skills/audit-accessibility/SKILL.md` audits only the mapped scope and writes actionable accessibility TODOs.
 - `skills/audit-runtime-accessibility/SKILL.md` audits live pages and user flows through a connected browser, with step-level runtime evidence.
 - `skills/accessibility-test-journey-creator/SKILL.md` derives requested web/mobile test flows from source into native Binclusive accessibility journey definitions and a local evidence/readiness review. Publishing and execution require a user request.
-- `skills/accessibility-runtime-journey-creator/SKILL.md` co-creates live website journeys using Google Chrome, robots/sitemaps, individual page inspections and locale comparisons.
+- `skills/accessibility-runtime-journey-creator/SKILL.md` creates runtime-verified, action-only journeys for Google Chrome, Android and iOS; guides device setup, saves `binclusive-accessibility-test-journies.md` and connects Binclusive MCP for user-selected organization/project delivery.
 - `skills/shopify-theme-audit/SKILL.md` audits Shopify theme Liquid, JSON templates, sections, snippets, assets, config, and locales without requiring a prior map.
 - `skills/fix-accessibility/SKILL.md` fixes selected TODO tasks with severity/risk controls and verification notes.
 
