@@ -43,6 +43,15 @@ Flutter apps are mapped and audited with the Flutter references (Dart + Material
 
 ## Install
 
+### Claude Code plugin
+
+```text
+claude plugin marketplace add Binclusive/Binclusive-Accessibility-Skills
+claude plugin install binclusive-accessibility@binclusive
+```
+
+The plugin is displayed as **Binclusive Accessibility**. The marketplace rename map migrates the former `accessibility@binclusive` identifier to `binclusive-accessibility@binclusive` on compatible Claude Code versions.
+
 ### Windows PowerShell
 
 ```powershell
@@ -222,6 +231,14 @@ See [`skills/audit-accessibility/references/ci-cd.md`](skills/audit-accessibilit
 - `VISUAL-IMPACT` and `FUNCTIONAL-RISK` tasks require explicit approval.
 - `RUNTIME-CHECK` tasks need runtime verification and must not be treated as solved by static code alone.
 - Do not commit customer audit outputs, private project maps, or real accessibility reports to this repo.
+
+## License
+
+The skills, reference documentation, scripts, and adapters in this repository are licensed under the [Apache License 2.0](LICENSE), except where otherwise noted. Copyright 2026 Binclusive Teknoloji A.Ş. Redistribution must comply with the license's copyright and attribution requirements, including preservation of applicable notices from [NOTICE](NOTICE).
+
+This repository's license does not grant access to Binclusive's hosted MCP server or dashboard, which are subject to their applicable service terms. Trademark rights are governed by Section 6 of the license.
+
+Binclusive's privacy policy is available at [binclusive.io/privacy](https://binclusive.io/privacy).
 
 ## Repository Layout
 
