@@ -17,7 +17,7 @@ The add flow may already start OAuth; do not start a second concurrent login. Se
 
 Discover live identity, organization, project, journey-list/create and readback schemas. Have the user select the destination organization, then list that organization's projects (including pagination) and have the user select a compatible Web/Android/iOS project for the observed URL/app identifier. Credit an already explicit organization/project; resolve and confirm its identity rather than asking again. OAuth membership alone is not a project choice. If the connection is bound to another organization, use only a documented switch/re-authentication route and verify it; never invent an organization-switch tool. Do not create a new project or use a similarly named project without the user's instruction.
 
-Show the final locally saved journeys before delivery. Continue when the explicit skill invocation or prior user request authorizes publishing and the destination is selected. Respect local-only instructions; if invocation was implicit and delivery intent is unclear, ask whether to add these journeys. No extra approval is needed when content/destination and publishing are already authorized. This workflow saves accessibility journeys and never starts an audit/cloud run automatically.
+Show the final locally saved journeys before delivery. Continue only for journeys on the list the customer approved (accessibility-test-journey-creator, Step 3), or the single flow the user named in a calling skill's request, once the destination is selected. Invoking a skill or a general request to create journeys is not approval of a list the customer has not seen. Respect local-only instructions. No extra approval is needed when the approved list and the destination are already confirmed. This workflow saves accessibility journeys and never starts an audit/cloud run automatically.
 
 ## Native payload contract
 
@@ -25,7 +25,7 @@ Use accessibility `create_journey`, never Agentic QA `import_qa_journeys`. Inspe
 
 | Field | Mapping |
 | --- | --- |
-| `project_id` | User-selected authorized project, added at call time. |
+| `projectId` | User-selected authorized project, added at call time. |
 | `name` | Journey title. Distinguish platform/locale/branch if needed. |
 | `description` | Plain-text description, starting state and non-secret fixtures. |
 | `steps` | Nonempty ordered `string[]`, one direct action per unnumbered string; no checks, assertions, step objects or Markdown. |

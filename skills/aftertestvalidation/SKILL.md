@@ -27,7 +27,7 @@ If several plausible locations remain, show the distinguishing evidence and ask 
 
 ## Create the aftertest journey
 
-Invoke and follow [../accessibility-runtime-journey-creator/SKILL.md](../accessibility-runtime-journey-creator/SKILL.md) in **directed mode**, passing the selected platform/device/app, verified target, source issue, launch state, fixtures and destination. Calling the skill means reading and applying its workflow in the active harness; do not invent a skill-calling API. Reuse established choices instead of repeating intake. That skill handles navigation authoring and delivery; this skill adds the explicitly requested post-delivery test execution.
+Invoke and follow [../accessibility-runtime-journey-creator/SKILL.md](../accessibility-runtime-journey-creator/SKILL.md) for the one flow the user named, passing the selected platform/device/app, verified target, source issue, launch state, fixtures and destination. Calling the skill means reading and applying its workflow in the active harness; do not invent a skill-calling API. Reuse established choices instead of repeating intake. That skill handles navigation authoring and delivery; this skill adds the explicitly requested post-delivery test execution.
 
 Create and replay the complete route from the application's initial launch/home entry to the affected area, including login/navigation prerequisites and actions needed to expose the original issue state. Do not start directly at a deep link or already-open screen to hide missing navigation. Describe authenticated versus logged-out launch state and any onboarding/permission prerequisites; use safe navigation/relaunch rather than clearing app data. If a launch-to-target route cannot be replayed, keep it a blocked draft.
 
