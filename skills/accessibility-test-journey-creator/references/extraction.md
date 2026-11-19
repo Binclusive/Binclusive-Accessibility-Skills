@@ -1,4 +1,18 @@
-# Extracting journeys from source
+# Exploring from source code
+
+Use this in Step 2 when the customer shares the project's source. Source suggests which processes and views exist and what their controls are called. It creates no journey: the customer approves the list in Step 3.
+
+Do not change application code. Exclude generated, vendor and build output. Reuse an existing project map or tests as discovery aids, then verify the relevant source.
+
+## Trace reachable flows
+
+1. List the in-scope routes or screens, components, handlers, navigation edges, validation branches and interaction tests. Say which files you read and which scope you left unread.
+2. Follow a user goal from a known entry through the actual component and handler transitions to an end state the source supports. Account for authentication, roles, flags, permissions, loading and error states. File order is not interaction order; never stitch unrelated controls into a flow.
+3. Read the visible localized names, roles, stable identifiers, input semantics, options and state changes. Trace custom component props to the implementation. An onClick or onPress alone does not prove an accessible button or spoken name.
+4. Put mutually exclusive branches in separate list items with their prerequisites. Prefer the primary flow and the relevant validation and keyboard alternatives over every combination. Mark behavior known only at runtime as unresolved.
+5. Give each suggested process or view a `file:line` the customer can check. A user statement tells you the intended behavior, not what the source or the running product does.
+
+## By platform
 
 | Platform | Entry/transition evidence | Control/target evidence |
 | --- | --- | --- |
@@ -10,8 +24,14 @@
 
 Verify platform overrides in mixed projects. Include conditional-rendering requirements as prerequisites. Existing E2E tests establish ordering and fixtures, but check current labels and handlers rather than assuming tests prove today's behavior.
 
-For a source-backed preferences flow, follow the actual route to Edit profile, enter the agreed synthetic Display name, choose an existing Language option, activate Save, then check the supported success state. Do not add checkboxes or navigation merely because they occur elsewhere in the project. Separate keyboard variations when actions differ; Tab order and screen-reader speech need runtime evidence.
+For a source-backed preferences flow, follow the actual route to Edit profile, enter a synthetic display name, choose an existing Language option, activate Save, then expect the supported success state. Do not add checkboxes or navigation merely because they occur elsewhere in the project. Separate keyboard variations when actions differ; Tab order and screen-reader speech need runtime evidence.
 
-Keep candidates draft when start location, authentication/setup, target identity, input, permissions, or transitions are unresolved. Disambiguate repeated labels by region/item. If a target lacks an accessible name, document the defect and use a verified fallback only when the runner supports it; never invent a label or repair source silently.
+## When the source and the customer disagree
 
-A source-ready journey may intentionally check behavior that currently fails. Distinguish a known failing expectation from an unknown target/entry state that prevents reliable execution.
+Keep the customer's goal and show the discrepancy. If the customer says "pick the G field" and the source exposes two candidates, show their visible names and contexts and ask which. If the requested option or transition is absent, report that and ask whether the environment or branch differs or the scenario should change. Do not invent the missing step, silently swap in a different business action, or call the feature confirmed. Keep exploring the unrelated parts while you wait.
+
+An expectation the customer states ("a success message should appear") is intent, not an observation of a passed check. A journey may expect behavior that fails today: that is a valid test. Separate it from an unknown target, entry state or input that stops anyone from running the journey reliably. Put the second kind in the draft list as an open question, with what you need to resolve it.
+
+If a target has no accessible name, report the defect and use a verified fallback only when the runner supports it. Never invent a label or repair the source silently.
+
+For a mobile product, ask in plain words how the journey should start: "From the app launch, or straight into this screen through a verified link?" Then write the `entry` shape yourself.

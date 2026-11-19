@@ -2,8 +2,8 @@
 // Snapshot for the SKILL.md "Coverage tiers" contract: which platforms the CLI
 // grounds today vs. which stay agent-only. This is the served-skill's honesty
 // guarantee — an agent consuming audit-accessibility is told a platform is
-// engine-backed ONLY when the monorepo CLI actually dispatches its collector
-// (`collectAllStacks` in packages/cli). Drift here re-introduces the exact
+// engine-backed ONLY when the Binclusive CLI actually dispatches its collector
+// for that stack. Drift here re-introduces the exact
 // over-claim this snapshot exists to catch. Run: `node coverage-tiers.snapshot.mjs`.
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -11,9 +11,9 @@ import { fileURLToPath } from "node:url";
 
 const SKILL = join(dirname(fileURLToPath(import.meta.url)), "..", "SKILL.md");
 
-// Every collector `collectAllStacks` dispatches today reads as engine-groundable;
-// the five with no collector stay agent-only. Keep in lockstep with the monorepo
-// dispatcher — a move here without a dispatch there is the over-claim to reject.
+// Every collector the CLI dispatches today reads as engine-groundable;
+// the five with no collector stay agent-only. Keep in lockstep with the CLI's
+// stack dispatcher: a move here without a dispatch there is the over-claim to reject.
 const ENGINE_GROUNDABLE = [
   "React / Next.js web",
   "Astro",
