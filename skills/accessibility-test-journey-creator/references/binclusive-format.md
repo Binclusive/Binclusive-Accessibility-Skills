@@ -65,4 +65,4 @@ Derive Android's actual navigation and TalkBack expectations independently. Expe
 
 ## Updating
 
-`update_journey` with `steps` replaces the whole list. Change a journey only when the customer asks, and show the new list first. Saving a journey does not start an audit. Schema acceptance of `entry` does not prove app installation, device provisioning, deep-link handling or mobile runner availability.
+`update_journey` with `steps` replaces the whole list. Change a journey only when the customer asks; the changed version follows the lifecycle table in SKILL.md Step 4. Saving a journey does not start an audit. Schema acceptance of `entry` does not prove app installation, device provisioning, deep-link handling or mobile runner availability.
