@@ -1,6 +1,6 @@
 ---
 name: accessibility-test-journey-creator
-description: Decide what a Binclusive project's accessibility audit tests, the way WCAG-EM 2.0 runs an evaluation. The customer states the scope, the skill explores the whole product (live, or from source code) and suggests a list of processes and sample views, the customer edits and approves that list, and only the approved journeys are verified and created. Nothing is picked or published on its own. Works for web, iOS and Android projects. Use whenever the user wants to set up, draft, generate, normalize, migrate or convert journeys, including phrases like "create journeys for this site", "what should we audit", "set up journeys in Binclusive for [project]", "turn this flow doc into journeys", "birlikte test journey oluşturalım". Does not replace accessibility auditing or create Agentic QA journeys.
+description: Decide what a Binclusive project's accessibility audit tests, the way WCAG-EM 2.0 runs an evaluation. The customer states the scope, the skill explores the whole product (live, or from source code) and suggests a list of processes and sample views, the customer edits and approves that list, and only approved journeys are created. Nothing is picked or published on its own. Works for web, iOS and Android projects. Use whenever the user wants to set up, draft, generate, normalize, migrate or convert journeys, including phrases like "create journeys for this site", "what should we audit", "set up journeys in Binclusive for [project]", "turn this flow doc into journeys", "birlikte test journey oluşturalım". Does not replace accessibility auditing or create Agentic QA journeys.
 ---
 
 # Accessibility Test Journey Creator
@@ -69,11 +69,23 @@ Ask the customer to keep, rename, reorder, drop or add. A use case of their own 
 
 Repeat until the customer says the list is approved. Silence is not approval. A general request such as "create journeys" is not approval of a list the customer has not seen.
 
-## Step 4. Verify and create what was approved
+## Step 4. Verify and create
 
-Only approved items go on. Where the product can be driven (Chrome, a simulator or a device), replay each approved journey with `accessibility-runtime-journey-creator` first and fix a step that does not replay. If replay changes a journey's steps materially, show the changed journey to the customer and get their yes on that version before it is created. A journey replay left unchanged needs no second approval. Where it cannot be driven, say in the output that the journey was not replayed.
+Approval gates what gets created or published, never exploring or replaying. Step 1's scope is the customer's authority to explore and replay their product within it, and the Step 2 rule (never probe a control that submits, sends, pays, deletes or logs out) still bounds every replay. This table is the one place the lifecycle is stated. `accessibility-runtime-journey-creator`, its references and `aftertestvalidation` point here.
 
-Then one `create_journey` per approved item, run in parallel, with `projectId`, `name`, `description` and `steps`. Write each step as the action that moves from one view to the next, so a later run can repeat it: "In most cases the web address (URL) will not be sufficient to identify the sample in a complete process." Leave no view of a process out: "all pages or views that belong to that same process have to be included". (Step 3.3)
+| State | Who moves it | Next |
+|---|---|---|
+| drafted | the skill, from exploring | shown to the customer |
+| approved | the customer says yes to this exact version | replayed to verify (where the product can be driven) |
+| replayed, unchanged | the skill | created |
+| replayed, changed materially | the skill | shown again with what changed and the replay evidence; back to approved only on a new yes |
+| created | the skill, only from approved + (unchanged replay, or no replay possible) | done |
+
+A named flow, or a flow a calling skill passes in, starts at drafted like any other. Where the product can be driven (Chrome, a simulator or a device), replay with `accessibility-runtime-journey-creator` and fix a step that does not replay. Replaying a changed journey before the customer's new yes is allowed. Creating it is not. Where the product cannot be driven, say in the output that the journey was not replayed.
+
+Pause state. When a session stops, save each journey's state, pending questions, blockers and accepted test data (non-secret only) to the local evidence file: `journey-scope.md` for a source-only draft, otherwise the runtime skill's evidence under `Binclusive-auditing/<app-or-site>/journeys/`. A source-only draft then keeps its approval state across sessions.
+
+Create each journey that reaches created: one `create_journey` per journey, run in parallel, with `projectId`, `name`, `description` and `steps`. Write each step as the action that moves from one view to the next, so a later run can repeat it: "In most cases the web address (URL) will not be sufficient to identify the sample in a complete process." Leave no view of a process out: "all pages or views that belong to that same process have to be included". (Step 3.3)
 
 - Web journey. Step 1 opens the start address: `Open https://shop.example.com.` There is no separate start address field. Write no step for cookie banners or pop-ups, because the tester handles them on every run. Pass `personaId` for a signed-in journey. No `personaId` means a public journey. Do not paste the login into an otherwise signed-in journey, because the persona signs in. Audit the login itself as its own public journey.
 - App journey. Pass `entry`: `{"kind":"deep_link","url":"..."}` or `{"kind":"tap_path","taps":["..."]}`. `create_journey` refuses a persona on an app journey, so ask the customer how a signed-in app flow gets in.
