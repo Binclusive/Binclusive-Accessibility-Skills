@@ -4,10 +4,13 @@
   "description": "Binclusive accessibility mapping, audit, and remediation skills for web, WordPress themes, React Native, iOS, native Android, and Flutter projects.",
   "skills": [
     {
-      "path": "../../skills/onboard-binclusive-cli/SKILL.md"
+      "path": "../../skills/accessibility-runtime-journey-creator/SKILL.md"
     },
     {
-      "path": "../../skills/map-project/SKILL.md"
+      "path": "../../skills/accessibility-test-journey-creator/SKILL.md"
+    },
+    {
+      "path": "../../skills/aftertestvalidation/SKILL.md"
     },
     {
       "path": "../../skills/audit-accessibility/SKILL.md"
@@ -16,16 +19,16 @@
       "path": "../../skills/audit-runtime-accessibility/SKILL.md"
     },
     {
-      "path": "../../skills/accessibility-test-journey-creator/SKILL.md"
+      "path": "../../skills/fix-accessibility/SKILL.md"
     },
     {
-      "path": "../../skills/accessibility-runtime-journey-creator/SKILL.md"
+      "path": "../../skills/map-project/SKILL.md"
+    },
+    {
+      "path": "../../skills/onboard-binclusive-cli/SKILL.md"
     },
     {
       "path": "../../skills/shopify-theme-audit/SKILL.md"
-    },
-    {
-      "path": "../../skills/fix-accessibility/SKILL.md"
     }
   ],
   "interface": {
