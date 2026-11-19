@@ -20,6 +20,11 @@ Use this reference only for React or Next.js web projects.
 - hardcoded `aria-label`, `placeholder`, `title`, `alt`, and visible strings outside i18n
 - animation without reduced-motion handling
 - Suspense/loading/toast states without live region strategy
+- interactive controls (inputs, textareas, buttons) nested inside `role="option"`/`role="tab"` or other presentational-children roles — descendants lose role/name
+- composite widgets (`listbox`/`grid`/`tree`) with no Tab stop: no container `tabIndex`/`aria-activedescendant`, all items `tabIndex={-1}`, focus set only programmatically
+- single-letter hotkey maps on `document`/`window` (WCAG 2.1.4) — flag as `RUNTIME-CHECK` for screen-reader quick-nav collisions even when focus-scoped
+- `aria-live` on per-keystroke values (character counters) or multiple competing live regions in one view
+- state interpolated into `aria-label` so the accessible name changes while focused
 
 ## React / Next.js Table Checks
 
@@ -53,3 +58,5 @@ Mark as `RUNTIME-CHECK` when not statically provable:
 - route transition focus behavior
 - carousel autoplay pause behavior
 - responsive or virtualized table header relationships
+- bare-letter shortcut reachability under JAWS/NVDA browse mode (quick-nav key collisions)
+- forms/application-mode switching for custom composite widgets
