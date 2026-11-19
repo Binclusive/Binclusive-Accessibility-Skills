@@ -1,6 +1,9 @@
 ---
 name: map-project
 description: Map a React, Next.js, Angular, React Native, Expo, ASP.NET, ASPX/Web Forms, WordPress theme or plugin (PHP, classic, block, hybrid, public, admin, or editor UI), SwiftUI, UIKit, native Android, or Flutter codebase for accessibility auditing. Use for /mapaccessibility, WordPress theme map, WordPress plugin map, PHP theme/plugin map, "binclusive projemi haritala", "wordpress temamı haritala", "wordpress eklentimi haritala", or to inventory routes, templates, admin pages, editor controls, shared components, dependencies, localization, and inline UI before an audit.
+metadata:
+  display_name: "Map Project"
+  short_description: "Map a codebase for accessibility auditing"
 ---
 
 # Map Project

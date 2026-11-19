@@ -20,22 +20,49 @@ const entries = (dir) =>
     .map((entry) => (entry.isDirectory() ? `${entry.name}/` : entry.name))
     .sort();
 
+const parseFrontmatter = (file, block) => {
+  const fields = {};
+  let nested = null;
+  for (const line of block.split(/\r?\n/)) {
+    const child = nested && /^  ([a-z_-]+): "([^"\\]*)"$/.exec(line);
+    if (child) {
+      nested[child[1]] = child[2];
+      continue;
+    }
+    const map = /^([a-z-]+):$/.exec(line);
+    if (map) {
+      nested = fields[map[1]] = {};
+      continue;
+    }
+    const scalar = /^([a-z-]+): (\S.*)$/.exec(line);
+    if (!scalar) fail(`${file}: unsupported frontmatter line: ${line}`);
+    nested = null;
+    fields[scalar[1]] = scalar[2].trim();
+  }
+  return fields;
+};
+
+const shortDescriptionLength = { min: 25, max: 64 };
+
 const readSkill = (dir) => {
   const file = `skills/${dir}/SKILL.md`;
   const frontmatter = /^---\r?\n([\s\S]*?)\r?\n---\r?\n/.exec(readFileSync(join(root, file), "utf8"));
   if (!frontmatter) fail(`${file}: no frontmatter`);
-  const fields = Object.fromEntries(
-    frontmatter[1].split(/\r?\n/).map((line) => {
-      const field = /^([a-z-]+): (\S.*)$/.exec(line);
-      if (!field) fail(`${file}: frontmatter line is not a single-line "key: value": ${line}`);
-      return [field[1], field[2].trim()];
-    }),
-  );
-  const { name, description } = fields;
+  const { name, description, metadata } = parseFrontmatter(file, frontmatter[1]);
   if (name !== dir) fail(`${file}: name "${name}" must equal its directory "${dir}"`);
-  if (!description || /^["'>|]/.test(description)) fail(`${file}: description must be a single-line plain value`);
+  if (typeof description !== "string" || /^["'>|]/.test(description)) {
+    fail(`${file}: description must be a single-line plain value`);
+  }
+  const displayName = metadata?.display_name;
+  const shortDescription = metadata?.short_description;
+  if (!displayName || !shortDescription) fail(`${file}: metadata needs display_name and short_description`);
+  if (shortDescription.length < shortDescriptionLength.min || shortDescription.length > shortDescriptionLength.max) {
+    fail(
+      `${file}: metadata.short_description is ${shortDescription.length} characters, must be ${shortDescriptionLength.min}-${shortDescriptionLength.max}`,
+    );
+  }
   const summary = /^.*?[.!?](?=\s|$)/.exec(description)?.[0] ?? description;
-  return { name, summary };
+  return { name, summary, displayName, shortDescription };
 };
 
 const skills = entries("skills")
@@ -80,7 +107,11 @@ const codexSkills = (text) => {
   return `${JSON.stringify(manifest, null, 2)}\n`;
 };
 
+const openaiLabels = (skill) =>
+  hash("interface", () => `  display_name: "${skill.displayName}"\n  short_description: "${skill.shortDescription}"`);
+
 const targets = {
+  ...Object.fromEntries(skills.map((skill) => [`skills/${skill.name}/agents/openai.yaml`, [openaiLabels(skill)]])),
   "README.md": [
     html("skills", lines((skill) => `- \`${skill.name}\`: ${skill.summary}`)),
     html("codex-invocations", fenced((skill) => `$${skill.name}`)),

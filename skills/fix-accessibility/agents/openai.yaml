@@ -1,6 +1,8 @@
 interface:
+# generated:interface:begin
   display_name: "Fix Accessibility"
-  short_description: "Duzelt: selected a11y TODOs"
+  short_description: "Fix selected accessibility tasks from your TODO report"
+# generated:interface:end
   default_prompt: "Use $fix-accessibility to fix selected TASK IDs from accessibility-todo.md; Turkce: erisilebilirlik sorunlarini duzelt."
 
 policy:

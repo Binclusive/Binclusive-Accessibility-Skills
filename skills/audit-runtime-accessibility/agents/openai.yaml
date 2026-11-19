@@ -1,4 +1,6 @@
 interface:
+# generated:interface:begin
   display_name: "Audit Runtime Accessibility"
   short_description: "Audit live browser flows for accessibility"
+# generated:interface:end
   default_prompt: "Use $audit-runtime-accessibility to audit this live page or user flow in the connected browser."

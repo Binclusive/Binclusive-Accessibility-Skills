@@ -1,6 +1,9 @@
 ---
 name: shopify-theme-audit
 description: Audit Shopify Online Store themes for accessibility from Liquid, JSON templates, sections, snippets, assets, config, and locale files. Use when the user asks for a Shopify theme accessibility audit, Shopify theme TODO/review, Liquid theme accessibility review, Dawn/custom theme audit, "shopify tema erisilebilirlik testi", "shopify accessibility todo cikar", or wants an evidence-based Binclusive accessibility TODO report for any Shopify theme structure.
+metadata:
+  display_name: "Shopify Theme Audit"
+  short_description: "Audit Shopify themes for accessibility"
 ---
 
 # Shopify Theme Audit

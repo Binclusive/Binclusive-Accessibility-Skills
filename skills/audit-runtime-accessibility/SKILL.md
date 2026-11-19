@@ -1,6 +1,9 @@
 ---
 name: audit-runtime-accessibility
 description: Audit a live web page or user-provided browser flow through a connected Chrome, external browser extension, or harness browser. Use when the user asks for runtime accessibility testing of localhost or a URL, visible or interactive element inspection, keyboard navigation, focus behavior, autocomplete/date-picker/dialog testing, or step-by-step accessibility validation in Codex, Claude Code, or another browser-capable agent harness.
+metadata:
+  display_name: "Audit Runtime Accessibility"
+  short_description: "Audit live browser flows for accessibility"
 ---
 
 # Audit Runtime Accessibility

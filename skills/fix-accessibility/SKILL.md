@@ -1,6 +1,9 @@
 ---
 name: fix-accessibility
 description: Fix accessibility tasks from Binclusive accessibility-todo.md with user-guided selection and verification across supported web, WordPress theme/PHP, mobile, native, Flutter, and Python projects. Use when the user says /fixaccessibility, fix accessibility, fix WordPress theme accessibility, resolve accessibility TODOs, "erişilebilirlik sorunlarını düzelt", "wordpress tema erişilebilirlik sorunlarını düzelt", "accessibility todo'daki taskları düzelt", "TASK-001'i düzelt", "safe taskları düzelt", or wants to remediate selected TASK IDs from an audit report.
+metadata:
+  display_name: "Fix Accessibility"
+  short_description: "Fix selected accessibility tasks from your TODO report"
 ---
 
 # Fix Accessibility

@@ -1,6 +1,8 @@
 interface:
+# generated:interface:begin
   display_name: "Map Project"
-  short_description: "Haritala: web audit scope"
+  short_description: "Map a codebase for accessibility auditing"
+# generated:interface:end
   default_prompt: "Use $map-project to map this app, WordPress theme, or plugin for accessibility auditing; Turkce: Binclusive projemi haritala."
 
 policy:

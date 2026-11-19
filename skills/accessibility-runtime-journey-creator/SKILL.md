@@ -1,6 +1,9 @@
 ---
 name: accessibility-runtime-journey-creator
 description: Drive a live web app in Google Chrome or an Android/iOS app on a physical device or emulator/simulator, as the hands of the WCAG-EM journey flow in accessibility-test-journey-creator. Explores the product so the customer gets a suggested list of processes and views, and replays journeys to verify them; creating and publishing follow the approval lifecycle in accessibility-test-journey-creator Step 4. Covers mobile connection setup, saves journeys locally, guides Binclusive MCP delivery, and does not perform a complete accessibility audit or start cloud tests.
+metadata:
+  display_name: "Runtime Accessibility Journey Creator"
+  short_description: "Explore and verify journeys on live web, Android and iOS apps"
 ---
 
 # Accessibility Runtime Journey Creator

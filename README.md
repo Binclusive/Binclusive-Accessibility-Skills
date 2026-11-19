@@ -26,7 +26,7 @@ Codebase auditing is only one part of a complete accessibility process. Accessib
 
 Canonical skill files live in `skills/<skill-name>/SKILL.md`.
 
-The skill lists in this README, the adapters and the install scripts are generated from each `SKILL.md` frontmatter. After you edit a skill's `name` or `description`, run `node scripts/generate-skill-copies.mjs`; CI runs it with `--check` and fails when a generated file differs.
+The skill lists in this README, the adapters, the install scripts and the `display_name` and `short_description` in each `agents/openai.yaml` are generated from each `SKILL.md` frontmatter (`name`, `description` and `metadata`). After you edit one of those, run `node scripts/generate-skill-copies.mjs`; CI runs it with `--check` and fails when a generated file differs.
 
 ## Supported Audit Targets
 
