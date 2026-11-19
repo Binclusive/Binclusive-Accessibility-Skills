@@ -9,7 +9,7 @@ Use the canonical Agent Skills in this repository as the source of truth:
 - `skills/accessibility-test-journey-creator/SKILL.md` decides what to audit the way WCAG-EM 2.0 does: the customer states the scope, the skill explores the product (live, or from source code) and suggests a list of processes and sample views, the customer edits and approves that list, and only approved journeys are created in Binclusive. Nothing is picked or published on its own.
 - `skills/accessibility-runtime-journey-creator/SKILL.md` is the hands of that flow for a live product: it drives Google Chrome, Android or iOS (physical device, emulator or simulator, with setup guidance) to explore the product for the suggested list, then replays journeys to verify them, saves `binclusive-accessibility-test-journies.md` and delivers only approved journeys through Binclusive MCP to the selected organization/project.
 - `skills/shopify-theme-audit/SKILL.md` audits Shopify theme Liquid, JSON templates, sections, snippets, assets, config, and locales without requiring a prior map.
-- `skills/aftertestvalidation/SKILL.md` validates fixed issues from Excel/PDF/text/tickets through launch-to-target aftertest journeys and selected Binclusive accessibility runs; records evidence and blockers in `aftertest.md`.
+- `skills/aftertestvalidation/SKILL.md` validates fixed issues from Excel/PDF/text/tickets through launch-to-target aftertest journeys the user approves before they are created, and selected Binclusive accessibility runs; records evidence and blockers in `aftertest.md`.
 - `skills/fix-accessibility/SKILL.md` fixes selected TODO tasks with severity/risk controls and verification notes.
 
 Follow the workflow in order:

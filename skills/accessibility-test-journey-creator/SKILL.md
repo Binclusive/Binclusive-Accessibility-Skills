@@ -13,7 +13,9 @@ The method is WCAG-EM 2.0, the W3C's evaluation method (https://www.w3.org/TR/WC
 
 ## Tools
 
-Binclusive MCP tools (server `https://mcp.binclusive.io/mcp`; if it is not connected, follow [../accessibility-runtime-journey-creator/references/binclusive-delivery.md](../accessibility-runtime-journey-creator/references/binclusive-delivery.md) to connect it):
+Steps 1 to 3 (scope, explore, approved list) work fully locally and save to `journey-scope.md`. A Binclusive login is not a prerequisite for them. Use the Binclusive MCP tools below in Steps 1 to 3 only when Binclusive is already connected and the project is already known; otherwise ask the customer instead. The project is resolved and confirmed at Step 4, when an approved journey is about to be created.
+
+Binclusive MCP tools (server `https://mcp.binclusive.io/mcp`; to connect it, follow [../accessibility-runtime-journey-creator/references/binclusive-delivery.md](../accessibility-runtime-journey-creator/references/binclusive-delivery.md)):
 
 - `list_organizations`, `list_projects`: find the project. `list_projects` returns `type` (`web`, `ios` or `android`), `domain` and `bundleId`.
 - `list_pages`, `import_sitemap`: the project's pages. `import_sitemap` is for web projects.
@@ -23,8 +25,6 @@ Binclusive MCP tools (server `https://mcp.binclusive.io/mcp`; if it is not conne
 
 To look at a live product, use `accessibility-runtime-journey-creator`. To read the product's source code, use [references/extraction.md](references/extraction.md). For an app you cannot run, ask the customer for its screens.
 
-Resolve the project first, matching the name case-insensitively and asking when two match. Confirm it before anything else.
-
 ## Step 1. Scope
 
 Ask these five questions one at a time, with a default where there is one. Write the answers to `journey-scope.md` in the working folder and show the file. Do not start Step 2 until all five are answered. Question 3 has a default. If the customer has no preference, record it as the default.
@@ -32,17 +32,17 @@ Ask these five questions one at a time, with a default where there is one. Write
 1. Product. Which address, or which app (platform and bundle id)? Include language versions, mobile versions, linked shops and third-party parts. WCAG-EM 2.0, Step 1.1: "for each view it is unambiguous whether it is within the scope of evaluation or not".
 2. In and out. Which areas are in, which are out, and why? Tell the customer once: "Excluding specific parts of a digital product from the scope would likely conflict with the WCAG 2.2 conformance requirements for full pages and complete processes, or otherwise distort the evaluation results." (WCAG-EM 2.0, section 3.1)
 3. Conformance target. Default to WCAG 2.2 level AA: "WCAG 2 Level AA is the generally accepted and recommended target." (Step 1.2) Offer another version or level only if the customer's legal regime names one.
-4. Test account. Does any essential function need a signed-in user? If so, run `list_personas`, then reuse a persona or create one with `create_persona`. The customer must confirm it is a dedicated test account, not a real person's. The persona holds the session, and `list_personas` says how to capture the login (`b8e profile create --persona <id> --target <id>`). Never ask for a password in the chat and never write one in a step. WCAG-EM 2.0, Step 2: "it may be necessary to create an account and ensure that the product's configuration is representative".
+4. Test account. Does any essential function need a signed-in user? If so, and Binclusive is connected, run `list_personas`, then reuse a persona or create one with `create_persona`. If it is not connected, record the need in `journey-scope.md` and settle the persona at Step 4. The customer must confirm it is a dedicated test account, not a real person's. The persona holds the session, and `list_personas` says how to capture the login (`b8e profile create --persona <id> --target <id>`). Never ask for a password in the chat and never write one in a step. WCAG-EM 2.0, Step 2: "it may be necessary to create an account and ensure that the product's configuration is representative".
 5. Interruptions. Cookie banners, consent prompts, pop-ups, chat widgets and permission prompts sit in front of every view, and WCAG-EM has no rule for them. Our default is to test the banner once, on a first visit with nothing stored, as its own sample. Record which answer the customer prefers (accept, reject, or the page's own close control) in `journey-scope.md`. The audit's tester meets and answers interruptions on every run by itself, so no journey carries a step for them. A third-party banner is still part of the product: "This includes 3rd party content used within the site." (WCAG-EM 2.0, section 3.1.1)
 
 ## Step 2. Explore across the product
 
 Look at the whole product, not one page. Exploring creates nothing. Sources, in this order:
 
-- The sitemap (`list_pages`). With no pages, ask for the sitemap address and offer `import_sitemap`. It starts a crawl in the background, so read `list_pages` again when it finishes.
+- The sitemap: `list_pages` when the project is known, otherwise ask the customer for the sitemap address. With no pages, offer `import_sitemap`. It starts a crawl in the background, so read `list_pages` again when it finishes.
 - The navigation, header and footer of the home page or start screen. Use `accessibility-runtime-journey-creator` to open the live product (Chrome, simulator or device) and snapshot one example of each view type, not every page.
 - The source code, when the customer shares it: routes, screens and navigation, read as [references/extraction.md](references/extraction.md) describes. Source suggests what exists. The customer still decides what is tested.
-- What exists: `list_journeys`. Show existing journeys in the list so you do not create a duplicate.
+- What exists: `list_journeys` when the project is known, otherwise ask the customer. Show existing journeys in the list so you do not create a duplicate.
 - A customer document, if there is one (flow doc, user stories, QA cases, top tasks, in any language). Read it end to end first. It is a source of functions, not the scope.
 
 Then write these lists:
@@ -67,7 +67,7 @@ Show one numbered list. Create nothing yet.
 
 Ask the customer to keep, rename, reorder, drop or add. A use case of their own is theirs to add: WCAG-EM calls it an additional requirement, "analysis of particular use cases, situations, and user groups for interacting with the target digital product". (Step 1.4) WCAG-EM gives no count of journeys. The customer's confirmed functions set the number.
 
-Repeat until the customer says the list is approved. Silence is not approval. A general request such as "create journeys" is not approval of a list the customer has not seen.
+Repeat until the customer says the list is approved, then save the approved list to `journey-scope.md`. Silence is not approval. A general request such as "create journeys" is not approval of a list the customer has not seen.
 
 ## Step 4. Verify and create
 
@@ -90,7 +90,9 @@ Two safety bounds:
 
 Pause state. When a session stops, save each journey's state, pending questions, blockers and accepted test data (non-secret only) to the local evidence file: `journey-scope.md` for a source-only draft, otherwise the runtime skill's evidence under `Binclusive-auditing/<app-or-site>/journeys/`. A source-only draft then keeps its approval state across sessions.
 
-Create each journey that reaches created: one `create_journey` per journey, run in parallel, with `projectId`, `name`, `description` and `steps`. Write each step as the action that moves from one view to the next, so a later run can repeat it: "In most cases the web address (URL) will not be sufficient to identify the sample in a complete process." Leave no view of a process out: "all pages or views that belong to that same process have to be included". (Step 3.3)
+Resolve and confirm the Binclusive project only now, when an approved journey is about to be created: find it with `list_organizations` and `list_projects`, match the name case-insensitively, ask when two match, and check that its `type`, `domain` and `bundleId` fit the product in `journey-scope.md`. Settle the persona for a signed-in journey, and reconcile with existing journeys (`list_journeys`) as binclusive-delivery.md describes. If Binclusive is not connected, or the customer wants to stay local, the approved journeys stay in `journey-scope.md` and nothing is created.
+
+Create each journey that reaches created, one at a time: one `create_journey` call with `projectId`, `name`, `description` and `steps`, and persist the returned ID to the local evidence file before the next call. Write each step as the action that moves from one view to the next, so a later run can repeat it: "In most cases the web address (URL) will not be sufficient to identify the sample in a complete process." Leave no view of a process out: "all pages or views that belong to that same process have to be included". (Step 3.3)
 
 - Web journey. Step 1 opens the start address: `Open https://shop.example.com.` There is no separate start address field. Write no step for cookie banners or pop-ups, because the tester handles them on every run. Pass `personaId` for a signed-in journey. No `personaId` means a public journey. Do not paste the login into an otherwise signed-in journey, because the persona signs in. Audit the login itself as its own public journey.
 - App journey. Pass `entry`: `{"kind":"deep_link","url":"..."}` or `{"kind":"tap_path","taps":["..."]}`. `create_journey` refuses a persona on an app journey, so ask the customer how a signed-in app flow gets in.
