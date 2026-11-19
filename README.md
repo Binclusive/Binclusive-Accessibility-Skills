@@ -12,17 +12,21 @@ Binclusive develops technologies that help organizations make their applications
 Codebase auditing is only one part of a complete accessibility process. Accessibility should also be validated with end-user testing after implementation. Binclusive provides disabled-user testing services and production-environment accessibility testing for organizations that need deeper validation. Learn more at https://binclusive.io.
 
 ## Skills
-- `onboard-binclusive-cli`: configure the CLI and verify either recommended dashboard delivery or a local-only scan.
-- `map-project`: inventory routes, screens, views, shared UI, dependencies, localization, and inline UI before an accessibility audit.
-- `audit-accessibility`: audit a mapped scope and write `Binclusive-auditing/accessibility-todo.md` without editing source code.
-- `audit-runtime-accessibility`: audit a live page or user flow through a connected browser, including visible elements, keyboard interactions, focus, and dynamic states.
-- `accessibility-test-journey-creator`: decide what to audit the way WCAG-EM 2.0 does: the customer states the scope, the skill explores the product (live, or from source code) and suggests a list of processes and sample views, the customer edits and approves that list, and only approved journeys are created in Binclusive. Nothing is picked or published on its own.
-- `accessibility-runtime-journey-creator`: the hands of that flow for a live product: drive Google Chrome, Android or iOS (physical device, emulator or simulator, with setup guidance) to explore the product for the suggested list, then replay journeys to verify them, save `binclusive-accessibility-test-journies.md` and deliver only approved journeys through Binclusive MCP to the selected organization/project.
-- `aftertestvalidation`: validate reported accessibility fixes from Excel, PDF, text or Binclusive tickets on web, Android or iOS; locate the target, draft a launch-to-target `aftertest` journey and, once the user approves it, create and run it in the selected Binclusive organization/project, and record evidence or blockers in `aftertest.md`.
-- `shopify-theme-audit`: audit Shopify theme Liquid, JSON templates, sections, snippets, assets, config, and locales without editing source code.
-- `fix-accessibility`: remediate selected TODO tasks with severity/risk controls and verification notes.
+<!-- generated:skills:begin -->
+- `accessibility-runtime-journey-creator`: Drive a live web app in Google Chrome or an Android/iOS app on a physical device or emulator/simulator, as the hands of the WCAG-EM journey flow in accessibility-test-journey-creator.
+- `accessibility-test-journey-creator`: Decide what a Binclusive project's accessibility audit tests, the way WCAG-EM 2.0 runs an evaluation.
+- `aftertestvalidation`: Validate a reported accessibility fix in a live web, Android or iOS app from Excel, PDF, text or a Binclusive ticket.
+- `audit-accessibility`: Audit React, Next.js, Angular, React Native, Expo, ASP.NET, ASPX/Web Forms, WordPress themes or plugins (PHP, classic, block, hybrid, public, admin, or editor UI), SwiftUI, UIKit, native Android, Flutter, or Python accessibility from a prior Binclusive project map.
+- `audit-runtime-accessibility`: Audit a live web page or user-provided browser flow through a connected Chrome, external browser extension, or harness browser.
+- `fix-accessibility`: Fix accessibility tasks from Binclusive accessibility-todo.md with user-guided selection and verification across supported web, WordPress theme/PHP, mobile, native, Flutter, and Python projects.
+- `map-project`: Map a React, Next.js, Angular, React Native, Expo, ASP.NET, ASPX/Web Forms, WordPress theme or plugin (PHP, classic, block, hybrid, public, admin, or editor UI), SwiftUI, UIKit, native Android, or Flutter codebase for accessibility auditing.
+- `onboard-binclusive-cli`: Configure and verify the Binclusive CLI for a project, then run either the recommended dashboard-connected CI scan or a local-only scan.
+- `shopify-theme-audit`: Audit Shopify Online Store themes for accessibility from Liquid, JSON templates, sections, snippets, assets, config, and locale files.
+<!-- generated:skills:end -->
 
 Canonical skill files live in `skills/<skill-name>/SKILL.md`.
+
+The skill lists in this README, the adapters, the install scripts and the `display_name` and `short_description` in each `agents/openai.yaml` are generated from each `SKILL.md` frontmatter (`name`, `description` and `metadata`). After you edit one of those, run `node scripts/generate-skill-copies.mjs`; CI runs it with `--check` and fails when a generated file differs.
 
 ## Supported Audit Targets
 
@@ -116,33 +120,37 @@ The rules file is `alwaysApply: true`, so Cursor loads the Binclusive accessibil
 
 Invoke skills explicitly with:
 
+<!-- generated:codex-invocations:begin -->
 ```text
-$onboard-binclusive-cli
-$map-project
+$accessibility-runtime-journey-creator
+$accessibility-test-journey-creator
+$aftertestvalidation
 $audit-accessibility
 $audit-runtime-accessibility
-$accessibility-test-journey-creator
-$accessibility-runtime-journey-creator
-$aftertestvalidation
-$shopify-theme-audit
 $fix-accessibility
+$map-project
+$onboard-binclusive-cli
+$shopify-theme-audit
 ```
+<!-- generated:codex-invocations:end -->
 
 ### Claude Code
 
 Invoke skills explicitly with:
 
+<!-- generated:claude-invocations:begin -->
 ```text
-/onboard-binclusive-cli
-/map-project
+/accessibility-runtime-journey-creator
+/accessibility-test-journey-creator
+/aftertestvalidation
 /audit-accessibility
 /audit-runtime-accessibility
-/accessibility-test-journey-creator
-/accessibility-runtime-journey-creator
-/aftertestvalidation
-/shopify-theme-audit
 /fix-accessibility
+/map-project
+/onboard-binclusive-cli
+/shopify-theme-audit
 ```
+<!-- generated:claude-invocations:end -->
 
 Plain requests route too, in English or Turkish — "run the onboarding", "onboarding yap", "map the project", "erişilebilirlik testi yap". If a request lands on the wrong skill, the receiving skill's trigger phrases are the thing to extend, not the caller's wording.
 
@@ -242,23 +250,26 @@ Binclusive's privacy policy is available at [binclusive.io/privacy](https://binc
 
 ## Repository Layout
 
+<!-- generated:layout:begin -->
 ```text
 skills/
-  onboard-binclusive-cli/
-  map-project/
+  accessibility-runtime-journey-creator/
+  accessibility-test-journey-creator/
+  aftertestvalidation/
   audit-accessibility/
   audit-runtime-accessibility/
-  accessibility-test-journey-creator/
-  accessibility-runtime-journey-creator/
-  aftertestvalidation/
-  shopify-theme-audit/
   fix-accessibility/
+  map-project/
+  onboard-binclusive-cli/
+  shopify-theme-audit/
 adapters/
-  codex/
   claude-code/
+  codex/
   copilot/
   cursor/
 scripts/
+  generate-skill-copies.mjs
   install.ps1
   install.sh
 ```
+<!-- generated:layout:end -->

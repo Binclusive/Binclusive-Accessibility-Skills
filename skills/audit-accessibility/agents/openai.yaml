@@ -1,6 +1,8 @@
 interface:
+# generated:interface:begin
   display_name: "Audit Accessibility"
-  short_description: "Test et: accessibility TODO cikar"
+  short_description: "Audit mapped code and write an accessibility TODO"
+# generated:interface:end
   default_prompt: "Use $audit-accessibility to test the mapped app, WordPress theme, or plugin and produce accessibility-todo.md; Turkce: Binclusive projemi test et."
 
 policy:

@@ -1,6 +1,9 @@
 ---
 name: audit-accessibility
 description: Audit React, Next.js, Angular, React Native, Expo, ASP.NET, ASPX/Web Forms, WordPress themes or plugins (PHP, classic, block, hybrid, public, admin, or editor UI), SwiftUI, UIKit, native Android, Flutter, or Python accessibility from a prior Binclusive project map. Use for /auditaccessibility, WordPress theme/plugin accessibility audits, PHP plugin audits, "binclusive projemi test et", "wordpress eklenti erişilebilirlik testi", or an accessibility TODO from mapped routes, templates, admin pages, editor controls, components, or paths.
+metadata:
+  display_name: "Audit Accessibility"
+  short_description: "Audit mapped code and write an accessibility TODO"
 ---
 
 # Audit Accessibility

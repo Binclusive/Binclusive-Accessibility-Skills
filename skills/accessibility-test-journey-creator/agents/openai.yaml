@@ -1,4 +1,6 @@
 interface:
+# generated:interface:begin
   display_name: "Accessibility Test Journey Creator"
   short_description: "Scope, suggest and approve the journeys Binclusive audits"
+# generated:interface:end
   default_prompt: "Use $accessibility-test-journey-creator to follow WCAG-EM 2.0: ask me the scope, explore the product, suggest processes and sample views, let me edit and approve the list, and only then create the approved journeys in Binclusive."

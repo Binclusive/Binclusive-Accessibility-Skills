@@ -35,7 +35,9 @@ esac
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-SKILLS=(onboard-binclusive-cli map-project audit-accessibility audit-runtime-accessibility accessibility-test-journey-creator accessibility-runtime-journey-creator aftertestvalidation shopify-theme-audit fix-accessibility)
+# generated:skills:begin
+SKILLS=(accessibility-runtime-journey-creator accessibility-test-journey-creator aftertestvalidation audit-accessibility audit-runtime-accessibility fix-accessibility map-project onboard-binclusive-cli shopify-theme-audit)
+# generated:skills:end
 
 copy_skill_set() {
   local destination_root="$1"

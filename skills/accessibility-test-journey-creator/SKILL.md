@@ -1,6 +1,9 @@
 ---
 name: accessibility-test-journey-creator
 description: Decide what a Binclusive project's accessibility audit tests, the way WCAG-EM 2.0 runs an evaluation. The customer states the scope, the skill explores the whole product (live, or from source code) and suggests a list of processes and sample views, the customer edits and approves that list, and only approved journeys are created. Nothing is picked or published on its own. Works for web, iOS and Android projects. Use whenever the user wants to set up, draft, generate, normalize, migrate or convert journeys, including phrases like "create journeys for this site", "what should we audit", "set up journeys in Binclusive for [project]", "turn this flow doc into journeys", "birlikte test journey oluşturalım". Does not replace accessibility auditing or create Agentic QA journeys.
+metadata:
+  display_name: "Accessibility Test Journey Creator"
+  short_description: "Scope, suggest and approve the journeys Binclusive audits"
 ---
 
 # Accessibility Test Journey Creator

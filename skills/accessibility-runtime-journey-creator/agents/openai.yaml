@@ -1,4 +1,6 @@
 interface:
+# generated:interface:begin
   display_name: "Runtime Accessibility Journey Creator"
-  short_description: "Explore live web, Android and iOS apps and replay journeys to verify them"
+  short_description: "Explore and verify journeys on live web, Android and iOS apps"
+# generated:interface:end
   default_prompt: "Use $accessibility-runtime-journey-creator to choose Web, Android or iOS, connect the browser/device, explore the product so I get a suggested list of processes and views, replay journeys to verify them, and add only the journeys I approve to my selected Binclusive project."

@@ -1,6 +1,9 @@
 ---
 name: onboard-binclusive-cli
 description: Configure and verify the Binclusive CLI for a project, then run either the recommended dashboard-connected CI scan or a local-only scan. Use when the user says /onboard, /onboardbinclusive, onboarding, run onboarding, run the onboarding skill, run the Binclusive onboarding, Binclusive onboarding, onboard Binclusive, onboard this project, set up Binclusive, Binclusive setup, configure the Binclusive CLI, CLI onboarding, Binclusive login, log in to Binclusive, authorize the CLI, connect the dashboard, "binclusive onboarding'i çalıştır", "onboarding'i çalıştır", "onboarding yap", "binclusive kurulumunu yap", "binclusive'i kur", "projeyi onboard et", "cli'yi yapılandır", "binclusive'e giriş yap", "panoya bağla", or otherwise asks to login, authorize, configure, or onboard the Binclusive CLI.
+metadata:
+  display_name: "Onboard Binclusive CLI"
+  short_description: "Configure Binclusive CLI and verify a scan"
 ---
 
 # Onboard Binclusive CLI
