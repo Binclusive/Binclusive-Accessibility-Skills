@@ -21,14 +21,14 @@ Show the final locally saved journeys before delivery. Continue only for journey
 
 ## Native payload contract
 
-Use accessibility `create_journey`, never Agentic QA `import_qa_journeys`. Inspect the **live** schema; do not copy the source-authoring sibling skill's check-containing examples into this runtime workflow.
+Use accessibility `create_journey`, never Agentic QA `import_qa_journeys`. Inspect the **live** schema.
 
 | Field | Mapping |
 | --- | --- |
 | `projectId` | User-selected authorized project, added at call time. |
 | `name` | Journey title. Distinguish platform/locale/branch if needed. |
 | `description` | Plain-text description, starting state and non-secret fixtures. |
-| `steps` | Nonempty ordered `string[]`, one direct action per unnumbered string; no checks, assertions, step objects or Markdown. |
+| `steps` | Nonempty ordered `string[]`, one action per unnumbered string, plus the outcome steps accessibility-test-journey-creator's Wording rules allow; no step objects or Markdown. |
 | `entry` | Mobile only, and only if supported by the live schema and actually verified. Omit for web. |
 
 Supported known mobile entry shapes are `{"kind":"deep_link","url":"scheme://verified-path"}` or `{"kind":"tap_path","taps":["Observed menu","Observed destination"]}`. Do not guess a deep link or duplicate entry taps in steps. Launch-state journeys can omit entry when the starting app state is documented. Payload acceptance does not establish cloud mobile runner availability.

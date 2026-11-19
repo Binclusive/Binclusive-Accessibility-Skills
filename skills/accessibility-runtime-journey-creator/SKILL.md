@@ -1,6 +1,6 @@
 ---
 name: accessibility-runtime-journey-creator
-description: Drive a live web app in Google Chrome or an Android/iOS app on a physical device or emulator/simulator, as the hands of the WCAG-EM journey flow in accessibility-test-journey-creator. Explores the product so the customer gets a suggested list of processes and views, then, only after the customer approves that list, verifies each approved journey by replay. Covers mobile connection setup, saves action-only journeys locally and guides Binclusive MCP delivery; does not perform a complete accessibility audit, start cloud tests, or publish a journey the customer has not approved.
+description: Drive a live web app in Google Chrome or an Android/iOS app on a physical device or emulator/simulator, as the hands of the WCAG-EM journey flow in accessibility-test-journey-creator. Explores the product so the customer gets a suggested list of processes and views, then, only after the customer approves that list, verifies each approved journey by replay. Covers mobile connection setup, saves journeys locally and guides Binclusive MCP delivery; does not perform a complete accessibility audit, start cloud tests, or publish a journey the customer has not approved.
 ---
 
 # Accessibility Runtime Journey Creator
@@ -27,9 +27,9 @@ Ask for missing user data at the point of need: test account, role, fixture, des
 
 After the customer approves the list, execute each approved journey from its documented starting state and observe the result of every action. Replay after materially changing steps; discovery alone does not verify the final sequence. A journey the customer has not approved is not replayed, saved or delivered. Reset only by safe navigation or an agreed fixture; never clear app data or repeat transactions to make a replay work. Record step-to-observation evidence and blockers locally. Runtime verification is separate from user feedback and from an accessibility test pass; do not claim VoiceOver/TalkBack behavior unless actually tested.
 
-## Deliverable: actions only
+## Deliverable: the journeys
 
-Every journey has a title, description (including starting state and non-secret prerequisites), and a numbered list of direct actions. Use the user's language and real observed labels. One action per step, with distinguishing screen/section context where needed. Examples:
+Every journey has a title, description (including starting state and non-secret prerequisites), and a numbered list of steps. Steps follow accessibility-test-journey-creator's Wording rules: they say what the user does and what must hold for an assistive-technology user, never how the page does it. Use the user's language and real observed labels. One action per step, with distinguishing screen/section context where needed. Examples:
 
 ```markdown
 # Binclusive Accessibility Test Journeys
@@ -44,11 +44,12 @@ Açıklama: Test hesabıyla oturum açılmış ana ekrandan başlar. Test verisi
 3. “E-posta bildirimi” kutusunu işaretle.
 4. “Tercih edilen kanal” grubunda “E-posta” radio butonunu seç.
 5. “Kaydet” butonuna tıkla.
+6. Kaydedildi onayının ekran okuyucu kullanıcısına iletildiğini doğrula.
 ```
 
-This example is illustrative, not runtime evidence. Do not include “check”, “verify”, “confirm that”, “assert”, “kontrol et”, “doğrula”, expected-result assertions, audit instructions or combined action/assertion steps. “Onayla butonuna tıkla” is an action when that is the observed label; inspecting a result is the agent's verification work, not a journey step. Split compound actions; remove passive observations and conditional branches by making separate journeys. Do not invent labels for unlabeled controls: use observed visible context/position and record ambiguity, or block an unsafe target.
+This example is illustrative, not runtime evidence. A step that states what must hold is an outcome of the action before it, not an audit instruction, and it is not a claim that anything passed. When replaying, perform each action and record what you observed for each outcome in the local evidence, outside the step lists. Split compound actions; remove passive observations and conditional branches by making separate journeys. Do not invent labels for unlabeled controls: use observed visible context/position and record ambiguity, or block an unsafe target.
 
-After generating all journeys, perform a separate semantic pass over **every step** for action-only wording, concrete targets/data, order, starting-state consistency, missing navigation, unresolved placeholders and runtime evidence. Fix and replay changed paths before marking them verified. Keep validation results, coverage, pending data and unexecuted branches outside the journey step lists.
+After generating all journeys, perform a separate semantic pass over **every step** for the Wording rules, concrete targets/data, order, starting-state consistency, missing navigation, unresolved placeholders and runtime evidence. Fix and replay changed paths before marking them verified. Keep validation results, coverage, pending data and unexecuted branches outside the journey step lists.
 
 Write the required Markdown in the project root. Keep app-specific evidence, inventory, native drafts and sync receipts under `Binclusive-auditing/<app-or-site>/journeys/`, keyed by platform/device/locale. Preserve other app/platform sections and existing user edits; do not overwrite unrelated journeys. Keep partially verified candidates clearly separated in the local evidence/drafts; the primary journey document must identify any bounded start/end or pending status in descriptions and must not present unexecuted steps as verified.
 
