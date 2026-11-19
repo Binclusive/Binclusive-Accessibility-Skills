@@ -37,11 +37,7 @@ OAuth and endpoint behavior are documented at `https://www.binclusive.io/en/blog
 
 ## Inspect `create_ticket` before mapping
 
-Read the authenticated ticket-creation tool's live input schema, required fields, enums, formats, and descriptions before building payloads. The mapping below follows the Binclusive MCP contract; if the deployed schema differs, adapt without inventing fields.
-
-Reference contracts (recheck when the schema changes):
-- https://github.com/Binclusive/monorepo/blob/main/services/mcp/src/findings/adapters/driving/tools.ts
-- https://github.com/Binclusive/monorepo/blob/main/services/mcp/docs/reference/vocabularies.md
+Read the authenticated ticket-creation tool's live input schema, required fields, enums, formats, and descriptions before building payloads. The mapping below follows the Binclusive MCP contract; if the deployed schema differs, adapt without inventing fields. Recheck the mapping whenever the live schema changes.
 
 ## Map each finding to structured fields
 

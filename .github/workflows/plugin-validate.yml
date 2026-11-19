@@ -1,4 +1,4 @@
-# Gate the Claude Code plugin + marketplace manifests. See ADR 0121.
+# Gate the Claude Code plugin + marketplace manifests.
 name: Validate plugin manifests
 
 on:

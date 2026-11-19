@@ -45,11 +45,13 @@ Look at the whole product, not one page. Exploring creates nothing. Sources, in 
 - What exists: `list_journeys`. Show existing journeys in the list so you do not create a duplicate.
 - A customer document, if there is one (flow doc, user stories, QA cases, top tasks, in any language). Read it end to end first. It is a source of functions, not the scope.
 
-Then write three lists:
+Then write these lists:
 
 1. Common views. In the WCAG-EM glossary these are "views that are relevant to the entire digital product". They are usually linked from the header, footer or navigation: home, login, search, contact, help, legal, language switch. "The outcome of this step is a list of all common pages or views of the target product." (Step 2.1)
 2. Essential functions. The glossary defines them as "functionality that, if removed, fundamentally changes the use or purpose of the product for users", such as "selecting and purchasing an item from an online shop". Give each one a sentence on what the user gets done and where you saw it. "The purpose of this step is not to exhaustively identify all functionality of a product but to determine those that are essential to the purpose and goal of the target product." (Step 2.2) Ask the customer for what an outsider cannot see: "Involvement of product owners and product developers can help evaluators make their explorations more effective." (Step 2)
 3. View types. "The outcome of this step is a list of descriptions of the types of content identified, rather than specific instances of samples." (Step 2.3) Name each type and give one example address or screen.
+4. Technologies relied upon. Note the web technologies the product uses (for example HTML, CSS, JavaScript, SVG, WAI-ARIA, PDF) or, for an app, its native platform and UI framework. "The outcome of this step is a list of technologies that are relied upon according to WCAG 2." (Step 2.4) Use it so the views include content built with each one.
+5. Other relevant samples. Views that matter most to people with disabilities, such as accessibility information and help, settings and preferences, contact and support, and authentication or other high-risk functions. "Identify other samples that are relevant to people with disabilities and to accessibility of the digital product." (Step 2.5)
 
 Apps. An app has no address to open. Samples are screens and the path to them: "samples can be identified with unique screenshots and/or descriptions of the path that lead to the specific sample." (WCAG-EM 2.0, section 3.2) If the product has few views, propose all of them: "If feasible, it is recommended to evaluate the entire digital product." (Step 3)
 
@@ -60,7 +62,7 @@ When a control could do several things, click it once and write what you saw. On
 Show one numbered list. Create nothing yet.
 
 - Processes. One per essential function. For each: the goal in plain words, who runs it (public, or the persona), where it starts, and the default sequence. "For each starting point for a process, identify and record at least the default sequence of samples to complete the process." The default "assumes that there are no user input errors and no selection of additional options." (Step 3.3) Add the branches: "the branch sequences of samples that are commonly accessed and critical for the successful completion of the process", and always the error path where there is a form. If the real end is a payment, a deletion or a sent message, end the process before it and say so.
-- Views. One per view type from Step 2, with its example address or screen and the state to reach, such as a dialog opened or an error shown. Add the first-visit sample from question 5.
+- Views. One per view type from Step 2, plus any other relevant sample from item 5 not already covered, with its example address or screen and the state to reach, such as a dialog opened or an error shown. Add the first-visit sample from question 5.
 - Left out. Every flow in the customer's document and every area of the sitemap this list does not cover, each with a reason. Never drop one silently.
 
 Ask the customer to keep, rename, reorder, drop or add. A use case of their own is theirs to add: WCAG-EM calls it an additional requirement, "analysis of particular use cases, situations, and user groups for interacting with the target digital product". (Step 1.4) WCAG-EM gives no count of journeys. The customer's confirmed functions set the number.
@@ -69,7 +71,7 @@ Repeat until the customer says the list is approved. Silence is not approval. A 
 
 ## Step 4. Verify and create what was approved
 
-Only approved items go on. Where the product can be driven (Chrome, a simulator or a device), replay each approved journey with `accessibility-runtime-journey-creator` first and fix a step that does not replay. Where it cannot be driven, say in the output that the journey was not replayed.
+Only approved items go on. Where the product can be driven (Chrome, a simulator or a device), replay each approved journey with `accessibility-runtime-journey-creator` first and fix a step that does not replay. If replay changes a journey's steps materially, show the changed journey to the customer and get their yes on that version before it is created. A journey replay left unchanged needs no second approval. Where it cannot be driven, say in the output that the journey was not replayed.
 
 Then one `create_journey` per approved item, run in parallel, with `projectId`, `name`, `description` and `steps`. Write each step as the action that moves from one view to the next, so a later run can repeat it: "In most cases the web address (URL) will not be sufficient to identify the sample in a complete process." Leave no view of a process out: "all pages or views that belong to that same process have to be included". (Step 3.3)
 
