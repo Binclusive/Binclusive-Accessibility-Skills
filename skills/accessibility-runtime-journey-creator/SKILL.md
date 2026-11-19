@@ -55,6 +55,6 @@ Write the required Markdown in the project root. Keep app-specific evidence, inv
 
 ## Binclusive delivery
 
-Create and publish only journeys that reach created in accessibility-test-journey-creator's Step 4 lifecycle table. After saving and validating locally, follow [references/binclusive-delivery.md](references/binclusive-delivery.md): check workspace/global Binclusive MCP, connect `https://mcp.binclusive.io/mcp` if missing, open the supported OAuth authorization flow, then have the user select organization and project and add the verified journeys. Respect a user's local-only instruction.
+Create and publish only journeys that reach created in accessibility-test-journey-creator's Step 4 lifecycle table. After saving and validating locally, follow [references/binclusive-delivery.md](references/binclusive-delivery.md): check workspace/global Binclusive MCP, connect `https://mcp.binclusive.io/mcp` if missing, open the supported OAuth authorization flow, then have the user select organization and project and add the journeys that reached created. Respect a user's local-only instruction.
 
 Connection/authentication failure must preserve the local work and resume point. Do not start cloud QA or an accessibility audit as part of saving journeys. Report the document path, exact coverage, verified versus blocked journeys, and saved IDs or the specific remaining setup/user choice.
