@@ -55,7 +55,7 @@ Then write these lists:
 
 Apps. An app has no address to open. Samples are screens and the path to them: "samples can be identified with unique screenshots and/or descriptions of the path that lead to the specific sample." (WCAG-EM 2.0, section 3.2) If the product has few views, propose all of them: "If feasible, it is recommended to evaluate the entire digital product." (Step 3)
 
-When a control could do several things, click it once and write what you saw. One probe beats one wrong guess. Never probe a control that submits, sends, pays, deletes or logs out, with any data.
+When a control could do several things, click it once and write what you saw. One probe beats one wrong guess. Probe only as the exploring bound in Step 4 allows.
 
 ## Step 3. Draft the list and let the customer edit it
 
@@ -71,7 +71,7 @@ Repeat until the customer says the list is approved. Silence is not approval. A 
 
 ## Step 4. Verify and create
 
-Approval gates what gets created or published, never exploring or replaying. Step 1's scope is the customer's authority to explore and replay their product within it, and the Step 2 rule (never probe a control that submits, sends, pays, deletes or logs out) still bounds every replay. This table is the one place the lifecycle is stated. `accessibility-runtime-journey-creator`, its references and `aftertestvalidation` point here.
+Approval gates what gets created or published, never exploring or replaying. Step 1's scope is the customer's authority to explore and replay their product within it, inside the two safety bounds below. This section is the one place the lifecycle and the safety bounds are stated. `accessibility-runtime-journey-creator`, its references and `aftertestvalidation` point here.
 
 | State | Who moves it | Next |
 |---|---|---|
@@ -83,6 +83,11 @@ Approval gates what gets created or published, never exploring or replaying. Ste
 
 A named flow, or a flow a calling skill passes in, starts at drafted like any other. Where the product can be driven (Chrome, a simulator or a device), replay with `accessibility-runtime-journey-creator` and fix a step that does not replay. Replaying a changed journey before the customer's new yes is allowed. Creating it is not. Where the product cannot be driven, say in the output that the journey was not replayed.
 
+Two safety bounds:
+
+- Exploring never activates a control that submits, saves, sends, pays, deletes or logs out.
+- Replay runs exactly the steps of the journey the customer approved, so a Save or Submit step in it runs, with the test data the customer accepted for it. A replay never pays, sends to a real recipient, deletes or logs out. Bound such a journey before that step and record the remainder as not replayed.
+
 Pause state. When a session stops, save each journey's state, pending questions, blockers and accepted test data (non-secret only) to the local evidence file: `journey-scope.md` for a source-only draft, otherwise the runtime skill's evidence under `Binclusive-auditing/<app-or-site>/journeys/`. A source-only draft then keeps its approval state across sessions.
 
 Create each journey that reaches created: one `create_journey` per journey, run in parallel, with `projectId`, `name`, `description` and `steps`. Write each step as the action that moves from one view to the next, so a later run can repeat it: "In most cases the web address (URL) will not be sufficient to identify the sample in a complete process." Leave no view of a process out: "all pages or views that belong to that same process have to be included". (Step 3.3)
@@ -90,7 +95,7 @@ Create each journey that reaches created: one `create_journey` per journey, run 
 - Web journey. Step 1 opens the start address: `Open https://shop.example.com.` There is no separate start address field. Write no step for cookie banners or pop-ups, because the tester handles them on every run. Pass `personaId` for a signed-in journey. No `personaId` means a public journey. Do not paste the login into an otherwise signed-in journey, because the persona signs in. Audit the login itself as its own public journey.
 - App journey. Pass `entry`: `{"kind":"deep_link","url":"..."}` or `{"kind":"tap_path","taps":["..."]}`. `create_journey` refuses a persona on an app journey, so ask the customer how a signed-in app flow gets in.
 - Branch. A journey is a straight list, so we write each branch as its own journey, which is our choice and not W3C's. Repeat the default steps up to the branch point, then follow the branch.
-- View. Name it for the view type, in plain words. Steps: open the example address, reach the state, then go through the whole view and use each interactive part you find, stopping before any control that submits, sends, pays, deletes or logs out. The first-visit view starts with nothing stored and tests the banner itself.
+- View. Name it for the view type, in plain words. Steps: open the example address, reach the state, then go through the whole view and use each interactive part you find, stopping where the safety bounds in Step 4 require. The first-visit view starts with nothing stored and tests the banner itself.
 - Process. Name it for the goal: "Buy a product as a guest". Five to ten steps is our default, not W3C's. One goal per journey. If you write "and also", split it.
 
 If a create is refused, show the customer the refusal and go on with the rest. They can change any journey later with `update_journey`. Saving a journey does not start an audit.

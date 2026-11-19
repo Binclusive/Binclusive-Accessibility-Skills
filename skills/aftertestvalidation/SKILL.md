@@ -1,6 +1,6 @@
 ---
 name: aftertestvalidation
-description: Validate a reported accessibility fix in a live web, Android or iOS app from Excel, PDF, text or a Binclusive ticket. Locate the affected area, create a launch-to-target aftertest accessibility journey, publish and run it through Binclusive MCP in the selected organization/project, and record evidence or blockers in aftertest.md. Use for post-fix verification, after test, or erişilebilirlik düzeltmesini doğrula; does not implement fixes or run a whole-app audit.
+description: Validate a reported accessibility fix in a live web, Android or iOS app from Excel, PDF, text or a Binclusive ticket. Locate the affected area, draft a launch-to-target aftertest accessibility journey, and once the user approves the drafted journey, create it through Binclusive MCP in the selected organization/project and run it, and record evidence or blockers in aftertest.md. Use for post-fix verification, after test, or erişilebilirlik düzeltmesini doğrula; does not implement fixes or run a whole-app audit.
 ---
 
 # Accessibility After Test Validation

@@ -33,7 +33,7 @@ Use accessibility `create_journey`, never Agentic QA `import_qa_journeys`. Inspe
 
 Supported known mobile entry shapes are `{"kind":"deep_link","url":"scheme://verified-path"}` or `{"kind":"tap_path","taps":["Observed menu","Observed destination"]}`. Do not guess a deep link or duplicate entry taps in steps. Launch-state journeys can omit entry when the starting app state is documented. Payload acceptance does not establish cloud mobile runner availability.
 
-Export only complete, runtime-verified bounded journeys with known prerequisites and no unresolved placeholders or secrets. Incomplete/blocked candidates remain in local drafts and coverage evidence. Keep native definitions in `Binclusive-auditing/<app-or-site>/journeys/accessibility-test-journeys.json`; local IDs, observations, coverage and sync metadata belong in separate files, not MCP fields. The required user deliverable remains the root `binclusive-accessibility-test-journies.md`.
+Export only journeys that reach created in that lifecycle table, with known prerequisites and no unresolved placeholders or secrets. Incomplete/blocked candidates remain in local drafts and coverage evidence. Keep native definitions in `Binclusive-auditing/<app-or-site>/journeys/accessibility-test-journeys.json`; local IDs, observations, coverage and sync metadata belong in separate files, not MCP fields. The required user deliverable remains the root `binclusive-accessibility-test-journies.md`.
 
 ## Reconcile, save and verify
 
